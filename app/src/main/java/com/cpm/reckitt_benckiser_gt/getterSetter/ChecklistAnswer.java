@@ -4,7 +4,9 @@ package com.cpm.reckitt_benckiser_gt.getterSetter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class ChecklistAnswer {
+import java.io.Serializable;
+
+public class ChecklistAnswer implements Serializable {
 
     @SerializedName("Answer_Id")
     @Expose

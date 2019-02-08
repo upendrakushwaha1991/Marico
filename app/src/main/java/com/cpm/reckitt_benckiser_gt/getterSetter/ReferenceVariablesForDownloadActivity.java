@@ -37,9 +37,13 @@ public class ReferenceVariablesForDownloadActivity {
     protected MappingMenuChecklistGetterSetter mappingMenuChecklistGetterSetter;
     protected MappingCTUGetterSetter mappingCTUGetterSetter;
     protected MappingFocusSkuGetterSetter mappingFocusSkuGetterSetter;
+    protected MappingSecondaryVisibilityGetterSetter mappingSecondaryVisibilityGetterSetter;
+    protected DisplayMasterGetterSetter displayMasterGetterSetter;
+
     protected SkuMasterGetterSetter skuMasterGetterSetter;
     protected MappingBackOfStoreGetterSetter mappingBackOfStoreGetterSetter;
     protected MappingMonkeysunStoreGetterSetter mappingMonkeysunStoreGetterSetter;
+
 
 
 

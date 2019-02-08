@@ -66,9 +66,12 @@ public class DownloadActivity extends AppCompatActivity {
             keysList.add("Mapping_Menu_Checklist");
             keysList.add("Mapping_CTU");
             keysList.add("Mapping_Focus_Sku");
+            keysList.add("Mapping_Secondary_Visibility");
+            keysList.add("Display_Master");
             keysList.add("Sku_Master");
             keysList.add("mapping_Back_Of_Store");
             keysList.add("Mapping_Monkeysun");
+
 
 
             if (keysList.size() > 0) {

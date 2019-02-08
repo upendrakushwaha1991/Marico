@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WindowMaster implements Serializable {
 
@@ -249,4 +250,74 @@ public class WindowMaster implements Serializable {
     int reasonId;
     String reason;
     String temp;
+
+    //---------------
+
+    String img_close_up = "";
+    String img_long_shot = "";
+
+    String answered;
+    int answered_id = -1;
+
+    int nonExecutionReasonId = -1;
+
+    public int getNonExecutionReasonId() {
+        return nonExecutionReasonId;
+    }
+
+    public void setNonExecutionReasonId(int nonExecutionReasonId) {
+        this.nonExecutionReasonId = nonExecutionReasonId;
+    }
+
+    ArrayList<BrandMaster> brandList = new ArrayList<>();
+    HashMap<BrandMaster, ArrayList<ChecklistMaster>> hashMapListChildData = new HashMap<>();
+
+    public ArrayList<BrandMaster> getBrandList() {
+        return brandList;
+    }
+
+    public void setBrandList(ArrayList<BrandMaster> brandList) {
+        this.brandList = brandList;
+    }
+
+    public HashMap<BrandMaster, ArrayList<ChecklistMaster>> getHashMapListChildData() {
+        return hashMapListChildData;
+    }
+
+    public void setHashMapListChildData(HashMap<BrandMaster, ArrayList<ChecklistMaster>> hashMapListChildData) {
+        this.hashMapListChildData = hashMapListChildData;
+    }
+
+    public String getAnswered() {
+        return answered;
+    }
+
+    public void setAnswered(String answered) {
+        this.answered = answered;
+    }
+
+    public int getAnswered_id() {
+        return answered_id;
+    }
+
+    public void setAnswered_id(int answered_id) {
+        this.answered_id = answered_id;
+    }
+
+
+    public String getImg_close_up() {
+        return img_close_up;
+    }
+
+    public void setImg_close_up(String img_close_up) {
+        this.img_close_up = img_close_up;
+    }
+
+    public String getImg_long_shot() {
+        return img_long_shot;
+    }
+
+    public void setImg_long_shot(String img_long_shot) {
+        this.img_long_shot = img_long_shot;
+    }
 }

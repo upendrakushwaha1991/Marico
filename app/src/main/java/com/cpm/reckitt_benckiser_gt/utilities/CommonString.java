@@ -47,6 +47,8 @@ public class CommonString {
     public static final String KEY_IID = "KEY_ID";
     public static final String TAG_OBJECT = "OBJECT";
     public static final String TAG_WINDOW_OBJECT = "WINDOW_OBJECT";
+    public static final String TAG_BRAND_OBJECT = "BRAND_OBJECT";
+    public static final String TAG_CHECKLIST_OBJECT = "CHECKLIST_OBJECT";
     public static final String KEY_TITLE = "title";
     public static final String KEY_DOWNLOAD_INDEX = "download_Index";
 
@@ -431,8 +433,6 @@ public class CommonString {
             + KEY_STORE_TYPE + " VARCHAR)";
 
 
-
-
     ///usk
     public static final String KEY_EXIST = "Exist";
     public static final String TABLE_POSM_DEPLOYMENT = "POSM_Deployment";
@@ -440,7 +440,7 @@ public class CommonString {
     public static final String KEY_DISTRIBUTOR_ID = "Distributor_Id";
     public static final String KEY_STORE_TYPE_ID = "Store_Type_Id";
     public static final String KEY_IMAGE_CLOSEUP = "IMAGE_CLOSEUP";
-    public static final String KEY_LONGSHOT = "LONGSHOT";
+    public static final String KEY_IMAGE_LONGSHOT = "LONGSHOT";
     public static final String KEY_ANSWER = "ANSWER";
 
     public static final String CREATE_TABLE_POSM_DEPLOYMENT = "CREATE TABLE  IF NOT EXISTS " + TABLE_POSM_DEPLOYMENT
@@ -476,9 +476,7 @@ public class CommonString {
             + KEY_PURITY_EXIST + " VARCHAR,"
             + KEY_PLANOGRAM_EXIST + " VARCHAR,"
             + KEY_IMAGE_CLOSEUP + " VARCHAR,"
-            + KEY_LONGSHOT + " VARCHAR)";
-
-
+            + KEY_IMAGE_LONGSHOT + " VARCHAR)";
 
 
     public static final String TABLE_VISICOOLER_CHEKLIST = "DR_VISICOOLER_CHEKLIST";
@@ -491,8 +489,6 @@ public class CommonString {
             + KEY_CHEKLIST + " VARCHAR,"
             + KEY_ANSWER_CD + " INTEGER,"
             + KEY_ANSWER + " VARCHAR)";
-
-
 
 
     public static final String TABLE_INSERT_FOCUS_PRODUCT_STOCK_OPENINGHEADER_DATA = "FOCUS_PRODUCT_OPENINGHEADER_DATA";
@@ -529,12 +525,113 @@ public class CommonString {
             + KEY_VISIT_DATE + " VARCHAR,"
             + KEY_PRESENT_EXIST + " VARCHAR,"
             + KEY_REASON + " VARCHAR,"
-            + KEY_REASON_ID+ " VARCHAR,"
+            + KEY_REASON_ID + " VARCHAR,"
             + KEY_IMAGE_CLOSEUP + " VARCHAR,"
-            + KEY_LONGSHOT + " VARCHAR)";
+            + KEY_IMAGE_LONGSHOT + " VARCHAR)";
+
+//-------YSY--------
+
+    public static final String TABLE_WINDOW_HEADER = "WINDOW_HEADER";
+    public static final String TABLE_WINDOW_BRAND_LIST = "WINDOW_BRAND_LIST";
+    public static final String TABLE_WINDOW_CHECK_LIST = "WINDOW_CHECK_LIST";
+    public static final String TABLE_BRAND_CHECK_LIST = "BRAND_CHECK_LIST";
+    public static final String TABLE_CTU_BRAND_HEADER = "CTU_BRAND_HEADER";
+    public static final String TABLE_CTU_BRAND_CHECK_LIST = "CTU_BRAND_CHECK_LIST";
+    public static final String TABLE_SECONDARY_VISIBILITY_HEADER = "SECONDARY_VISIBILITY_HEADER";
+    public static final String TABLE_SECONDARY_VISIBILITY_CHECK_LIST = "CTU_BRAND_CHECK_LIST";
+
+    public static final String KEY_WINDOW = "WINDOW";
+    public static final String KEY_CHECKLIST = "CHECKLIST";
+    public static final String KEY_DISPLAY_ID = "DISPLAY_ID";
+    public static final String KEY_DISPLAY = "DISPLAY";
+    public static final String CREATE_TABLE_WINDOW = "CREATE TABLE  IF NOT EXISTS " + TABLE_WINDOW_HEADER
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_EXIST + " INTEGER,"
+            + KEY_WINDOW_ID + " INTEGER,"
+            + KEY_WINDOW + " VARCHAR,"
+            + KEY_REASON_ID + " INTEGER,"
+            + KEY_IMAGE_LONGSHOT + " VARCHAR,"
+            + KEY_IMAGE_CLOSEUP + " VARCHAR)";
+
+    public static final String CREATE_TABLE_WINDOW_BRAND_LIST = "CREATE TABLE  IF NOT EXISTS " + TABLE_WINDOW_BRAND_LIST
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_COMMON_ID + " INTEGER,"
+            + KEY_BRAND_ID + " INTEGER,"
+            + KEY_BRAND + " VARCHAR,"
+            + KEY_STOCK + " INTEGER)";
+
+    public static final String CREATE_TABLE_WINDOW_CHECK_LIST = "CREATE TABLE  IF NOT EXISTS " + TABLE_WINDOW_CHECK_LIST
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_COMMON_ID + " INTEGER,"
+            + KEY_CHECKLIST_ID + " INTEGER,"
+            + KEY_ANSWER_CD + " INTEGER,"
+            + KEY_CHECKLIST + " VARCHAR)";
 
 
-    public static final String TABLE_MONKEUSUN_DATA = "DR_MONKEUSUN_DATA";
+   public static final String CREATE_TABLE_BRAND_CHECK_LIST = "CREATE TABLE  IF NOT EXISTS " + TABLE_BRAND_CHECK_LIST
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_COMMON_ID + " INTEGER,"
+            + KEY_CHECKLIST_ID + " INTEGER,"
+            + KEY_ANSWER_CD + " INTEGER,"
+            + KEY_CHECKLIST + " VARCHAR)";
+
+    public static final String CREATE_TABLE_CTU_BRAND_HEADER = "CREATE TABLE  IF NOT EXISTS " + TABLE_CTU_BRAND_HEADER
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_EXIST + " INTEGER,"
+            + KEY_BRAND_ID + " INTEGER,"
+            + KEY_BRAND + " VARCHAR,"
+            + KEY_REASON_ID + " INTEGER,"
+            + KEY_IMAGE_LONGSHOT + " VARCHAR,"
+            + KEY_IMAGE_CLOSEUP + " VARCHAR)";
+
+    public static final String CREATE_TABLE_CTU_BRAND_CHECK_LIST = "CREATE TABLE  IF NOT EXISTS " + TABLE_CTU_BRAND_CHECK_LIST
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_COMMON_ID + " INTEGER,"
+            + KEY_CHECKLIST_ID + " INTEGER,"
+            + KEY_ANSWER_CD + " INTEGER,"
+            + KEY_CHECKLIST + " VARCHAR)";
+
+    public static final String CREATE_TABLE_SECONDARY_VISIBILITY_HEADER = "CREATE TABLE  IF NOT EXISTS " + TABLE_SECONDARY_VISIBILITY_HEADER
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_EXIST + " INTEGER,"
+            + KEY_DISPLAY_ID + " INTEGER,"
+            + KEY_DISPLAY+ " VARCHAR,"
+            + KEY_REASON_ID + " INTEGER,"
+            + KEY_IMAGE_LONGSHOT + " VARCHAR,"
+            + KEY_IMAGE_CLOSEUP + " VARCHAR)";
+
+    public static final String CREATE_TABLE_SECONDARY_VISIBILITY_CHECK_LIST = "CREATE TABLE  IF NOT EXISTS " + TABLE_SECONDARY_VISIBILITY_CHECK_LIST
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_COMMON_ID + " INTEGER,"
+            + KEY_CHECKLIST_ID + " INTEGER,"
+            + KEY_ANSWER_CD + " INTEGER,"
+            + KEY_CHECKLIST + " VARCHAR)";
+
+   public static final String TABLE_MONKEUSUN_DATA = "DR_MONKEUSUN_DATA";
     public static final String CREATE_TABLE_MONKEUSUN_DATA = "CREATE TABLE  IF NOT EXISTS " + TABLE_MONKEUSUN_DATA
             + " ("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
@@ -619,6 +716,4 @@ public class CommonString {
             + KEY_CHEKLIST + " VARCHAR,"
             + KEY_ANSWER_CD + " INTEGER,"
             + KEY_ANSWER + " VARCHAR)";
-
-
 }
