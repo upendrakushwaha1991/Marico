@@ -63,7 +63,12 @@
             android:value="false" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCV9SELy-EXFg9pcKtCLqzp-DAo-aRsjj0" /> <!-- android:value="AIzaSyA-MIPQ2JhVqtewf3nx2MJHwIdniVzuoaI" /> -->
+
+            android:value="AIzaSyDf_qvzh-RZAPGIzmTbQPeI9CpdnwcfshM" />
+
+           <!-- android:value="AIzaSyCV9SELy-EXFg9pcKtCLqzp-DAo-aRsjj0" />-->
+        <!-- android:value="AIzaSyA-MIPQ2JhVqtewf3nx2MJHwIdniVzuoaI" /> -->
+
         <activity
             android:name=".SplashScreenActivity"
             android:label="@string/app_name"
@@ -189,15 +194,40 @@
         <activity
             android:name=".dailyEntry.POSMDeploymentActivity"
             android:label="@string/title_activity_posmdeployment"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".dailyEntry.FocusProductActivity"
             android:label="@string/title_activity_focus_product"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".dailyEntry.NewVisiCoolerActivty"
             android:label="@string/title_activity_new_visi_cooler_activty"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".dailyEntry.MonkeysunActivity"
+            android:label="@string/title_activity_monkeysun"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".dailyEntry.BackOfStoreActivity"
+            android:label="@string/title_activity_back_of_store"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".dailyEntry.JarActivity"
+            android:label="@string/title_activity_jar"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+
     </application>
 
 </manifest>

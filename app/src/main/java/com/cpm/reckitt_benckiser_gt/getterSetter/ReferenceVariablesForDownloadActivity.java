@@ -40,6 +40,11 @@ public class ReferenceVariablesForDownloadActivity {
     protected MappingSecondaryVisibilityGetterSetter mappingSecondaryVisibilityGetterSetter;
     protected DisplayMasterGetterSetter displayMasterGetterSetter;
 
+    protected SkuMasterGetterSetter skuMasterGetterSetter;
+    protected MappingBackOfStoreGetterSetter mappingBackOfStoreGetterSetter;
+    protected MappingMonkeysunStoreGetterSetter mappingMonkeysunStoreGetterSetter;
+
+
 
 
 

@@ -161,8 +161,8 @@ public class CommonString {
     public static final int CHECKOUTDetail_CLIENT = 11;
 
     public static String URL = "http://mgt.parinaam.in/Webservice/Mondlezeservice.svc/";
-    public static String URL3 = "http://rbgt.parinaam.in/webservice/Imageupload.asmx/";
-    public static String URLGORIMAG = "http://rbgt.parinaam.in/webservice/Imageupload.asmx/";
+    public static String URL3 = "http://mgt.parinaam.in/webservice/Imageupload.asmx/";
+    public static String URLGORIMAG = "http://mgt.parinaam.in/webservice/Imageupload.asmx/";
 
     public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/Mondelez_GT_Backup/";
     //Alert Messages
@@ -499,7 +499,6 @@ public class CommonString {
             + "BRAND_CD" + " INTEGER,"
             + KEY_VISIT_DATE + " VARCHAR,"
             + "COMMONID" + " INTEGER,"
-            + "CATEGORY_ID" + " INTEGER,"
             + "BRAND" + " VARCHAR)";
 
 
@@ -513,7 +512,6 @@ public class CommonString {
             + "SKU" + " VARCHAR, "
             + "COMMONID" + " INTEGER,"
             + "SKU_CD" + " INTEGER, "
-            + "CATEGORY_ID" + " INTEGER,"
             + "STOCK" + " INTEGER, "
             + "BRAND" + " VARCHAR)";
 
@@ -578,7 +576,8 @@ public class CommonString {
             + KEY_ANSWER_CD + " INTEGER,"
             + KEY_CHECKLIST + " VARCHAR)";
 
-    public static final String CREATE_TABLE_BRAND_CHECK_LIST = "CREATE TABLE  IF NOT EXISTS " + TABLE_BRAND_CHECK_LIST
+
+   public static final String CREATE_TABLE_BRAND_CHECK_LIST = "CREATE TABLE  IF NOT EXISTS " + TABLE_BRAND_CHECK_LIST
             + " ("
             + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
             + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
@@ -631,4 +630,90 @@ public class CommonString {
             + KEY_CHECKLIST_ID + " INTEGER,"
             + KEY_ANSWER_CD + " INTEGER,"
             + KEY_CHECKLIST + " VARCHAR)";
+
+   public static final String TABLE_MONKEUSUN_DATA = "DR_MONKEUSUN_DATA";
+    public static final String CREATE_TABLE_MONKEUSUN_DATA = "CREATE TABLE  IF NOT EXISTS " + TABLE_MONKEUSUN_DATA
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_PRESENT_EXIST + " VARCHAR,"
+            + KEY_REASON + " VARCHAR,"
+            + KEY_REASON_ID+ " VARCHAR,"
+            + KEY_IMAGE_CLOSEUP + " VARCHAR,"
+            + KEY_LONGSHOT + " VARCHAR)";
+
+
+    public static final String TABLE_MONKEUSUN_CHEKLIST = "DR_MONKEUSUN_CHEKLIST";
+    public static final String CREATE_TABLE_MONKEUSUN_CHEKLIST_CHEKLIST = "CREATE TABLE  IF NOT EXISTS " + TABLE_MONKEUSUN_CHEKLIST
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_CHEKLIST_ID + " INTEGER,"
+            + KEY_CHEKLIST + " VARCHAR,"
+            + KEY_ANSWER_CD + " INTEGER,"
+            + KEY_ANSWER + " VARCHAR)";
+
+
+    public static final String TABLE_BACKOF_STORE_HEADER_DATA = "DR_BACKOF_STORE_HEADER_DATA";
+    public static final String CREATE_TABLE_BACKOF_STORE_HEADER_DATA = "CREATE TABLE  IF NOT EXISTS " + TABLE_BACKOF_STORE_HEADER_DATA
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_PRESENT_EXIST + " VARCHAR,"
+            + KEY_IMAGE_CLOSEUP + " VARCHAR,"
+            + KEY_LONGSHOT + " VARCHAR)";
+
+
+    public static final String TABLE_HEADER_BACK_OF_STORE = "DR_HEADER_BACK_OF_STORE";
+    public static final String CREATE_HEADER_BACK_OF_STORE =
+            "CREATE TABLE IF NOT EXISTS " + TABLE_HEADER_BACK_OF_STORE
+                    + " ("
+                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+                    + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+                    + KEY_VISIT_DATE + " VARCHAR,"
+                    + KEY_BRAND_CD + " INTEGER,"
+                    + KEY_BRAND + " VARCHAR,"
+                    + KEY_STOCK + " VARCHAR)";
+
+    public static final String TABLE_CHILD_BACK_OF_STORE_DATA = "DR_CHILD_BACK_OF_STORE_DATA";
+    public static final String CREATE_TABLE_SHARE_OF_SHELF_FACING_DATA =
+            "CREATE TABLE IF NOT EXISTS " + TABLE_CHILD_BACK_OF_STORE_DATA
+                    + " ("
+                    + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+                    + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+                    + KEY_VISIT_DATE + " VARCHAR,"
+                    + KEY_BRAND_CD + " INTEGER,"
+                    + KEY_BRAND + " VARCHAR,"
+                    + KEY_REASON_ID + " INTEGER,"
+                    + KEY_REASON + " VARCHAR,"
+                    + KEY_COMMON_ID + " INTEGER,"
+                    + KEY_CHECKLIST_ID + " INTEGER,"
+                    + KEY_CHEKLIST + " VARCHAR)";
+
+
+    public static final String TABLE_JAR_DATA = "DR_JAR_DATA";
+    public static final String CREATE_TABLE_TABLE_JAR_DATA_DATA = "CREATE TABLE  IF NOT EXISTS " + TABLE_JAR_DATA
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_PRESENT_EXIST + " VARCHAR,"
+            + KEY_REASON + " VARCHAR,"
+            + KEY_REASON_ID+ " VARCHAR,"
+            + KEY_IMAGE_CLOSEUP + " VARCHAR,"
+            + KEY_LONGSHOT + " VARCHAR)";
+
+    public static final String TABLE_JAR_CHEKLIST = "DR_JAR_CHEKLIST";
+    public static final String CREATE_TABLE_JAR_CHEKLIST_CHEKLIST = "CREATE TABLE  IF NOT EXISTS " + TABLE_JAR_CHEKLIST
+            + " ("
+            + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_CHEKLIST_ID + " INTEGER,"
+            + KEY_CHEKLIST + " VARCHAR,"
+            + KEY_ANSWER_CD + " INTEGER,"
+            + KEY_ANSWER + " VARCHAR)";
 }

@@ -4,17 +4,28 @@ package com.cpm.reckitt_benckiser_gt.getterSetter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class MappingMenu {
+public class MappingBackOfStore {
 
+    @SerializedName("State_Id")
+    @Expose
+    private Integer stateId;
     @SerializedName("Store_Category_Id")
     @Expose
     private Integer storeCategoryId;
     @SerializedName("Store_Type_Id")
     @Expose
     private Integer storeTypeId;
-    @SerializedName("Menu_Id")
+    @SerializedName("Brand_Id")
     @Expose
-    private Integer menuId;
+    private Integer brandId;
+
+    public Integer getStateId() {
+        return stateId;
+    }
+
+    public void setStateId(Integer stateId) {
+        this.stateId = stateId;
+    }
 
     public Integer getStoreCategoryId() {
         return storeCategoryId;
@@ -32,12 +43,12 @@ public class MappingMenu {
         this.storeTypeId = storeTypeId;
     }
 
-    public Integer getMenuId() {
-        return menuId;
+    public Integer getBrandId() {
+        return brandId;
     }
 
-    public void setMenuId(Integer menuId) {
-        this.menuId = menuId;
+    public void setBrandId(Integer brandId) {
+        this.brandId = brandId;
     }
 
 }

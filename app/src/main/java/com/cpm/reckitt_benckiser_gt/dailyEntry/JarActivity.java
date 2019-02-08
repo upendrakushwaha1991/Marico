@@ -1,5 +1,4 @@
 package com.cpm.reckitt_benckiser_gt.dailyEntry;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -34,6 +33,7 @@ import android.widget.Toast;
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistAnswer;
+import com.cpm.reckitt_benckiser_gt.getterSetter.JarGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.NonExecutionReason;
@@ -46,8 +46,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnClickListener {
-    private Spinner sp_present, sp_reason;
+public class JarActivity extends AppCompatActivity implements View.OnClickListener{
+    private Spinner sp_present;
     private ImageView image_closeup, image_long_shot;
     FloatingActionButton fab;
     String[] string_present = {"Select", "YES", "NO"};
@@ -58,35 +58,28 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
     private SharedPreferences preferences;
     JourneyPlan jcpGetset;
     MenuMaster menuMaster;
-    VisiColoersGetterSetter visiColoersGetterSetter;
+    JarGetterSetter visiColoersGetterSetter;
     POSMDeploymentAdapter adapter;
-    ArrayList<VisiColoersGetterSetter> deploymentData = new ArrayList<>();
+    ArrayList<JarGetterSetter> deploymentData = new ArrayList<>();
     private ArrayList<ChecklistAnswer> reasonData = new ArrayList<>();
-    int indexVal = 0;
-    int indexCheckVal = 0;
-    private ArrayList<VisiColoersGetterSetter> posmDeploymentSavedData = new ArrayList<>();
+    private ArrayList<JarGetterSetter> posmDeploymentSavedData = new ArrayList<>();
     RecyclerView recyclerView;
-    private ArrayList<VisiColoersGetterSetter> posmDeploymentData = new ArrayList<>();
-    private ArrayList<NonExecutionReason> reasonDataHeader = new ArrayList<>();
-    String reason_name, reason_cd;
-    private LinearLayout lay_image, lay_image_name, lay_reason;
+    private ArrayList<JarGetterSetter> posmDeploymentData = new ArrayList<>();
+    private LinearLayout lay_image, lay_image_name;
     String Error_Message = "";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_visi_cooler_activty);
+        setContentView(R.layout.activity_jar);
         getId();
     }
 
     private void getId() {
 
         lay_image = (LinearLayout) findViewById(R.id.lay_image);
-        lay_reason = (LinearLayout) findViewById(R.id.lay_reason);
         lay_image_name = (LinearLayout) findViewById(R.id.lay_image_name);
         sp_present = (Spinner) findViewById(R.id.sp_present);
-        sp_reason = (Spinner) findViewById(R.id.sp_reason);
         image_closeup = (ImageView) findViewById(R.id.image_closeup);
         image_long_shot = (ImageView) findViewById(R.id.image_long_shot);
         fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -102,7 +95,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         username = preferences.getString(CommonString.KEY_USERNAME, null);
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
-        getSupportActionBar().setTitle("Visi Cooler -" + visit_date);
+        getSupportActionBar().setTitle("Jar -" + visit_date);
 
         if (getIntent().getSerializableExtra(CommonString.TAG_OBJECT) != null && getIntent().getSerializableExtra(CommonString.KEY_MENU_ID) != null) {
             jcpGetset = (JourneyPlan) getIntent().getSerializableExtra(CommonString.TAG_OBJECT);
@@ -110,16 +103,24 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
 
         }
 
-        //get data reason sppiner
-        reasonDataHeader = db.getPOSMReason(menuMaster.getMenuId());
         fab.setOnClickListener(this);
         image_closeup.setOnClickListener(this);
         image_long_shot.setOnClickListener(this);
-        visiColoersGetterSetter = new VisiColoersGetterSetter();
+        visiColoersGetterSetter = new JarGetterSetter();
         str = CommonString.FILE_PATH;
+
+        posmDeploymentSavedData = db.getJarSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
+        if (posmDeploymentSavedData.size() > 0) {
+            createView(posmDeploymentSavedData);
+        } else {
+            //recyclerview data set
+            posmDeploymentData = db.getJar_Data(jcpGetset, menuMaster.getMenuId());
+            createView(posmDeploymentData);
+            recyclerView.setVisibility(View.VISIBLE);
+
+        }
         setSppinerData();
         setInsertData();
-
     }
 
 
@@ -134,7 +135,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     db.open();
-                                    long val = db.insertNewVisiCoolerData(jcpGetset, visiColoersGetterSetter, deploymentData);
+                                    long val = db.insertJarData(jcpGetset, visiColoersGetterSetter, deploymentData);
 
                                     if (val > 0) {
                                         AlertandMessages.showToastMsg(context, "Data Saved");
@@ -244,30 +245,23 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                         lay_image.setVisibility(View.VISIBLE);
                         lay_image_name.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.VISIBLE);
-                        lay_reason.setVisibility(View.GONE);
-                        posmDeploymentSavedData = db.getVisicoolerSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
+                     /*   posmDeploymentSavedData = db.getJarSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
                         if (posmDeploymentSavedData.size() > 0) {
                             createView(posmDeploymentSavedData);
                         } else {
-                            //set recyclerview data
-                            posmDeploymentData = db.getVISICOOLER_Data(jcpGetset, menuMaster.getMenuId());
+                            //recyclerview data set
+                            posmDeploymentData = db.getJar_Data(jcpGetset, menuMaster.getMenuId());
                             createView(posmDeploymentData);
                             recyclerView.setVisibility(View.VISIBLE);
 
-                        }
+                        }*/
                     } else {
                         ClearData();
                         lay_image.setVisibility(View.GONE);
                         lay_image_name.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.GONE);
-                        lay_reason.setVisibility(View.VISIBLE);
                         visiColoersGetterSetter.setImage_close_up("");
                         visiColoersGetterSetter.setImage_long_shot("");
-
-                      /*  for (int i = 0; i < reasonDataHeader.size(); i++) {
-                            reasonDataHeader.get(i).setReasonId(0);
-                            reasonDataHeader.get(i).setReason("");
-                        }*/
 
                     }
                 } else {
@@ -277,6 +271,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                     visiColoersGetterSetter.setImage_long_shot("");
                     image_closeup.setImageResource(R.drawable.camera_orange);
                     image_long_shot.setImageResource(R.drawable.camera_orange);
+
                 }
             }
 
@@ -287,39 +282,11 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         });
 
 
-        //reason
-        ReasonAdapter customAdapter = new ReasonAdapter(getApplicationContext(), reasonDataHeader);
-        sp_reason.setAdapter(customAdapter);
-
-        sp_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                if (position != 0) {
-
-                    reason_name = reasonDataHeader.get(position).getReason();
-                    reason_cd = String.valueOf(reasonDataHeader.get(position).getReasonId());
-                    visiColoersGetterSetter.setReason(reason_name);
-                    visiColoersGetterSetter.setReason_cd(reason_cd);
-                } else {
-                    reason_cd = "0";
-                    reason_name = "";
-                    visiColoersGetterSetter.setReason(reason_name);
-                    visiColoersGetterSetter.setReason_cd(reason_cd);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
-
-
     }
 
     private void setInsertData() {
         db.open();
-        visiColoersGetterSetter = db.getNewVisicoolerData(jcpGetset);
+        visiColoersGetterSetter = db.getJarInsertData(jcpGetset);
         if (visiColoersGetterSetter.getImage_close_up().equalsIgnoreCase("")) {
             image_closeup.setImageResource(R.mipmap.camera_grey);
 
@@ -346,21 +313,13 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
             sp_present.setSelection(-1);
         }
 
-        for (int i = 0; i < reasonDataHeader.size(); i++) {
-            if (reasonDataHeader.get(i).getReason().equalsIgnoreCase(visiColoersGetterSetter.getReason())) {
-                indexVal = i;
-                break;
-            }
-        }
-        sp_reason.setSelection(indexVal);
-
 
     }
 
     private class POSMDeploymentAdapter extends RecyclerView.Adapter<POSMDeploymentAdapter.ViewHolder> {
         Context context;
 
-        public POSMDeploymentAdapter(NewVisiCoolerActivty context, ArrayList<VisiColoersGetterSetter> posmDeploymentData) {
+        public POSMDeploymentAdapter(JarActivity context, ArrayList<JarGetterSetter> posmDeploymentData) {
             this.context = context;
             deploymentData = posmDeploymentData;
 
@@ -379,7 +338,6 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
             holder.cheklist.setText(deploymentData.get(position).getCheklist());
             //set inserted sppiner data
             reasonData = db.getVisicoolereason(Integer.valueOf(deploymentData.get(position).getCheklist_cd()));
-
             CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), reasonData);
             holder.sp_cheklist.setAdapter(customAdapter);
 
@@ -428,8 +386,8 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
     }
 
 
-    private void createView(ArrayList<VisiColoersGetterSetter> posmDeploymentData) {
-        adapter = new POSMDeploymentAdapter(this, posmDeploymentData);
+    private void createView(ArrayList<JarGetterSetter> posmDeploymentData) {
+        adapter = new POSMDeploymentAdapter(JarActivity.this, posmDeploymentData);
         recyclerView.setHasFixedSize(true);
         // set a GridLayoutManager with default vertical orientation and 2 number of columns
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -469,74 +427,14 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private class ReasonAdapter extends BaseAdapter {
-
-        Context context;
-        ArrayList<NonExecutionReason> reasonData;
-
-        public ReasonAdapter(Context context, ArrayList<NonExecutionReason> reasonData) {
-            this.context = context;
-            this.reasonData = reasonData;
-        }
-
-        @Override
-        public int getCount() {
-            return reasonData.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            view = LayoutInflater.from(context).inflate(R.layout.custom_spinner_item, null);
-            TextView names = (TextView) view.findViewById(R.id.tv_ans);
-            names.setText(reasonData.get(i).getReason());
-            return view;
-        }
-    }
-
-    /*
-        public boolean validation() {
-
-            boolean value = true;
-            if (sp_present.getSelectedItemPosition() == 0) {
-                value = false;
-                showMessage("Please Select Present");
-            } else if (string_present_cd.equalsIgnoreCase("1")) {
-                if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
-                    value = false;
-                    showMessage("Please Capture Photo Close Up");
-                } else if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
-                    value = false;
-                    showMessage("Please Capture Photo Long Shot");
-
-                }
-            } else if (sp_reason.getSelectedItemPosition() == 0) {
-                value = false;
-                showMessage("Please Select Reason");
-            } else {
-                value = true;
-
-            }
-            return value;
-        }
-    */
     public boolean validation() {
 
         boolean value = true;
         if (sp_present.getSelectedItemPosition() == 0) {
             value = false;
-            showMessage("Please Select Present");
+            showMessage("Please Select Drop Down");
         } else if (string_present_cd.equalsIgnoreCase("1")) {
-            if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
+            if (visiColoersGetterSetter.getImage_close_up().equalsIgnoreCase("")) {
                 value = false;
                 showMessage("Please Capture Photo Close Up");
             } else if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
@@ -546,12 +444,9 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                 value = true;
             } else {
                 value = false;
-                AlertandMessages.showToastMsg(NewVisiCoolerActivty.this, Error_Message);
+                AlertandMessages.showToastMsg(JarActivity.this, Error_Message);
             }
-        } else if (sp_reason.getSelectedItemPosition() == 0) {
-            value = false;
-            showMessage("Please Select Reason");
-        } else {
+        }else {
             value = true;
 
         }
@@ -566,7 +461,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
     }
 
 
-    private boolean checkValidation(ArrayList<VisiColoersGetterSetter> deploymentData) {
+    private boolean checkValidation(ArrayList<JarGetterSetter> deploymentData) {
         Boolean checkflag = true;
         for (int i = 0; i < deploymentData.size(); i++) {
             if (deploymentData.get(i).getAnswer_cd().equalsIgnoreCase("0")) {
@@ -587,13 +482,13 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(NewVisiCoolerActivty.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(JarActivity.this);
             builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
                     .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
-                            NewVisiCoolerActivty.this.finish();
+                            JarActivity.this.finish();
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -607,17 +502,16 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         return super.onOptionsItemSelected(item);
     }
 
-    private void ClearData() {
+
+    private  void ClearData(){
         for (int i = 0; i < posmDeploymentSavedData.size(); i++) {
             posmDeploymentSavedData.get(i).setAnswer("");
             posmDeploymentSavedData.get(i).setAnswer_cd("0");
-
             adapter.notifyDataSetChanged();
+
 
         }
 
-
     }
-
 
 }
