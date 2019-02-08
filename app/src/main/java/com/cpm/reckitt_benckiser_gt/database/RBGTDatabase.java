@@ -11,6 +11,7 @@ import android.util.Log;
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.AnswerChecklistGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.BackofStoreGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.BrandMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.BrandMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
@@ -24,7 +25,10 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.CommonChillerDataGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GeotaggingBeans;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JCPGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.JarGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingBackOfStore;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingBackOfStoreGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingCTU;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingCTUGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingCategoryChecklist;
@@ -38,6 +42,8 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenu;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuChecklist;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMonkeysun;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMonkeysunStoreGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingPosm;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingPosmGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingVisibilityInitiative;
@@ -59,6 +65,8 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.NonWorkingReason;
 import com.cpm.reckitt_benckiser_gt.getterSetter.NonWorkingReasonGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.PosmMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.PosmMasterGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.SkuMaster;
+import com.cpm.reckitt_benckiser_gt.getterSetter.SkuMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreProfileGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreTypeMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreTypeMasterGetterSetter;
@@ -117,6 +125,13 @@ public class RBGTDatabase extends SQLiteOpenHelper {
             db.execSQL(CommonString.CREATE_TABLE_FOCUS_PRODUCT_OPENINGHEADER_DATA);
             db.execSQL(CommonString.CREATE_TABLE_FOCUS_PRODUCT_STOCK_DATA);
             db.execSQL(CommonString.CREATE_TABLE_VISICOOLER_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_MONKEUSUN_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_MONKEUSUN_CHEKLIST_CHEKLIST);
+            db.execSQL(CommonString.CREATE_TABLE_BACKOF_STORE_HEADER_DATA);
+            db.execSQL(CommonString.CREATE_HEADER_BACK_OF_STORE);
+            db.execSQL(CommonString.CREATE_TABLE_SHARE_OF_SHELF_FACING_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_TABLE_JAR_DATA_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_JAR_CHEKLIST_CHEKLIST);
 
 
         } catch (SQLException e) {
@@ -150,6 +165,19 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         //db.delete(CommonString.TABLE_Journey_Plan_DBSR_Saved, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_CATEGORY_DBSR_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_STORE_PROFILE_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        //usk
+        db.delete(CommonString.TABLE_BACKOF_STORE_HEADER_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_HEADER_BACK_OF_STORE, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_CHILD_BACK_OF_STORE_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_JAR_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_JAR_CHEKLIST, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_INSERT_FOCUS_PRODUCT_STOCK_OPENINGHEADER_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_STORE_FOCUS_PRODUCT_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_MONKEUSUN_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_MONKEUSUN_CHEKLIST, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_VISICOOLER_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_VISICOOLER_CHEKLIST, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+
     }
 
     public void updateStatus(String id, String status) {
@@ -1488,6 +1516,18 @@ public class RBGTDatabase extends SQLiteOpenHelper {
                     db.delete(CommonString.TABLE_CATEGORY_DRESSING_DATA, null, null);
                     db.delete(CommonString.TABLE_INSERT_CATEGORY_DRESSING_CHECKLIST_DATA, null, null);
                     db.delete(CommonString.TABLE_STORE_PROFILE_DATA, null, null);
+                    //usk
+                    db.delete(CommonString.TABLE_BACKOF_STORE_HEADER_DATA, null, null);
+                    db.delete(CommonString.TABLE_HEADER_BACK_OF_STORE, null, null);
+                    db.delete(CommonString.TABLE_CHILD_BACK_OF_STORE_DATA, null, null);
+                    db.delete(CommonString.TABLE_JAR_DATA, null, null);
+                    db.delete(CommonString.TABLE_JAR_CHEKLIST, null, null);
+                    db.delete(CommonString.TABLE_INSERT_FOCUS_PRODUCT_STOCK_OPENINGHEADER_DATA, null, null);
+                    db.delete(CommonString.TABLE_STORE_FOCUS_PRODUCT_DATA, null, null);
+                    db.delete(CommonString.TABLE_MONKEUSUN_DATA, null, null);
+                    db.delete(CommonString.TABLE_MONKEUSUN_CHEKLIST, null, null);
+                    db.delete(CommonString.TABLE_VISICOOLER_DATA, null, null);
+                    db.delete(CommonString.TABLE_VISICOOLER_CHEKLIST, null, null);
 
 
                 }
@@ -1952,6 +1992,8 @@ public class RBGTDatabase extends SQLiteOpenHelper {
                         sb.setColourCode(R.color.lightskyblue);
                     } else if (sb.getStoreTypeId() == 3) {
                         sb.setColourCode(R.color.gainsboro);
+                    } else {
+                        sb.setColourCode(R.color.green_light);
                     }
 
                     list.add(sb);
@@ -2273,6 +2315,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
             for (int i = 0; i < data.size(); i++) {
                 values.put("Store_Type_Id", data.get(i).getStoreTypeId());
                 values.put("Menu_Id", data.get(i).getMenuId());
+                values.put("Store_Category_Id", data.get(i).getStoreCategoryId());
 
                 long id = db.insert("Mapping_Menu", null, values);
                 if (id == -1) {
@@ -2288,13 +2331,13 @@ public class RBGTDatabase extends SQLiteOpenHelper {
     }
 
     //get Menu List data for Entry Menu
-    public ArrayList<MenuMaster> getMenuData(int Store_Type_Id) {
+    public ArrayList<MenuMaster> getMenuData(int Store_Type_Id,int store_category_id) {
         Log.d("Fetchecklidata->Start<-", "-");
         ArrayList<MenuMaster> list = new ArrayList<>();
         Cursor dbcursor = null;
         try {
 
-            dbcursor = db.rawQuery("SELECT M.Menu_Id, M.Menu_Name, M.Normal_Icon, M.Tick_Icon, M.Grey_Icon, M.Menu_Path FROM Menu_Master M INNER JOIN Mapping_Menu MM ON M.Menu_Id = MM.Menu_Id WHERE MM.Store_Type_Id=" + Store_Type_Id + " ORDER BY M.Menu_Sequence", null);
+            dbcursor = db.rawQuery("SELECT M.Menu_Id, M.Menu_Name, M.Normal_Icon, M.Tick_Icon, M.Grey_Icon, M.Menu_Path FROM Menu_Master M INNER JOIN Mapping_Menu MM ON M.Menu_Id = MM.Menu_Id WHERE MM.Store_Type_Id=" + Store_Type_Id + " AND MM.Store_Category_Id="+store_category_id+ " ORDER BY M.Menu_Sequence", null);
 
             if (dbcursor != null) {
                 dbcursor.moveToFirst();
@@ -2514,6 +2557,84 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insertSkuMasterData(SkuMasterGetterSetter storeTypeMaster) {
+        db.delete("Sku_Master", null, null);
+        ContentValues values = new ContentValues();
+        List<SkuMaster> data = storeTypeMaster.getSkuMaster();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+                values.put("Brand_Id", data.get(i).getBrandId());
+                values.put("Sku", data.get(i).getSku());
+                values.put("Sku_Id", data.get(i).getSkuId());
+                values.put("Sku_Sequence", data.get(i).getSkuSequence());
+
+                long id = db.insert("Sku_Master", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+
+    public boolean insertMappingBackofData(MappingBackOfStoreGetterSetter storeTypeMaster) {
+        db.delete("mapping_Back_Of_Store", null, null);
+        ContentValues values = new ContentValues();
+        List<MappingBackOfStore> data = storeTypeMaster.getMappingBackOfStore();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+                values.put("Brand_Id", data.get(i).getBrandId());
+                values.put("State_Id", data.get(i).getStateId());
+                values.put("Store_Category_Id", data.get(i).getStoreCategoryId());
+                values.put("Store_Type_Id", data.get(i).getStoreTypeId());
+
+                long id = db.insert("mapping_Back_Of_Store", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public boolean insertMappingMonkySunData(MappingMonkeysunStoreGetterSetter storeTypeMaster) {
+        db.delete("Mapping_Monkeysun", null, null);
+        ContentValues values = new ContentValues();
+        List<MappingMonkeysun> data = storeTypeMaster.getMappingMonkeysun();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+                values.put("Store_id", data.get(i).getStoreId());
+                long id = db.insert("Mapping_Monkeysun", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
     public boolean insertMappingWindowData(MappingMenuChecklistGetterSetter storeTypeMaster) {
         db.delete("Mapping_Menu_Checklist", null, null);
         ContentValues values = new ContentValues();
@@ -2628,7 +2749,6 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         ArrayList<NonExecutionReason> list = new ArrayList<>();
         NonExecutionReason reason1 = new NonExecutionReason();
         try {
-            // reason1.setRemark(false);
             reason1.setReasonId(0);
             reason1.setReason("Select Reason");
             list.add(reason1);
@@ -2640,7 +2760,6 @@ public class RBGTDatabase extends SQLiteOpenHelper {
                     NonExecutionReason reason = new NonExecutionReason();
                     reason.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason")));
                     reason.setReasonId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason_Id"))));
-                    // reason.setRemark(Boolean.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Remark"))));
                     list.add(reason);
                     dbcursor.moveToNext();
                 }
@@ -2730,7 +2849,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
 
     public long insertPOSMDeploymentData(ArrayList<CommonChillerDataGetterSetter> deploymentData, JourneyPlan jcp) {
 
-        db.delete(CommonString.TABLE_POSM_DEPLOYMENT, null, null);
+        db.delete(CommonString.TABLE_POSM_DEPLOYMENT, "STORE_ID ='" + jcp.getStoreId() + "'", null);
         ContentValues values = new ContentValues();
 
         long id = 0;
@@ -2831,16 +2950,17 @@ public class RBGTDatabase extends SQLiteOpenHelper {
     }
 
 
-    public ArrayList<FocusProductGetterSetter> getHeaderSalesData(String Region_Id, String Distributor_Id, String Category_Id) {
+    public ArrayList<FocusProductGetterSetter> getHeaderSalesData(JourneyPlan jcp) {
         Log.d("Fetching", "Storedata--------------->Start<------------");
         ArrayList<FocusProductGetterSetter> list = new ArrayList<FocusProductGetterSetter>();
         Cursor dbcursor = null;
 
         try {
 
-            dbcursor = db.rawQuery("Select distinct br.Brand_Id, br.Brand from Mapping_Stock m inner join Sku_Master sk on m.Sku_Id = sk.Sku_Id " +
+            dbcursor = db.rawQuery("Select distinct br.Brand_Id, br.Brand from Mapping_Focus_Sku m " +
+                    " inner join Sku_Master sk on m.Sku_Id = sk.Sku_Id " +
                     " inner join Brand_Master br on sk.Brand_Id = br.Brand_Id " +
-                    " where m.Region_Id = '" + Region_Id + "' and m.Distributor_Id = '" + Distributor_Id + "' and br.Category_Id = '" + Category_Id + "'", null);
+                    " where m.State_Id = '" + jcp.getStateId() + "' and m.Store_Category_Id = '" + jcp.getStoreCategoryId() + "' and m.Store_Type_Id = '" + jcp.getStoreTypeId() + "'", null);
 
 
             if (dbcursor != null) {
@@ -2864,14 +2984,14 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<FocusProductGetterSetter> getSalesStockInsertedData(String store_cd, String brand_id) {
+    public ArrayList<FocusProductGetterSetter> getSalesStockInsertedData(JourneyPlan jcp, String brand_id) {
         Log.d("Fetching", "Storedata--------------->Start<------------");
         ArrayList<FocusProductGetterSetter> list = new ArrayList<>();
         Cursor dbcursor = null;
 
         try {
 
-            dbcursor = db.rawQuery("SELECT * FROM STORE_SALES_STOCK_DATA WHERE STORE_CD ='" + store_cd + "' AND BRAND_CD=" + brand_id + "", null);
+            dbcursor = db.rawQuery("SELECT * FROM FOCUS_PRODUCT_STOCK_DATA WHERE STORE_ID ='" + jcp.getStoreId() + "' AND BRAND_CD=" + brand_id + "", null);
 
             if (dbcursor != null) {
                 dbcursor.moveToFirst();
@@ -2896,16 +3016,16 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<FocusProductGetterSetter> getSalesStockchildData(String region_id, String destributor_id, String brand_id) {
+    public ArrayList<FocusProductGetterSetter> getSalesStockchildData(JourneyPlan jcp, String brand_id) {
         Log.d("Fetching", "Storedata--------------->Start<------------");
         ArrayList<FocusProductGetterSetter> list = new ArrayList<>();
         Cursor dbcursor = null;
 
         try {
-
-            dbcursor = db.rawQuery("Select distinct sk.Sku_Id, sk.Sku from Mapping_Stock m inner join Sku_Master sk on m.Sku_Id = sk.Sku_Id " +
+            dbcursor = db.rawQuery("Select distinct sk.Sku_Id, sk.Sku from Mapping_Focus_Sku m " +
+                    " inner join Sku_Master sk on m.Sku_Id = sk.Sku_Id " +
                     " inner join Brand_Master br on sk.Brand_Id = br.Brand_Id " +
-                    " where m.Region_Id = '" + region_id + "' and m.Distributor_Id = '" + destributor_id + "' and br.Brand_Id = '" + brand_id + "'order by sk.Sku", null);
+                    " where m.State_Id = '" + jcp.getStateId() + "' and m.Store_Category_Id = '" + jcp.getStoreCategoryId() + "' and m.Store_Type_Id = '" + jcp.getStoreTypeId() + "' and br.Brand_Id = '" + brand_id + "'", null);
 
             if (dbcursor != null) {
                 dbcursor.moveToFirst();
@@ -2933,9 +3053,8 @@ public class RBGTDatabase extends SQLiteOpenHelper {
     public void insertSalesStockData(JourneyPlan jcp,
                                      HashMap<FocusProductGetterSetter,
                                              List<FocusProductGetterSetter>> data, List<FocusProductGetterSetter> save_listDataHeader) {
-
-        db.delete(CommonString.TABLE_INSERT_FOCUS_PRODUCT_STOCK_OPENINGHEADER_DATA, " STORE_CD='" + jcp.getStoreId() + "' AND CATEGORY_ID=" + jcp.getStoreCategoryId() + " AND VISIT_DATE=" + jcp.getVisitDate() + "", null);
-        db.delete(CommonString.TABLE_STORE_FOCUS_PRODUCT_DATA, " STORE_CD='" + jcp.getStoreId() + "' AND CATEGORY_ID=" + jcp.getStoreCategoryId() + " AND VISIT_DATE=" + jcp.getVisitDate() + "", null);
+        db.delete(CommonString.TABLE_INSERT_FOCUS_PRODUCT_STOCK_OPENINGHEADER_DATA, "STORE_ID ='" + jcp.getStoreId() + "'", null);
+        db.delete(CommonString.TABLE_STORE_FOCUS_PRODUCT_DATA, "STORE_ID ='" + jcp.getStoreId() + "'", null);
 
         ContentValues values = new ContentValues();
         ContentValues values1 = new ContentValues();
@@ -2943,17 +3062,15 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         try {
             db.beginTransaction();
             for (int i = 0; i < save_listDataHeader.size(); i++) {
-                values.put("STORE_CD", jcp.getStoreId());
+                values.put("STORE_ID", jcp.getStoreId());
                 values.put("BRAND_CD", save_listDataHeader.get(i).getBrand_id());
                 values.put("BRAND", save_listDataHeader.get(i).getBrand());
-                values.put("CATEGORY_ID", "");
                 long l = db.insert(CommonString.TABLE_INSERT_FOCUS_PRODUCT_STOCK_OPENINGHEADER_DATA, null, values);
                 for (int j = 0; j < data.get(save_listDataHeader.get(i)).size(); j++) {
                     values1.put("Common_Id", (int) l);
-                    values1.put("STORE_CD", jcp.getStateId());
+                    values1.put("STORE_ID", jcp.getStateId());
                     values1.put("BRAND_CD", save_listDataHeader.get(i).getBrand_id());
                     values1.put("BRAND", save_listDataHeader.get(i).getBrand());
-                    values1.put("CATEGORY_ID", "");
                     values1.put("SKU", data.get(save_listDataHeader.get(i)).get(j).getSku());
                     values1.put("SKU_CD", data.get(save_listDataHeader.get(i)).get(j).getSku_id());
                     if (!data.get(save_listDataHeader.get(i)).get(j).getStock().equals("")) {
@@ -2979,10 +3096,10 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         try {
 
             reason1.setAnswerId(0);
-            reason1.setAnswer("Select Reason");
-            list.add(reason1);
+            reason1.setAnswer("Select ");
+            // list.add(reason1);
+            list.add(0, reason1);
 
-           // dbcursor = db.rawQuery("select * from Checklist_Answer where checklist_Id = 1 ", null);
             dbcursor = db.rawQuery("select * from Checklist_Answer where checklist_Id ='" + cheklist_id + "' ", null);
 
             if (dbcursor != null) {
@@ -3043,7 +3160,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         return list;
     }
 
-    public ArrayList<VisiColoersGetterSetter> getVISICOOLER_Data(JourneyPlan jcpGetset,Integer menu_id) {
+    public ArrayList<VisiColoersGetterSetter> getVISICOOLER_Data(JourneyPlan jcpGetset, Integer menu_id) {
         ArrayList<VisiColoersGetterSetter> list = new ArrayList<VisiColoersGetterSetter>();
         Cursor dbcursor = null;
         try {
@@ -3073,8 +3190,9 @@ public class RBGTDatabase extends SQLiteOpenHelper {
     }
 
     public long insertNewVisiCoolerData(JourneyPlan JCP, VisiColoersGetterSetter visicoolar, ArrayList<VisiColoersGetterSetter> deploymentData) {
-        db.delete(CommonString.TABLE_VISICOOLER_DATA, " STORE_ID" + "='" + JCP.getStateId() + "' AND VISIT_DATE='" + JCP.getVisitDate() + "'", null);
-        db.delete(CommonString.TABLE_VISICOOLER_CHEKLIST, " STORE_ID" + "='" + JCP.getStateId() + "' AND VISIT_DATE='" + JCP.getVisitDate() + "'", null);
+
+        db.delete(CommonString.TABLE_VISICOOLER_DATA, "STORE_ID ='" + JCP.getStoreId() + "'", null);
+        db.delete(CommonString.TABLE_VISICOOLER_CHEKLIST, "STORE_ID ='" + JCP.getStoreId() + "'", null);
         ContentValues values = new ContentValues();
         ContentValues values1 = new ContentValues();
         long l = 0;
@@ -3102,13 +3220,6 @@ public class RBGTDatabase extends SQLiteOpenHelper {
                         id = db.insert(CommonString.TABLE_VISICOOLER_CHEKLIST, null, values1);
 
                     }
-
-                    /*if (id > 0) {
-                        return id;
-                    } else {
-                        return 0;
-                    }
-*/
                 }
 
             }
@@ -3152,5 +3263,744 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         Log.d("Fetching non working", "-------------------");
         return sb;
     }
+
+
+    public long insertMonkysunData(JourneyPlan JCP, VisiColoersGetterSetter visicoolar, ArrayList<VisiColoersGetterSetter> deploymentData) {
+        db.delete(CommonString.TABLE_MONKEUSUN_DATA, "STORE_ID ='" + JCP.getStoreId() + "'", null);
+        db.delete(CommonString.TABLE_MONKEUSUN_CHEKLIST, "STORE_ID ='" + JCP.getStoreId() + "'", null);
+        ContentValues values = new ContentValues();
+        ContentValues values1 = new ContentValues();
+        long l = 0;
+        try {
+            db.beginTransaction();
+            if (!JCP.getStoreName().isEmpty()) {
+                values.put(CommonString.KEY_STORE_ID, JCP.getStoreId());
+                values.put(CommonString.KEY_VISIT_DATE, JCP.getVisitDate());
+                values.put(CommonString.KEY_PRESENT_EXIST, visicoolar.getPresent_name());
+                values.put(CommonString.KEY_IMAGE_CLOSEUP, visicoolar.getImage_close_up());
+                values.put(CommonString.KEY_LONGSHOT, visicoolar.getImage_long_shot());
+                values.put(CommonString.KEY_REASON, visicoolar.getReason());
+                values.put(CommonString.KEY_REASON_ID, visicoolar.getReason_cd());
+                l = db.insert(CommonString.TABLE_MONKEUSUN_DATA, null, values);
+
+                if (1 > 0) {
+                    long id = 0;
+                    for (int i = 0; i < deploymentData.size(); i++) {
+                        values1.put(CommonString.KEY_STORE_ID, JCP.getStoreId());
+                        values1.put(CommonString.KEY_VISIT_DATE, JCP.getVisitDate());
+                        values1.put(CommonString.KEY_ANSWER_CD, deploymentData.get(i).getAnswer_cd());
+                        values1.put(CommonString.KEY_ANSWER, deploymentData.get(i).getAnswer());
+                        values1.put(CommonString.KEY_CHEKLIST, deploymentData.get(i).getCheklist());
+                        values1.put(CommonString.KEY_CHEKLIST_ID, deploymentData.get(i).getCheklist_cd());
+                        id = db.insert(CommonString.TABLE_MONKEUSUN_CHEKLIST, null, values1);
+
+                    }
+                }
+
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+            Log.d("Database Exception", " while Insert Header Data " + ex.toString());
+        }
+        return l;
+    }
+
+
+    public VisiColoersGetterSetter getMonkyHeaderData(JourneyPlan jcp) {
+        Log.d("FetchinggetCityMasterDat", "------------------");
+        VisiColoersGetterSetter sb = new VisiColoersGetterSetter();
+        Cursor dbcursor = null;
+
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM " + CommonString.TABLE_MONKEUSUN_DATA + " WHERE " + CommonString.KEY_STORE_ID + " = " + jcp.getStoreId(), null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    sb.setPresent_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PRESENT_EXIST)));
+                    sb.setImage_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
+                    sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGSHOT)));
+                    sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON)));
+                    sb.setReason_cd(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON_ID)));
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return sb;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return sb;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return sb;
+    }
+
+    public ArrayList<VisiColoersGetterSetter> getMonkeysunSavedData(Integer storeId, String visit_date) {
+        Log.d("Fetching Data", "------------------");
+        Cursor dbcursor = null;
+        ArrayList<VisiColoersGetterSetter> list = new ArrayList<>();
+        try {
+            dbcursor = db.rawQuery("SELECT  * from "
+                    + CommonString.TABLE_MONKEUSUN_CHEKLIST + " where "
+                    + CommonString.KEY_STORE_ID + " = '" + storeId + "' and " + CommonString.KEY_VISIT_DATE + " =  '" + visit_date + "' ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    VisiColoersGetterSetter psd = new VisiColoersGetterSetter();
+                    psd.setStore_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STORE_ID)));
+                    psd.setVisit_date(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_VISIT_DATE)));
+                    psd.setCheklist_cd(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHEKLIST_ID)));
+                    psd.setCheklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHEKLIST)));
+                    psd.setAnswer_cd(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ANSWER_CD)));
+                    psd.setAnswer(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ANSWER)));
+
+                    list.add(psd);
+                    dbcursor.moveToNext();
+
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", e.getMessage());
+            return list;
+        }
+        return list;
+    }
+
+    public BackofStoreGetterSetter getBackofStoreData(JourneyPlan jcp) {
+        Log.d("FetchinggetCityMasterDat", "------------------");
+        BackofStoreGetterSetter sb = new BackofStoreGetterSetter();
+        Cursor dbcursor = null;
+
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM " + CommonString.TABLE_BACKOF_STORE_HEADER_DATA + " WHERE " + CommonString.KEY_STORE_ID + " = " + jcp.getStoreId(), null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    sb.setPresent_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PRESENT_EXIST)));
+                    sb.setImage_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
+                    sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGSHOT)));
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return sb;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return sb;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return sb;
+    }
+
+    public long insertBackofStoreData(JourneyPlan JCP, BackofStoreGetterSetter backofstore) {
+
+        db.delete(CommonString.TABLE_BACKOF_STORE_HEADER_DATA, "STORE_ID ='" + JCP.getStoreId() + "'", null);
+
+        ContentValues values = new ContentValues();
+        ContentValues values1 = new ContentValues();
+        long l = 0;
+        try {
+            db.beginTransaction();
+            if (!JCP.getStoreName().isEmpty()) {
+                values.put(CommonString.KEY_STORE_ID, JCP.getStoreId());
+                values.put(CommonString.KEY_VISIT_DATE, JCP.getVisitDate());
+                values.put(CommonString.KEY_PRESENT_EXIST, backofstore.getPresent_name());
+                values.put(CommonString.KEY_IMAGE_CLOSEUP, backofstore.getImage_close_up());
+                values.put(CommonString.KEY_LONGSHOT, backofstore.getImage_long_shot());
+                l = db.insert(CommonString.TABLE_BACKOF_STORE_HEADER_DATA, null, values);
+
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+            Log.d("Database Exception", " while Insert Header Data " + ex.toString());
+        }
+        return l;
+    }
+
+
+    public ArrayList<BackofStoreGetterSetter> getHeaderBackofStoreData(JourneyPlan jcp) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<BackofStoreGetterSetter> list = new ArrayList<BackofStoreGetterSetter>();
+        Cursor dbcursor = null;
+
+        try {
+
+            dbcursor = db.rawQuery("Select distinct br.Brand_Id, br.Brand from Brand_Master br " +
+                    " inner join mapping_Back_Of_Store mb on br.Brand_Id = mb.Brand_Id " +
+                    " where mb.State_Id = '" + jcp.getStateId() + "' and mb.Store_Category_Id = '" + jcp.getStoreCategoryId() + "' and mb.Store_Type_Id = '" + jcp.getStoreTypeId() + "'", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BackofStoreGetterSetter sb = new BackofStoreGetterSetter();
+                    sb.setBrand_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand_Id")));
+                    sb.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception", " when fetching Header!!!!!!!!!!! " + e.toString());
+            return list;
+        }
+        Log.d("Fetching ", "Header stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    public ArrayList<BackofStoreGetterSetter> getCheklistInsertedData(JourneyPlan jcp) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<BackofStoreGetterSetter> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM DR_VISICOOLER_CHEKLIST WHERE STORE_ID ='" + jcp.getStoreId() + "", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BackofStoreGetterSetter sb = new BackofStoreGetterSetter();
+                    sb.setSku(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU")));
+                    sb.setSku_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("SKU_CD")));
+                    sb.setStock(dbcursor.getString(dbcursor.getColumnIndexOrThrow("STOCK")));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+
+    public ArrayList<BackofStoreGetterSetter> getBackofStoreChildData(MenuMaster menu) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<BackofStoreGetterSetter> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+
+            dbcursor = db.rawQuery("Select distinct c.Checklist_Id, c.Checklist from Mapping_Menu_Checklist m " +
+                    " inner join Checklist_Master c on m.Checklist_Id = c.Checklist_Id " +
+                    " where m.Menu_Id = '" + menu.getMenuId() + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BackofStoreGetterSetter sb = new BackofStoreGetterSetter();
+                    sb.setChecklist_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Checklist_Id")));
+                    sb.setChecklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Checklist")));
+                    sb.setAnswerId(0);
+                    sb.setAnswer("");
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    public ArrayList<BackofStoreGetterSetter> getReasonBackofStore_Data(String cheklist_id) {
+        ArrayList<BackofStoreGetterSetter> list = new ArrayList<BackofStoreGetterSetter>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("select * from Checklist_Answer where Checklist_Id ='" + cheklist_id + "' ", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BackofStoreGetterSetter reason = new BackofStoreGetterSetter();
+                    reason.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Answer")));
+                    reason.setReasonId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Answer_Id"))));
+                    list.add(reason);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception get JCP!", e.toString());
+            return list;
+        }
+        return list;
+    }
+
+
+    public void InsertBackofStoreData(JourneyPlan jcp,
+                                      HashMap<BackofStoreGetterSetter, List<BackofStoreGetterSetter>> data, List<BackofStoreGetterSetter> save_listDataHeader) {
+
+        db.delete(CommonString.TABLE_HEADER_BACK_OF_STORE, CommonString.KEY_STORE_ID + "='" + jcp.getStoreId() + "'", null);
+        db.delete(CommonString.TABLE_CHILD_BACK_OF_STORE_DATA, CommonString.KEY_STORE_ID + "='" + jcp.getStoreId() + "'", null);
+        ContentValues values = new ContentValues();
+        ContentValues values1 = new ContentValues();
+
+
+        try {
+            db.beginTransaction();
+            for (int i = 0; i < save_listDataHeader.size(); i++) {
+                values.put(CommonString.KEY_STORE_ID, jcp.getStoreId());
+                values.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
+                values.put(CommonString.KEY_BRAND_CD, save_listDataHeader.get(i).getBrand_id());
+                values.put(CommonString.KEY_BRAND, save_listDataHeader.get(i).getBrand());
+                values.put(CommonString.KEY_STOCK, save_listDataHeader.get(i).getStock());
+
+                long l = db.insert(CommonString.TABLE_HEADER_BACK_OF_STORE, null, values);
+
+                for (int j = 0; j < data.get(save_listDataHeader.get(i)).size(); j++) {
+                    values1.put(CommonString.KEY_COMMON_ID, (int) l);
+                    values1.put(CommonString.KEY_STORE_ID, jcp.getStoreId());
+                    values1.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
+                    values1.put(CommonString.KEY_BRAND_CD, save_listDataHeader.get(i).getBrand_id());
+                    values1.put(CommonString.KEY_BRAND, save_listDataHeader.get(i).getBrand());
+                    values1.put(CommonString.KEY_REASON_ID, data.get(save_listDataHeader.get(i)).get(j).getAnswerId());
+                    values1.put(CommonString.KEY_REASON, data.get(save_listDataHeader.get(i)).get(j).getAnswer());
+                    values1.put(CommonString.KEY_CHECKLIST_ID, data.get(save_listDataHeader.get(i)).get(j).getChecklist_id());
+                    values1.put(CommonString.KEY_CHEKLIST, data.get(save_listDataHeader.get(i)).get(j).getChecklist());
+
+                    db.insert(CommonString.TABLE_CHILD_BACK_OF_STORE_DATA, null, values1);
+                }
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+            Log.d("Database Exception", " while Insert Posm Master Data " + ex.toString());
+        }
+    }
+
+    public ArrayList<BackofStoreGetterSetter> getChildCheklistBackofStoreInsertData(JourneyPlan jcp,Integer coomin_id) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<BackofStoreGetterSetter> list = new ArrayList<>();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM DR_CHILD_BACK_OF_STORE_DATA WHERE STORE_ID ='" + jcp.getStoreId() + "' AND COMMON_ID='" + coomin_id + "' ", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BackofStoreGetterSetter sb = new BackofStoreGetterSetter();
+                    sb.setAnswer(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON)));
+                    sb.setAnswerId((dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON_ID))));
+                    sb.setChecklist_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHECKLIST_ID)));
+                    sb.setChecklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHEKLIST)));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+    public ArrayList<BackofStoreGetterSetter> getInsertBackofStoreHeaderData(JourneyPlan jcp) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<BackofStoreGetterSetter> list = new ArrayList<BackofStoreGetterSetter>();
+        Cursor dbcursor = null;
+
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM DR_HEADER_BACK_OF_STORE WHERE STORE_ID ='" + jcp.getStoreId() + "' ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BackofStoreGetterSetter sb = new BackofStoreGetterSetter();
+                    sb.setBrand_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BRAND_CD)));
+                    sb.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BRAND)));
+                    sb.setStock(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STOCK)));
+                    sb.setCommon_id(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ID)));
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching opening stock!!!!!!!!!!!" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "opening stock---------------------->Stop<-----------");
+        return list;
+    }
+
+
+    public long insertJarData(JourneyPlan JCP, JarGetterSetter visicoolar, ArrayList<JarGetterSetter> deploymentData) {
+
+        db.delete(CommonString.TABLE_JAR_DATA, "STORE_ID ='" + JCP.getStoreId() + "'", null);
+        db.delete(CommonString.TABLE_JAR_CHEKLIST, "STORE_ID ='" + JCP.getStoreId() + "'", null);
+        ContentValues values = new ContentValues();
+        ContentValues values1 = new ContentValues();
+        long l = 0;
+        try {
+            db.beginTransaction();
+            if (!JCP.getStoreName().isEmpty()) {
+                values.put(CommonString.KEY_STORE_ID, JCP.getStoreId());
+                values.put(CommonString.KEY_VISIT_DATE, JCP.getVisitDate());
+                values.put(CommonString.KEY_PRESENT_EXIST, visicoolar.getPresent_name());
+                values.put(CommonString.KEY_IMAGE_CLOSEUP, visicoolar.getImage_close_up());
+                values.put(CommonString.KEY_LONGSHOT, visicoolar.getImage_long_shot());
+                l = db.insert(CommonString.TABLE_JAR_DATA, null, values);
+
+                if (1 > 0) {
+                    long id = 0;
+                    for (int i = 0; i < deploymentData.size(); i++) {
+                        values1.put(CommonString.KEY_STORE_ID, JCP.getStoreId());
+                        values1.put(CommonString.KEY_VISIT_DATE, JCP.getVisitDate());
+                        values1.put(CommonString.KEY_ANSWER_CD, deploymentData.get(i).getAnswer_cd());
+                        values1.put(CommonString.KEY_ANSWER, deploymentData.get(i).getAnswer());
+                        values1.put(CommonString.KEY_CHEKLIST, deploymentData.get(i).getCheklist());
+                        values1.put(CommonString.KEY_CHEKLIST_ID, deploymentData.get(i).getCheklist_cd());
+                        id = db.insert(CommonString.TABLE_JAR_CHEKLIST, null, values1);
+
+                    }
+                }
+
+            }
+            db.setTransactionSuccessful();
+            db.endTransaction();
+        } catch (Exception ex) {
+            Log.d("Database Exception", " while Insert Header Data " + ex.toString());
+        }
+        return l;
+    }
+
+    public ArrayList<JarGetterSetter> getJarSavedData(Integer storeId, String visit_date) {
+        Log.d("Fetching Data", "------------------");
+        Cursor dbcursor = null;
+        ArrayList<JarGetterSetter> list = new ArrayList<>();
+        try {
+            dbcursor = db.rawQuery("SELECT  * from "
+                    + CommonString.TABLE_JAR_CHEKLIST + " where "
+                    + CommonString.KEY_STORE_ID + " = '" + storeId + "' and " + CommonString.KEY_VISIT_DATE + " =  '" + visit_date + "' ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    JarGetterSetter psd = new JarGetterSetter();
+                    psd.setStore_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STORE_ID)));
+                    psd.setVisit_date(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_VISIT_DATE)));
+                    psd.setCheklist_cd(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHEKLIST_ID)));
+                    psd.setCheklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHEKLIST)));
+                    psd.setAnswer_cd(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ANSWER_CD)));
+                    psd.setAnswer(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ANSWER)));
+
+                    list.add(psd);
+                    dbcursor.moveToNext();
+
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", e.getMessage());
+            return list;
+        }
+        return list;
+    }
+
+    public ArrayList<JarGetterSetter> getJar_Data(JourneyPlan jcpGetset, Integer menu_id) {
+        ArrayList<JarGetterSetter> list = new ArrayList<JarGetterSetter>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("select m.Checklist_Id, c.Checklist from Mapping_Menu_Checklist m inner join Checklist_Master c on m.Checklist_Id = c.Checklist_Id" +
+                    " Where Menu_Id = '" + menu_id + "' ", null);
+
+
+            if (dbcursor != null) {
+
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    JarGetterSetter sb = new JarGetterSetter();
+                    sb.setCheklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Checklist")));
+                    sb.setCheklist_cd((((dbcursor.getString(dbcursor.getColumnIndexOrThrow("Checklist_Id"))))));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exception get JCP!", e.toString());
+            return list;
+        }
+        return list;
+    }
+
+    public JarGetterSetter getJarInsertData(JourneyPlan jcp) {
+        JarGetterSetter sb = new JarGetterSetter();
+        Cursor dbcursor = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM " + CommonString.TABLE_JAR_DATA + " WHERE " + CommonString.KEY_STORE_ID + " = " + jcp.getStoreId(), null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    sb.setPresent_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PRESENT_EXIST)));
+                    sb.setImage_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
+                    sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGSHOT)));
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return sb;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return sb;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return sb;
+    }
+
+
+/*
+    public boolean isBackofStoreFilled(int storeId, int window_cd) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM " + CommonString.TABLE_BACKOF_STORE_HEADER_DATA + " WHERE STORE_ID= '" + storeId + "' AND WINDOW_CD ='" + window_cd + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                int icount = dbcursor.getInt(0);
+                dbcursor.close();
+                if (icount > 0) {
+                    filled = true;
+                } else {
+                    filled = false;
+                }
+            }
+        } catch (Exception e) {
+            Log.d("Exception when fetching Records!!!!!!!!!!!!!!!!!!!!!", e.toString());
+            return filled;
+        }
+        return filled;
+    }
+*/
+
+
+    public boolean isBackofStoreFilled(int storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  PRESENT_EXIST " + "FROM DR_BACKOF_STORE_HEADER_DATA WHERE STORE_ID= '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("PRESENT_EXIST")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("PRESENT_EXIST")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+
+    public boolean isFocusproductFilled(int storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  STOCK " + "FROM FOCUS_PRODUCT_STOCK_DATA WHERE STORE_ID= '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("STOCK")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("STOCK")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+    public boolean isJarFilledData(int storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  PRESENT_EXIST " + "FROM DR_JAR_DATA WHERE STORE_ID= '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("PRESENT_EXIST")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("PRESENT_EXIST")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+    public boolean isMonkeySunFilledData(int storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  PRESENT_EXIST " + "FROM DR_MONKEUSUN_DATA WHERE STORE_ID= '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("PRESENT_EXIST")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("PRESENT_EXIST")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+
+    public boolean isVisiCoolerFilledData(int storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  PRESENT_EXIST " + "FROM DR_VISICOOLER_DATA WHERE STORE_ID= '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("PRESENT_EXIST")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("PRESENT_EXIST")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+    public boolean isPosmFilledData(int storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  Exist " + "FROM POSM_Deployment WHERE STORE_ID= '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("Exist")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("Exist")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+
 
 }

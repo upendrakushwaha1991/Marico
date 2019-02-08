@@ -80,13 +80,12 @@ public class EntryMenuActivity extends AppCompatActivity {
         }*/
 
 
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        menu_list = database.getMenuData(journeyPlan.getStoreTypeId());
+        menu_list = database.getMenuData(journeyPlan.getStoreTypeId(),journeyPlan.getStoreCategoryId());
 
         adapter = new ValueAdapter(context, menu_list);
         recyclerView.setAdapter(adapter);
@@ -208,24 +207,87 @@ public class EntryMenuActivity extends AppCompatActivity {
                     .load(Uri.fromFile(new File(CommonString.FILE_PATH_Downloaded + current.getNormalIcon())))
                     .apply(new RequestOptions().override(100, 100))
                     .into(viewHolder.icon);*/
+            String icon_path;
+            switch (current.getMenuId()) {
+
+
+                case 3:
+                    if (database.isBackofStoreFilled(journeyPlan.getStoreId())) {
+                         icon_path = current.getNormalIcon();
+                    }else {
+                         icon_path = current.getNormalIcon();
+                    }
+                    break;
+                case 4:
+                    if (database.isVisiCoolerFilledData(journeyPlan.getStoreId())) {
+                         icon_path = current.getNormalIcon();
+                    }else {
+                         icon_path = current.getNormalIcon();
+                    }
+                    break;
+                case 5:
+                    if (database.isPosmFilledData(journeyPlan.getStoreId())) {
+                         icon_path = current.getNormalIcon();
+                    }else {
+                         icon_path = current.getNormalIcon();
+                    }
+                    break;
+                case 6:
+                    if (database.isFocusproductFilled(journeyPlan.getStoreId())) {
+                         icon_path = current.getNormalIcon();
+                    }else {
+                         icon_path = current.getNormalIcon();
+                    }
+                    break;
+                case 8:
+                    if (database.isJarFilledData(journeyPlan.getStoreId())) {
+                         icon_path = current.getNormalIcon();
+                    }else {
+                         icon_path = current.getNormalIcon();
+                    }
+                    break;
+                case 10:
+                    if (database.isMonkeySunFilledData(journeyPlan.getStoreId())) {
+                         icon_path = current.getNormalIcon();
+                    }else {
+                         icon_path = current.getNormalIcon();
+                    }
+                    break;
+            }
 
             viewHolder.lay_menu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (current.getMenuName().equalsIgnoreCase("Posm")) {
 
-                          //  startActivity(new Intent(context, POSMDeploymentActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan));
-                            startActivity(new Intent(context, POSMDeploymentActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
+                    if (current.getMenuId() == 3) {
+                        startActivity(new Intent(context, BackOfStoreActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
-                    if (current.getMenuName().equalsIgnoreCase("Visicoolor")) {
-
-                   //     startActivity(new Intent(context, NewVisiCoolerActivty.class).putExtra(CommonString.TAG_OBJECT, journeyPlan));
-                        startActivity(new Intent(context, NewVisiCoolerActivty.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID,  current));
+                    if (current.getMenuId() == 4) {
+                        startActivity(new Intent(context, NewVisiCoolerActivty.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                    }
+                    if (current.getMenuId() == 5) {
+                        startActivity(new Intent(context, POSMDeploymentActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
                     }
+                     if (current.getMenuId() == 6) {
+                        startActivity(new Intent(context, FocusProductActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                    }
+                    if (current.getMenuId() == 8) {
+                        startActivity(new Intent(context, JarActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                    }
+                    if (current.getMenuId() == 10) {
+                        startActivity(new Intent(context, MonkeysunActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                    }
+
+
+
                    /* if (current.getMenuName().equalsIgnoreCase("Posm")) {
 
                         startActivity(new Intent(context, POSMDeploymentActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan));

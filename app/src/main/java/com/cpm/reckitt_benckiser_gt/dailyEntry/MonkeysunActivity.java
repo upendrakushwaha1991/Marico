@@ -46,7 +46,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnClickListener {
+import java.util.ArrayList;
+
+public class MonkeysunActivity extends AppCompatActivity implements View.OnClickListener{
     private Spinner sp_present, sp_reason;
     private ImageView image_closeup, image_long_shot;
     FloatingActionButton fab;
@@ -76,10 +78,10 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_visi_cooler_activty);
+        setContentView(R.layout.activity_monkeysun);
         getId();
-    }
 
+    }
     private void getId() {
 
         lay_image = (LinearLayout) findViewById(R.id.lay_image);
@@ -102,7 +104,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         username = preferences.getString(CommonString.KEY_USERNAME, null);
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
-        getSupportActionBar().setTitle("Visi Cooler -" + visit_date);
+        getSupportActionBar().setTitle("Monkey Sun -" + visit_date);
 
         if (getIntent().getSerializableExtra(CommonString.TAG_OBJECT) != null && getIntent().getSerializableExtra(CommonString.KEY_MENU_ID) != null) {
             jcpGetset = (JourneyPlan) getIntent().getSerializableExtra(CommonString.TAG_OBJECT);
@@ -134,7 +136,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
                                     db.open();
-                                    long val = db.insertNewVisiCoolerData(jcpGetset, visiColoersGetterSetter, deploymentData);
+                                    long val = db.insertMonkysunData(jcpGetset, visiColoersGetterSetter, deploymentData);
 
                                     if (val > 0) {
                                         AlertandMessages.showToastMsg(context, "Data Saved");
@@ -245,7 +247,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                         lay_image_name.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.VISIBLE);
                         lay_reason.setVisibility(View.GONE);
-                        posmDeploymentSavedData = db.getVisicoolerSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
+                        posmDeploymentSavedData = db.getMonkeysunSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
                         if (posmDeploymentSavedData.size() > 0) {
                             createView(posmDeploymentSavedData);
                         } else {
@@ -260,14 +262,9 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                         lay_image.setVisibility(View.GONE);
                         lay_image_name.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.GONE);
-                        lay_reason.setVisibility(View.VISIBLE);
+                        lay_reason.setVisibility(View.GONE);
                         visiColoersGetterSetter.setImage_close_up("");
                         visiColoersGetterSetter.setImage_long_shot("");
-
-                      /*  for (int i = 0; i < reasonDataHeader.size(); i++) {
-                            reasonDataHeader.get(i).setReasonId(0);
-                            reasonDataHeader.get(i).setReason("");
-                        }*/
 
                     }
                 } else {
@@ -319,7 +316,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
 
     private void setInsertData() {
         db.open();
-        visiColoersGetterSetter = db.getNewVisicoolerData(jcpGetset);
+        visiColoersGetterSetter = db.getMonkyHeaderData(jcpGetset);
         if (visiColoersGetterSetter.getImage_close_up().equalsIgnoreCase("")) {
             image_closeup.setImageResource(R.mipmap.camera_grey);
 
@@ -360,7 +357,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
     private class POSMDeploymentAdapter extends RecyclerView.Adapter<POSMDeploymentAdapter.ViewHolder> {
         Context context;
 
-        public POSMDeploymentAdapter(NewVisiCoolerActivty context, ArrayList<VisiColoersGetterSetter> posmDeploymentData) {
+        public POSMDeploymentAdapter(MonkeysunActivity context, ArrayList<VisiColoersGetterSetter> posmDeploymentData) {
             this.context = context;
             deploymentData = posmDeploymentData;
 
@@ -429,7 +426,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
 
 
     private void createView(ArrayList<VisiColoersGetterSetter> posmDeploymentData) {
-        adapter = new POSMDeploymentAdapter(this, posmDeploymentData);
+        adapter = new POSMDeploymentAdapter(MonkeysunActivity.this, posmDeploymentData);
         recyclerView.setHasFixedSize(true);
         // set a GridLayoutManager with default vertical orientation and 2 number of columns
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -503,32 +500,6 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         }
     }
 
-    /*
-        public boolean validation() {
-
-            boolean value = true;
-            if (sp_present.getSelectedItemPosition() == 0) {
-                value = false;
-                showMessage("Please Select Present");
-            } else if (string_present_cd.equalsIgnoreCase("1")) {
-                if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
-                    value = false;
-                    showMessage("Please Capture Photo Close Up");
-                } else if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
-                    value = false;
-                    showMessage("Please Capture Photo Long Shot");
-
-                }
-            } else if (sp_reason.getSelectedItemPosition() == 0) {
-                value = false;
-                showMessage("Please Select Reason");
-            } else {
-                value = true;
-
-            }
-            return value;
-        }
-    */
     public boolean validation() {
 
         boolean value = true;
@@ -536,22 +507,22 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
             value = false;
             showMessage("Please Select Present");
         } else if (string_present_cd.equalsIgnoreCase("1")) {
-            if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
+            if (visiColoersGetterSetter.getImage_close_up().equalsIgnoreCase("")) {
                 value = false;
                 showMessage("Please Capture Photo Close Up");
             } else if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
                 value = false;
                 showMessage("Please Capture Photo Long Shot");
-            } else if (checkValidation(deploymentData)) {
+            }else if (checkValidation(deploymentData)){
                 value = true;
-            } else {
+            }else {
                 value = false;
-                AlertandMessages.showToastMsg(NewVisiCoolerActivty.this, Error_Message);
+                AlertandMessages.showToastMsg(MonkeysunActivity.this, Error_Message);
             }
-        } else if (sp_reason.getSelectedItemPosition() == 0) {
+        } /*else if (sp_reason.getSelectedItemPosition() == 0) {
             value = false;
             showMessage("Please Select Reason");
-        } else {
+        }*/ else {
             value = true;
 
         }
@@ -587,13 +558,13 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(NewVisiCoolerActivty.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(MonkeysunActivity.this);
             builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
                     .setCancelable(false)
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
-                            NewVisiCoolerActivty.this.finish();
+                            MonkeysunActivity.this.finish();
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -606,6 +577,8 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         }
         return super.onOptionsItemSelected(item);
     }
+
+
 
     private void ClearData() {
         for (int i = 0; i < posmDeploymentSavedData.size(); i++) {
