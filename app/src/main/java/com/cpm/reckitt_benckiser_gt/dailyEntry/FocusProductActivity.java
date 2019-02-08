@@ -41,7 +41,7 @@ public class FocusProductActivity extends AppCompatActivity {
     RBGTDatabase db;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor = null;
-    String store_cd, visit_date, username, region_id, destributor_id, category_cd;
+    String store_cd, visit_date, username;
     ExpandableListView lvExp_audit;
     FloatingActionButton storeAudit_fab;
     List<FocusProductGetterSetter> listDataHeader;
@@ -86,7 +86,8 @@ public class FocusProductActivity extends AppCompatActivity {
                     builder.show();
                 } else {
 
-                    Snackbar.make(lvExp_audit, "Please fill At Least one data and value greater then zero", Snackbar.LENGTH_SHORT).show();
+                   // Snackbar.make(lvExp_audit, "Please fill At Least one data and value greater then zero", Snackbar.LENGTH_SHORT).show();
+                    Snackbar.make(lvExp_audit, "Please fill Sku Stock", Snackbar.LENGTH_SHORT).show();
                 }
 
             }
@@ -96,6 +97,8 @@ public class FocusProductActivity extends AppCompatActivity {
 
     private void getviewUI() {
         Toolbar toolbar = findViewById(R.id.toolbar);
+        lvExp_audit=(ExpandableListView)findViewById(R.id.lvExp_audit);
+        storeAudit_fab=(FloatingActionButton)findViewById(R.id.fab);
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -197,14 +200,14 @@ public class FocusProductActivity extends AppCompatActivity {
         db.open();
         listDataHeader = new ArrayList<>();
         listDataChild = new HashMap<>();
-        listDataHeader = db.getHeaderSalesData(region_id, destributor_id, category_cd);
+        listDataHeader = db.getHeaderSalesData(jcpGetset);
         if (listDataHeader.size() > 0) {
             for (int i = 0; i < listDataHeader.size(); i++) {
-                questionList = db.getSalesStockInsertedData(store_cd, listDataHeader.get(i).getBrand_id());
+                questionList = db.getSalesStockInsertedData(jcpGetset, listDataHeader.get(i).getBrand_id());
                 if (questionList.size() > 0) {
                      storeAudit_fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.edit_txt));
                 } else {
-                    questionList = db.getSalesStockchildData(region_id, destributor_id, listDataHeader.get(i).getBrand_id());
+                    questionList = db.getSalesStockchildData(jcpGetset, listDataHeader.get(i).getBrand_id());
                 }
                 listDataChild.put(listDataHeader.get(i), questionList); // Header, Child data
             }
@@ -347,33 +350,6 @@ public class FocusProductActivity extends AppCompatActivity {
     }
 
 
-    boolean validateData(HashMap<FocusProductGetterSetter, List<FocusProductGetterSetter>> listDataChild2,
-                         List<FocusProductGetterSetter> listDataHeader2) {
-        boolean flag = false;
-        checkHeaderArray.clear();
-        loop1:
-        for (int i = 0; i < listDataHeader2.size(); i++) {
-
-            for (int j = 0; j < listDataChild2.get(listDataHeader.get(i)).size(); j++) {
-                String stock = listDataChild.get(listDataHeader.get(i)).get(j).getStock();
-                if (stock != null && !stock.equalsIgnoreCase("") && !stock.equalsIgnoreCase("0")) {
-                    flag = true;
-                    break;
-                }
-
-            }
-            if (flag) {
-                break;
-            }
-        }
-        if (flag) {
-            return checkflag = true;
-        } else {
-
-            return checkflag = false;
-        }
-
-    }
 
 
     @Override
@@ -420,4 +396,37 @@ public class FocusProductActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    boolean validateData(HashMap<FocusProductGetterSetter, List<FocusProductGetterSetter>> listDataChild2,
+                         List<FocusProductGetterSetter> listDataHeader2) {
+        boolean flag = false;
+        checkHeaderArray.clear();
+        loop1:
+        for (int i = 0; i < listDataHeader2.size(); i++) {
+
+            for (int j = 0; j < listDataChild2.get(listDataHeader.get(i)).size(); j++) {
+                String stock = listDataChild.get(listDataHeader.get(i)).get(j).getStock();
+                if (stock == null || stock.equalsIgnoreCase("")) {
+                    if (!checkHeaderArray.contains(i)) {
+                        checkHeaderArray.add(i);
+                    }
+                    flag = false;
+                    break;
+                }else {
+                    flag = true;
+                }
+
+            }
+            if (!flag) {
+                break;
+            }
+        }
+        if (flag) {
+            return checkflag = true;
+        } else {
+
+            return checkflag = false;
+        }
+
+    }
+
 }

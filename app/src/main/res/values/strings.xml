@@ -87,9 +87,13 @@
     <string name="title_activity_posm">PosmActivity</string>
     <string name="title_activity_posmdeployment">POSMDeploymentActivity</string>
     <string name="single_image_error" translatable="false">Please capture image</string>
-    <string name="select_reason_error" translatable="false">Please select reason</string>
+    <string name="select_reason_error" translatable="false">Please select Drop Down</string>
     <string name="posm_exist_error" translatable="false">Please select POSM exist or not</string>
     <string name="title_activity_focus_product">FocusProductActivity</string>
     <string name="alertsaveData"> Are you sure you want to save data</string>
     <string name="title_activity_new_visi_cooler_activty">NewVisiCoolerActivty</string>
+    <string name="title_activity_monkeysun">MonkeysunActivity</string>
+    <string name="title_activity_back_of_store">BackOfStoreActivity</string>
+    <string name="title_activity_jar">JarActivity</string>
+    <string name="title_activity_ctu_actiivty">CtuActiivty</string>
 </resources>

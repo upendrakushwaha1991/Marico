@@ -24,12 +24,14 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GeotaggingBeans;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JCPGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingBackOfStoreGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingCTUGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingCategoryChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingFocusSkuGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingInitiativeGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMonkeysunStoreGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingPosmGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingVisicoolerGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingWindChecklistGetterSetter;
@@ -42,6 +44,7 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.NonWindowReasonGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.NonWorkingReasonGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.PosmMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ReferenceVariablesForDownloadActivity;
+import com.cpm.reckitt_benckiser_gt.getterSetter.SkuMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreProfileGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreTypeMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.TableStructure;
@@ -1635,6 +1638,41 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                                 throw new java.lang.Exception();
                                             }
                                             break;
+
+                                        case "Sku_Master":
+                                            if (!data.contains("No Data")) {
+                                                skuMasterGetterSetter = new Gson().fromJson(data, SkuMasterGetterSetter.class);
+                                                if (skuMasterGetterSetter != null && !db.insertSkuMasterData(skuMasterGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Sku Master data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+                                        case "mapping_Back_Of_Store":
+                                            if (!data.contains("No Data")) {
+                                                mappingBackOfStoreGetterSetter = new Gson().fromJson(data, MappingBackOfStoreGetterSetter.class);
+                                                if (mappingBackOfStoreGetterSetter != null && !db.insertMappingBackofData(mappingBackOfStoreGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "mapping Back Of Store data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+                                        case "Mapping_Monkeysun":
+                                            if (!data.contains("No Data")) {
+                                                mappingMonkeysunStoreGetterSetter = new Gson().fromJson(data, MappingMonkeysunStoreGetterSetter.class);
+                                                if (mappingMonkeysunStoreGetterSetter != null && !db.insertMappingMonkySunData(mappingMonkeysunStoreGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Mapping Monkeysun data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+
 
 
 
