@@ -4,7 +4,9 @@ package com.cpm.reckitt_benckiser_gt.getterSetter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class BrandMaster {
+import java.io.Serializable;
+
+public class BrandMaster implements Serializable {
 
     @SerializedName("Brand_Id")
     @Expose
@@ -73,4 +75,63 @@ public class BrandMaster {
         this.brandSequence = brandSequence;
     }
 
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
+    }
+
+    String quantity;
+
+    //---------------
+
+    String img_close_up = "";
+    String img_long_shot = "";
+
+    String answered;
+    int answered_id = -1;
+
+    int nonExecutionReasonId = -1;
+
+    public String getImg_close_up() {
+        return img_close_up;
+    }
+
+    public void setImg_close_up(String img_close_up) {
+        this.img_close_up = img_close_up;
+    }
+
+    public String getImg_long_shot() {
+        return img_long_shot;
+    }
+
+    public void setImg_long_shot(String img_long_shot) {
+        this.img_long_shot = img_long_shot;
+    }
+
+    public String getAnswered() {
+        return answered;
+    }
+
+    public void setAnswered(String answered) {
+        this.answered = answered;
+    }
+
+    public int getAnswered_id() {
+        return answered_id;
+    }
+
+    public void setAnswered_id(int answered_id) {
+        this.answered_id = answered_id;
+    }
+
+    public int getNonExecutionReasonId() {
+        return nonExecutionReasonId;
+    }
+
+    public void setNonExecutionReasonId(int nonExecutionReasonId) {
+        this.nonExecutionReasonId = nonExecutionReasonId;
+    }
 }

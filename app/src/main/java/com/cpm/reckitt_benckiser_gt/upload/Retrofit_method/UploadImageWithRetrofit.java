@@ -21,6 +21,7 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistAnswerGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMasterGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.DisplayMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GeotaggingBeans;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JCPGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
@@ -31,6 +32,7 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.MappingInitiativeGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingPosmGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingSecondaryVisibilityGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingVisicoolerGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingWindChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
@@ -1636,9 +1638,29 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                             }
                                             break;
 
+                                        case "Mapping_Secondary_Visibility":
+                                            if (!data.contains("No Data")) {
+                                                mappingSecondaryVisibilityGetterSetter = new Gson().fromJson(data, MappingSecondaryVisibilityGetterSetter.class);
+                                                if (mappingSecondaryVisibilityGetterSetter != null && !db.insertMappingSecondaryVisibilityData(mappingSecondaryVisibilityGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Mapping Secondary Visibility data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
 
-
-
+                                        case "Display_Master":
+                                            if (!data.contains("No Data")) {
+                                                displayMasterGetterSetter = new Gson().fromJson(data, DisplayMasterGetterSetter.class);
+                                                if (displayMasterGetterSetter != null && !db.insertDisplayMasterData(displayMasterGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Display Master data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
                                     }
                                     //endregion
                                 }

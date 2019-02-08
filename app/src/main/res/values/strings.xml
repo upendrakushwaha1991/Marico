@@ -92,4 +92,22 @@
     <string name="title_activity_focus_product">FocusProductActivity</string>
     <string name="alertsaveData"> Are you sure you want to save data</string>
     <string name="title_activity_new_visi_cooler_activty">NewVisiCoolerActivty</string>
+    <string name="title_activity_window_with_brand">Window</string>
+
+    <string name="present">Present</string>
+    <string name="close_up">Close Up</string>
+    <string name="long_shot">Long shot</string>
+    <string name="brand_vsibility">Brand Visibility</string>
+    <string name="title_activity_window_brand_visibility">Brand Visibility</string>
+    <string name="stock_quantity">Stock Qty</string>
+    <string name="fill_quantity">Please fill Quantity</string>
+    <string name="select_answer">Please select answer</string>
+    <string name="reason">Reason</string>
+    <string name="pls_fill_brand_visibility">Please fill Brand Visibility</string>
+    <string name="pls_click_closeup">Please click Closeup Image</string>
+    <string name="pls_click_longshot">Please click Long Shot Image</string>
+    <string name="pl_select_reason">Please select reason</string>
+    <string name="title_activity_secondary_visibility">Secondary Visibility</string>
+    <string name="title_activity_ctu">CTU</string>
+    <string name="pl_select_present">Please select present</string>
 </resources>

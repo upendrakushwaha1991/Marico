@@ -20,6 +20,8 @@ import android.widget.TextView;
 
 /*import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;*/
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
@@ -203,15 +205,22 @@ public class EntryMenuActivity extends AppCompatActivity {
             viewHolder.txt.setText(current.getMenuName());
             //viewHolder.icon.setImageResource(current.getIconImage());
 
+
             //usk
-           /* Glide.with(EntryMenuActivity.this)
+            Glide.with(EntryMenuActivity.this)
                     .load(Uri.fromFile(new File(CommonString.FILE_PATH_Downloaded + current.getNormalIcon())))
                     .apply(new RequestOptions().override(100, 100))
-                    .into(viewHolder.icon);*/
+                    .into(viewHolder.icon);
 
             viewHolder.lay_menu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+
+                    if (current.getMenuId()==1) {
+                        startActivity(new Intent(context, WindowWithBrandActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                    }
+
                     if (current.getMenuName().equalsIgnoreCase("Posm")) {
 
                           //  startActivity(new Intent(context, POSMDeploymentActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan));
@@ -225,6 +234,16 @@ public class EntryMenuActivity extends AppCompatActivity {
                         startActivity(new Intent(context, NewVisiCoolerActivty.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID,  current));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
+                    }
+
+                    if (current.getMenuId()==11) {
+                        startActivity(new Intent(context, SecondaryVisibilityActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                    }
+
+                    if (current.getMenuId()==2) {
+                        startActivity(new Intent(context, CTUActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
                    /* if (current.getMenuName().equalsIgnoreCase("Posm")) {
 

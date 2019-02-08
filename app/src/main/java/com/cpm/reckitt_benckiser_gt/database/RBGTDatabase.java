@@ -21,6 +21,8 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CommonChillerDataGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.DisplayMaster;
+import com.cpm.reckitt_benckiser_gt.getterSetter.DisplayMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GeotaggingBeans;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JCPGetterSetter;
@@ -40,6 +42,8 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuChecklistGetterSette
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingPosm;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingPosmGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingSecondaryVisibility;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingSecondaryVisibilityGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingVisibilityInitiative;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingVisicooler;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingVisicoolerGetterSetter;
@@ -78,7 +82,7 @@ import java.util.List;
 
 public class RBGTDatabase extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "Modelez_GT_DB2";
+    public static final String DATABASE_NAME = "Modelez_GT_DB5";
     public static final int DATABASE_VERSION = 1;
     private SQLiteDatabase db;
     Context context;
@@ -117,6 +121,16 @@ public class RBGTDatabase extends SQLiteOpenHelper {
             db.execSQL(CommonString.CREATE_TABLE_FOCUS_PRODUCT_OPENINGHEADER_DATA);
             db.execSQL(CommonString.CREATE_TABLE_FOCUS_PRODUCT_STOCK_DATA);
             db.execSQL(CommonString.CREATE_TABLE_VISICOOLER_DATA);
+
+            //--------YSY----------
+            db.execSQL(CommonString.CREATE_TABLE_WINDOW);
+            db.execSQL(CommonString.CREATE_TABLE_WINDOW_BRAND_LIST);
+            db.execSQL(CommonString.CREATE_TABLE_WINDOW_CHECK_LIST);
+            db.execSQL(CommonString.CREATE_TABLE_BRAND_CHECK_LIST);
+            db.execSQL(CommonString.CREATE_TABLE_CTU_BRAND_HEADER);
+            db.execSQL(CommonString.CREATE_TABLE_CTU_BRAND_CHECK_LIST);
+            db.execSQL(CommonString.CREATE_TABLE_SECONDARY_VISIBILITY_HEADER);
+            db.execSQL(CommonString.CREATE_TABLE_SECONDARY_VISIBILITY_CHECK_LIST);
 
 
         } catch (SQLException e) {
@@ -1953,6 +1967,9 @@ public class RBGTDatabase extends SQLiteOpenHelper {
                     } else if (sb.getStoreTypeId() == 3) {
                         sb.setColourCode(R.color.gainsboro);
                     }
+                    else {
+                        sb.setColourCode(R.color.green_light);
+                    }
 
                     list.add(sb);
                     dbcursor.moveToNext();
@@ -2661,7 +2678,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         ArrayList<CommonChillerDataGetterSetter> list = new ArrayList<>();
         try {
             dbcursor = db.rawQuery("SELECT  * from "
-                    + CommonString.TABLE_POSM_DEPLOYMENT + " where "
+                    + CommonString.TABLE_WINDOW_HEADER + " where "
                     + CommonString.KEY_STORE_ID + " = '" + storeId + "' and " + CommonString.KEY_VISIT_DATE + " =  '" + visit_date + "' ", null);
 
             if (dbcursor != null) {
@@ -2782,7 +2799,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
                 values.put(CommonString.KEY_PURITY_EXIST, storeProfile.getPurity_name());
                 values.put(CommonString.KEY_PLANOGRAM_EXIST, storeProfile.getPlanogram_name());
                 values.put(CommonString.KEY_IMAGE_CLOSEUP, storeProfile.getImage_close_up());
-                values.put(CommonString.KEY_LONGSHOT, storeProfile.getImage_long_shot());
+                values.put(CommonString.KEY_IMAGE_LONGSHOT, storeProfile.getImage_long_shot());
 
                 l = db.insert(CommonString.TABLE_VISICOOLER, null, values);
             }
@@ -2812,7 +2829,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
                     sb.setPurity_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PURITY_EXIST)));
                     sb.setPlanogram_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PLANOGRAM_EXIST)));
                     sb.setImage_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
-                    sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGSHOT)));
+                    sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_LONGSHOT)));
 
 
                     dbcursor.moveToNext();
@@ -3085,7 +3102,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
                 values.put(CommonString.KEY_VISIT_DATE, JCP.getVisitDate());
                 values.put(CommonString.KEY_PRESENT_EXIST, visicoolar.getPresent_name());
                 values.put(CommonString.KEY_IMAGE_CLOSEUP, visicoolar.getImage_close_up());
-                values.put(CommonString.KEY_LONGSHOT, visicoolar.getImage_long_shot());
+                values.put(CommonString.KEY_IMAGE_LONGSHOT, visicoolar.getImage_long_shot());
                 values.put(CommonString.KEY_REASON, visicoolar.getReason());
                 values.put(CommonString.KEY_REASON_ID, visicoolar.getReason_cd());
                 l = db.insert(CommonString.TABLE_VISICOOLER_DATA, null, values);
@@ -3134,7 +3151,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
                 while (!dbcursor.isAfterLast()) {
                     sb.setPresent_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PRESENT_EXIST)));
                     sb.setImage_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
-                    sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGSHOT)));
+                    sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_LONGSHOT)));
                     sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON)));
                     sb.setReason_cd(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON_ID)));
 
@@ -3153,4 +3170,480 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         return sb;
     }
 
+    //-----------YSY------------------------
+
+    //get Window List data
+    public ArrayList<WindowMaster> getWindowDefaultData(int Store_Type_Id, int Store_Category_Id, String State_Id) {
+        Log.d("Fetchecklidata->Start<-", "-");
+        ArrayList<WindowMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT DISTINCT WM.Window_Id, WM.Window FROM Mapping_Window MW INNER JOIN Window_Master WM ON MW.Window_Id = WM.Window_Id " +
+                    "WHERE MW.Store_Type_Id="+ Store_Type_Id +" AND MW.Store_Category_Id="+ Store_Category_Id + " AND MW.State_Id='"+ State_Id + "'", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    WindowMaster ch = new WindowMaster();
+                    ch.setWindowId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Window_Id")));
+                    ch.setWindow(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Window")));
+                    list.add(ch);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exc get window list!", e.toString());
+            return list;
+        }
+        Log.d("Fetching check->Stop<", "-");
+        return list;
+    }
+
+    //get checklist data
+    public ArrayList<ChecklistMaster> getCheckListData(int menu_id) {
+        ArrayList<ChecklistMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("select m.Checklist_Id, c.Checklist from Mapping_Menu_Checklist m inner join Checklist_Master c on m.Checklist_Id = c.Checklist_Id" +
+                    " Where Menu_Id = '" + menu_id + "' ", null);
+
+
+            if (dbcursor != null) {
+
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ChecklistMaster sb = new ChecklistMaster();
+                    sb.setChecklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Checklist")));
+                    sb.setChecklistId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Checklist_Id")));
+                    list.add(sb);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Excep get checklist!", e.toString());
+            return list;
+        }
+        return list;
+    }
+
+    //get Checklist Answer
+    public ArrayList<ChecklistAnswer> getCheckListAnswer(int checkListId) {
+        Log.d("Fetching Data", "------------------");
+        Cursor dbcursor = null;
+        ArrayList<ChecklistAnswer> list = new ArrayList<>();
+        ChecklistAnswer reason1 = new ChecklistAnswer();
+        try {
+
+            reason1.setAnswerId(0);
+            reason1.setAnswer("Select Reason");
+            list.add(reason1);
+
+            dbcursor = db.rawQuery("select * from Checklist_Answer where checklist_Id ='" + checkListId + "' ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ChecklistAnswer reason = new ChecklistAnswer();
+                    reason.setAnswer(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Answer")));
+                    reason.setAnswerId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Answer_Id"))));
+                    reason.setChecklistId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Checklist_Id"))));
+
+                    list.add(reason);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", e.getMessage());
+            return list;
+        }
+        return list;
+    }
+
+    //get Window List data
+    public ArrayList<BrandMaster> getBrandDefaultData(int Store_Type_Id, int Store_Category_Id, String State_Id, int Window_Id) {
+        Log.d("Fetchecklidata->Start<-", "-");
+        ArrayList<BrandMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT BM.Brand_Id, BM.Brand FROM Brand_Master BM INNER JOIN Mapping_Window MW ON BM.Brand_Id = MW.Brand_Id " +
+                    "WHERE MW.Store_Type_Id="+ Store_Type_Id +" AND MW.Store_Category_Id="+ Store_Category_Id + " AND MW.State_Id='"+ State_Id + "' AND MW.Window_Id='"+ Window_Id +"'", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BrandMaster ch = new BrandMaster();
+                    ch.setBrandId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Brand_Id")));
+                    ch.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand")));
+                    list.add(ch);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exc get Brand list!", e.toString());
+            return list;
+        }
+        Log.d("Fetching check->Stop<", "-");
+        return list;
+    }
+
+    //Get Non Execution reason by Menu_Id
+    public ArrayList<NonExecutionReason> getNonExecutionReason(Integer menu_id) {
+        Log.d("Fetching Data", "------------------");
+        Cursor dbcursor = null;
+        ArrayList<NonExecutionReason> list = new ArrayList<>();
+        NonExecutionReason reason1 = new NonExecutionReason();
+        try {
+            // reason1.setRemark(false);
+            reason1.setReasonId(0);
+            reason1.setReason("Select Reason");
+            list.add(reason1);
+
+            dbcursor = db.rawQuery("select * from Non_Execution_Reason where Menu_Id ='" + menu_id + "' ", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    NonExecutionReason reason = new NonExecutionReason();
+                    reason.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason")));
+                    reason.setReasonId(Integer.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Reason_Id"))));
+                    // reason.setRemark(Boolean.valueOf(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Remark"))));
+                    list.add(reason);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", e.getMessage());
+            return list;
+        }
+        return list;
+    }
+
+    //insert Window Data
+    public long insertWindowData(JourneyPlan jcp, ArrayList<WindowMaster> windowList, HashMap<WindowMaster, ArrayList<ChecklistMaster>> hashMapListChildData) {
+
+        db.delete(CommonString.TABLE_WINDOW_HEADER, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
+                +"'"+ jcp.getVisitDate() +"'", null);
+        ContentValues values = new ContentValues();
+        ContentValues values_window_checklist = new ContentValues();
+        ContentValues values_brand = new ContentValues();
+        ContentValues values_brand_checklist = new ContentValues();
+
+        long id = 0, brand_key_id = 0;
+        try {
+            for (int i = 0; i < windowList.size(); i++) {
+                values.put(CommonString.KEY_STORE_ID, jcp.getStoreId());
+                values.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
+                values.put(CommonString.KEY_EXIST, windowList.get(i).getAnswered_id());
+
+                values.put(CommonString.KEY_WINDOW_ID, windowList.get(i).getWindowId());
+                values.put(CommonString.KEY_WINDOW, windowList.get(i).getWindow());
+                values.put(CommonString.KEY_REASON_ID, windowList.get(i).getNonExecutionReasonId());
+                values.put(CommonString.KEY_IMAGE_LONGSHOT, windowList.get(i).getImg_long_shot());
+                values.put(CommonString.KEY_IMAGE_CLOSEUP, windowList.get(i).getImg_close_up());
+
+                id = db.insert(CommonString.TABLE_WINDOW_HEADER, null, values);
+
+                //Window Check List
+                db.delete(CommonString.TABLE_WINDOW_CHECK_LIST, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
+                        +"'"+ jcp.getVisitDate() +"'", null);
+                ArrayList<ChecklistMaster> windowCheckList = hashMapListChildData.get(windowList.get(i));
+
+                for(int j=0; j<windowCheckList.size(); j++){
+
+                    values_window_checklist.put(CommonString.KEY_STORE_ID, jcp.getStoreId());
+                    values_window_checklist.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
+                    values_window_checklist.put(CommonString.KEY_COMMON_ID, id);
+                    values_window_checklist.put(CommonString.KEY_CHECKLIST_ID, windowCheckList.get(j).getChecklistId());
+                    values_window_checklist.put(CommonString.KEY_ANSWER_CD, windowCheckList.get(j).getAnswered_cd());
+                    values_window_checklist.put(CommonString.KEY_CHECKLIST, windowCheckList.get(j).getChecklist());
+
+                    db.insert(CommonString.TABLE_WINDOW_CHECK_LIST, null, values_window_checklist);
+                }
+
+                //Brand List
+                db.delete(CommonString.TABLE_WINDOW_BRAND_LIST, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
+                        +"'"+ jcp.getVisitDate() +"'", null);
+
+                //Window Check List
+                db.delete(CommonString.TABLE_BRAND_CHECK_LIST, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
+                        +"'"+ jcp.getVisitDate() +"'", null);
+
+                ArrayList<BrandMaster> brandList = windowList.get(i).getBrandList();
+                HashMap<BrandMaster, ArrayList<ChecklistMaster>> brandCheckList = windowList.get(i).getHashMapListChildData();
+
+                for(int k=0; k<brandList.size(); k++){
+
+                    values_brand.put(CommonString.KEY_STORE_ID, jcp.getStoreId());
+                    values_brand.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
+                    values_brand.put(CommonString.KEY_COMMON_ID, id);
+                    values_brand.put(CommonString.KEY_BRAND_ID, brandList.get(k).getBrandId());
+                    values_brand.put(CommonString.KEY_BRAND, brandList.get(k).getBrand());
+                    values_brand.put(CommonString.KEY_STOCK, brandList.get(k).getQuantity());
+
+                    brand_key_id = db.insert(CommonString.TABLE_WINDOW_BRAND_LIST, null, values_brand);
+
+                    ArrayList<ChecklistMaster> checkList = brandCheckList.get(brandList.get(k));
+
+                    for(int l=0; l<checkList.size(); l++){
+
+                        values_brand_checklist.put(CommonString.KEY_STORE_ID, jcp.getStoreId());
+                        values_brand_checklist.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
+                        values_brand_checklist.put(CommonString.KEY_COMMON_ID, brand_key_id);
+                        values_brand_checklist.put(CommonString.KEY_CHECKLIST_ID, checkList.get(l).getChecklistId());
+                        values_brand_checklist.put(CommonString.KEY_ANSWER_CD, checkList.get(l).getAnswered_cd());
+                        values_brand_checklist.put(CommonString.KEY_CHECKLIST, checkList.get(l).getChecklist());
+
+                        db.insert(CommonString.TABLE_BRAND_CHECK_LIST, null, values_brand_checklist);
+                    }
+                }
+
+            }
+
+            if (id > 0) {
+                return id;
+            } else {
+                return 0;
+            }
+        } catch (Exception ex) {
+            Log.d("Database Exception ", ex.toString());
+            return 0;
+        }
+    }
+
+    //insert Mapping Secondary window
+    public boolean insertMappingSecondaryVisibilityData(MappingSecondaryVisibilityGetterSetter mappingSecondaryVisibilityGetterSetter) {
+        db.delete("Mapping_Secondary_Visibility", null, null);
+        ContentValues values = new ContentValues();
+        List<MappingSecondaryVisibility> data = mappingSecondaryVisibilityGetterSetter.getMappingSecondaryVisibility();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+                values.put("State_Id", data.get(i).getStateId());
+                values.put("Store_Category_Id", data.get(i).getStoreCategoryId());
+                values.put("Store_Type_Id", data.get(i).getStoreTypeId());
+                values.put("Display_Id", data.get(i).getDisplayId());
+
+                long id = db.insert("Mapping_Secondary_Visibility", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    //insert Display Master
+    public boolean insertDisplayMasterData(DisplayMasterGetterSetter displayMasterGetterSetter) {
+        db.delete("Display_Master", null, null);
+        ContentValues values = new ContentValues();
+        List<DisplayMaster> data = displayMasterGetterSetter.getDisplayMaster();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+                values.put("Display_Id", data.get(i).getDisplayId());
+                values.put("Display", data.get(i).getDisplay());
+
+                long id = db.insert("Display_Master", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    //get Secondary Visibility Display List data
+    public ArrayList<DisplayMaster> getSecondaryVisibilityDisplayData(int Store_Type_Id, int Store_Category_Id, String State_Id) {
+        Log.d("Fetchecklidata->Start<-", "-");
+        ArrayList<DisplayMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT DM.Display , DM.Display_Id FROM Mapping_Secondary_Visibility MSV INNER JOIN Display_Master DM ON MSV.Display_Id = DM.Display_Id " +
+                    "WHERE MSV.Store_Type_Id="+ Store_Type_Id +" AND MSV.Store_Category_Id="+ Store_Category_Id + " AND MSV.State_Id='"+ State_Id + "'", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    DisplayMaster ch = new DisplayMaster();
+                    ch.setDisplayId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Display_Id")));
+                    ch.setDisplay(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Display")));
+                    list.add(ch);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exc get Display list!", e.toString());
+            return list;
+        }
+        Log.d("Fetching check->Stop<", "-");
+        return list;
+    }
+
+    //get Window List data
+    public ArrayList<BrandMaster> getCTUBrandData(int Store_Id) {
+        Log.d("Fetchecklidata->Start<-", "-");
+        ArrayList<BrandMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT BM.Brand_Id, BM.Brand FROM Mapping_CTU M INNER JOIN Brand_Master BM ON M.Brand_Id = BM.Brand_Id  " +
+                    "WHERE M.Store_Id="+ Store_Id +"", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    BrandMaster ch = new BrandMaster();
+                    ch.setBrandId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Brand_Id")));
+                    ch.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand")));
+                    list.add(ch);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exc get brand list!", e.toString());
+            return list;
+        }
+        Log.d("Fetching check->Stop<", "-");
+        return list;
+    }
+
+    //insert CTU Data
+    public long insertCTUData(JourneyPlan jcp, ArrayList<BrandMaster> brandList, HashMap<BrandMaster, ArrayList<ChecklistMaster>> hashMapListChildData) {
+
+        db.delete(CommonString.TABLE_CTU_BRAND_HEADER, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
+                +"='"+ jcp.getVisitDate() +"'", null);
+        ContentValues values = new ContentValues();
+        ContentValues values_brand_checklist = new ContentValues();
+
+
+        long id = 0;
+        try {
+            for (int i = 0; i < brandList.size(); i++) {
+                values.put(CommonString.KEY_STORE_ID, jcp.getStoreId());
+                values.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
+                values.put(CommonString.KEY_EXIST, brandList.get(i).getAnswered_id());
+
+                values.put(CommonString.KEY_BRAND_ID, brandList.get(i).getBrandId());
+                values.put(CommonString.KEY_BRAND, brandList.get(i).getBrand());
+                values.put(CommonString.KEY_REASON_ID, brandList.get(i).getNonExecutionReasonId());
+                values.put(CommonString.KEY_IMAGE_LONGSHOT, brandList.get(i).getImg_long_shot());
+                values.put(CommonString.KEY_IMAGE_CLOSEUP, brandList.get(i).getImg_close_up());
+
+                id = db.insert(CommonString.TABLE_CTU_BRAND_HEADER, null, values);
+
+                //Window Check List
+                db.delete(CommonString.TABLE_CTU_BRAND_CHECK_LIST, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
+                        +"='"+ jcp.getVisitDate() +"'", null);
+                ArrayList<ChecklistMaster> windowCheckList = hashMapListChildData.get(brandList.get(i));
+
+                for(int j=0; j<windowCheckList.size(); j++){
+
+                    values_brand_checklist.put(CommonString.KEY_STORE_ID, jcp.getStoreId());
+                    values_brand_checklist.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
+                    values_brand_checklist.put(CommonString.KEY_COMMON_ID, id);
+                    values_brand_checklist.put(CommonString.KEY_CHECKLIST_ID, windowCheckList.get(j).getChecklistId());
+                    values_brand_checklist.put(CommonString.KEY_ANSWER_CD, windowCheckList.get(j).getAnswered_cd());
+                    values_brand_checklist.put(CommonString.KEY_CHECKLIST, windowCheckList.get(j).getChecklist());
+
+                    db.insert(CommonString.TABLE_CTU_BRAND_CHECK_LIST, null, values_brand_checklist);
+                }
+            }
+
+            if (id > 0) {
+                return id;
+            } else {
+                return 0;
+            }
+        } catch (Exception ex) {
+            Log.d("Database Exception ", ex.toString());
+            return 0;
+        }
+    }
+
+    //Insert secondary Window
+    public long insertSecondaryVisibilityData(JourneyPlan jcp, ArrayList<DisplayMaster> displayList, HashMap<DisplayMaster, ArrayList<ChecklistMaster>> hashMapListChildData) {
+        try {
+        db.delete(CommonString.TABLE_SECONDARY_VISIBILITY_HEADER, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
+                +"='"+ jcp.getVisitDate() +"'", null);
+        ContentValues values = new ContentValues();
+        ContentValues values_brand_checklist = new ContentValues();
+
+
+        long id = 0;
+
+            for (int i = 0; i < displayList.size(); i++) {
+                values.put(CommonString.KEY_STORE_ID, jcp.getStoreId());
+                values.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
+                values.put(CommonString.KEY_EXIST, displayList.get(i).getAnswered_id());
+
+                values.put(CommonString.KEY_DISPLAY_ID, displayList.get(i).getDisplayId());
+                values.put(CommonString.KEY_DISPLAY, displayList.get(i).getDisplay());
+                values.put(CommonString.KEY_IMAGE_LONGSHOT, displayList.get(i).getImg_long_shot());
+                values.put(CommonString.KEY_IMAGE_CLOSEUP, displayList.get(i).getImg_close_up());
+
+                id = db.insert(CommonString.TABLE_SECONDARY_VISIBILITY_HEADER, null, values);
+
+                //Window Check List
+                db.delete(CommonString.TABLE_SECONDARY_VISIBILITY_CHECK_LIST, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
+                        +"='"+ jcp.getVisitDate() +"'", null);
+                ArrayList<ChecklistMaster> windowCheckList = hashMapListChildData.get(displayList.get(i));
+
+                for(int j=0; j<windowCheckList.size(); j++){
+
+                    values_brand_checklist.put(CommonString.KEY_STORE_ID, jcp.getStoreId());
+                    values_brand_checklist.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
+                    values_brand_checklist.put(CommonString.KEY_COMMON_ID, id);
+                    values_brand_checklist.put(CommonString.KEY_CHECKLIST_ID, windowCheckList.get(j).getChecklistId());
+                    values_brand_checklist.put(CommonString.KEY_ANSWER_CD, windowCheckList.get(j).getAnswered_cd());
+                    values_brand_checklist.put(CommonString.KEY_CHECKLIST, windowCheckList.get(j).getChecklist());
+
+                    db.insert(CommonString.TABLE_SECONDARY_VISIBILITY_CHECK_LIST, null, values_brand_checklist);
+                }
+            }
+
+            if (id > 0) {
+                return id;
+            } else {
+                return 0;
+            }
+        } catch (Exception ex) {
+            Log.d("Database Exception ", ex.toString());
+            return 0;
+        }
+    }
 }
