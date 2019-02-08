@@ -36,6 +36,7 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.JarGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
+import com.cpm.reckitt_benckiser_gt.utilities.CommonFunctions;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 
 import java.io.File;
@@ -160,12 +161,14 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
 
                 _pathforcheck = "_CLOSEUPIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
-                startCameraActivity();
+                CommonFunctions.startAnncaCameraActivity(JarActivity.this, _path, null, false);
+                //startCameraActivity();
                 break;
             case R.id.image_long_shot:
                 _pathforcheck2 = "_LONGSHOTIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck2;
-                startCameraActivity();
+                CommonFunctions.startAnncaCameraActivity(JarActivity.this, _path, null, false);
+                //startCameraActivity();
 
                 break;
         }

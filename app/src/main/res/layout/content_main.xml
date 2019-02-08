@@ -52,7 +52,7 @@
                 android:layout_height="133dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
-                android:src="@drawable/reckitt_benckiser_logo"
+                android:src="@mipmap/mz_logo"
                 android:layout_centerInParent="true"
                 />
 
