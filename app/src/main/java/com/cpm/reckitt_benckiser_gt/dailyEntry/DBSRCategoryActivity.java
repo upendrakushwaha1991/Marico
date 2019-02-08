@@ -3,7 +3,6 @@ package com.cpm.reckitt_benckiser_gt.dailyEntry;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -26,12 +25,11 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
@@ -54,7 +52,7 @@ public class DBSRCategoryActivity extends AppCompatActivity {
 
     ExpandableListAdapter adapter;
     JourneyPlan journeyPlan;
-    RBGTDatabase db;
+    MondelezDatabase db;
     Context context;
     String _pathforcheck = "", image = "", path = "", msg = "";
     ArrayList<CategoryMaster> listDataHeader;
@@ -182,7 +180,7 @@ public class DBSRCategoryActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                RBGTDatabase db = new RBGTDatabase(context);
+                MondelezDatabase db = new MondelezDatabase(context);
                 db.open();
 
                 //coverage = db.getCoverageWithStoreID_Data(store_id);
@@ -273,7 +271,7 @@ public class DBSRCategoryActivity extends AppCompatActivity {
             if (result.equalsIgnoreCase(CommonString.KEY_SUCCESS)) {
 
             } else {
-                RBGTDatabase db = new RBGTDatabase(context);
+                MondelezDatabase db = new MondelezDatabase(context);
                 db.open();
                 db.deleteTableWithStoreID(cdata.getStoreId());
                 AlertandMessages.showToastMsg(context, getString(R.string.datanotfound) + " " + result);
@@ -547,7 +545,7 @@ public class DBSRCategoryActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         username = preferences.getString(CommonString.KEY_USERNAME, null);

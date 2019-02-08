@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,23 +24,19 @@ import com.bumptech.glide.request.RequestOptions;*/
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
-import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
-import com.cpm.reckitt_benckiser_gt.getterSetter.WindowMaster;
-import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 
 import java.io.File;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EntryMenuActivity extends AppCompatActivity {
 
-    RBGTDatabase database;
+    MondelezDatabase database;
     Context context;
     JourneyPlan journeyPlan;
     String visit_date = "";
@@ -206,69 +203,114 @@ public class EntryMenuActivity extends AppCompatActivity {
 
 
             //usk
-            Glide.with(EntryMenuActivity.this)
-                    .load(Uri.fromFile(new File(CommonString.FILE_PATH_Downloaded + current.getNormalIcon())))
-                    .apply(new RequestOptions().override(100, 100))
-                    .into(viewHolder.icon);
-            String icon_path;
+            String icon_path = current.getNormalIcon();
             switch (current.getMenuId()) {
 
 
                 case 3:
                     if (database.isBackofStoreFilled(journeyPlan.getStoreId())) {
-                         icon_path = current.getNormalIcon();
+                         icon_path = current.getTickIcon();
                     }else {
                          icon_path = current.getNormalIcon();
                     }
                     break;
                 case 4:
                     if (database.isVisiCoolerFilledData(journeyPlan.getStoreId())) {
-                         icon_path = current.getNormalIcon();
+                         icon_path = current.getTickIcon();
                     }else {
                          icon_path = current.getNormalIcon();
                     }
                     break;
                 case 5:
                     if (database.isPosmFilledData(journeyPlan.getStoreId())) {
-                         icon_path = current.getNormalIcon();
+                         icon_path = current.getTickIcon();
                     }else {
                          icon_path = current.getNormalIcon();
                     }
                     break;
                 case 6:
                     if (database.isFocusproductFilled(journeyPlan.getStoreId())) {
-                         icon_path = current.getNormalIcon();
+                         icon_path = current.getTickIcon();
                     }else {
                          icon_path = current.getNormalIcon();
                     }
                     break;
                 case 8:
                     if (database.isJarFilledData(journeyPlan.getStoreId())) {
-                         icon_path = current.getNormalIcon();
+                         icon_path = current.getTickIcon();
                     }else {
                          icon_path = current.getNormalIcon();
                     }
                     break;
                 case 10:
                     if (database.isMonkeySunFilledData(journeyPlan.getStoreId())) {
-                         icon_path = current.getNormalIcon();
+                         icon_path = current.getTickIcon();
                     }else {
                          icon_path = current.getNormalIcon();
                     }
                     break;
+
+                case 1:
+                    if (database.isWindowFilledData(journeyPlan.getStoreId())) {
+                        icon_path = current.getTickIcon();
+                    }else {
+                        icon_path = current.getNormalIcon();
+                    }
+                    break;
+
+                case 11:
+                    if (database.isSecondaryFilledData(journeyPlan.getStoreId())) {
+                        icon_path = current.getTickIcon();
+                    }else {
+                        icon_path = current.getNormalIcon();
+                    }
+                    break;
+
+                case 2:
+                    if (database.isCTUFilledData(journeyPlan.getStoreId())) {
+                        icon_path = current.getTickIcon();
+                    }else {
+                        icon_path = current.getNormalIcon();
+                    }
+                    break;
+
+                case 7:
+                    if (database.isFeedBackFilledData(journeyPlan.getStoreId())) {
+                        icon_path = current.getTickIcon();
+                    }else {
+                        icon_path = current.getNormalIcon();
+                    }
+                    break;
+
+                case 9:
+                    if (database.isSOSFilledData(journeyPlan.getStoreId())) {
+                        icon_path = current.getTickIcon();
+                    }else {
+                        icon_path = current.getNormalIcon();
+                    }
+                    break;
+
             }
 
+            Glide.with(EntryMenuActivity.this)
+                    .load(Uri.fromFile(new File(CommonString.FILE_PATH_Downloaded + icon_path)))
+                    .apply(new RequestOptions())
+                    .into(viewHolder.icon);
 
             viewHolder.lay_menu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
                     if (current.getMenuId()==1) {
-                        startActivity(new Intent(context, WindowWithBrandActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        if (database.isWindowFilledData(journeyPlan.getStoreId())) {
+                            Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
+                        }else {
+                            startActivity(new Intent(context, WindowWithBrandActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        }
+
                     }
 
-                 
                     if (current.getMenuId() == 3) {
                         startActivity(new Intent(context, BackOfStoreActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
@@ -285,13 +327,24 @@ public class EntryMenuActivity extends AppCompatActivity {
 
 
                     if (current.getMenuId()==11) {
-                        startActivity(new Intent(context, SecondaryVisibilityActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+                        if (database.isSecondaryFilledData(journeyPlan.getStoreId())) {
+                            Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
+                        }else {
+                            startActivity(new Intent(context, SecondaryVisibilityActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        }
+
                     }
 
                     if (current.getMenuId()==2) {
-                        startActivity(new Intent(context, CTUActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+
+                        if (database.isCTUFilledData(journeyPlan.getStoreId())) {
+                            Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
+                        }else {
+                            startActivity(new Intent(context, CTUActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        }
                     }
 
                      if (current.getMenuId() == 6) {
@@ -307,6 +360,14 @@ public class EntryMenuActivity extends AppCompatActivity {
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
 
+                    if (current.getMenuId() == 7) {
+                        startActivity(new Intent(context, FeedBackActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID,current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                    }
+                    if (current.getMenuId() == 9) {
+                        startActivity(new Intent(context, SOSActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID,current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                    }
 
                    /* if (current.getMenuName().equalsIgnoreCase("Posm")) {
 
@@ -381,7 +442,7 @@ public class EntryMenuActivity extends AppCompatActivity {
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
         txt_label = (TextView) findViewById(R.id.txt_label);
         recyclerView = (RecyclerView) findViewById(R.id.rec_menu);
-        database = new RBGTDatabase(context);
+        database = new MondelezDatabase(context);
         database.open();
     }
 }

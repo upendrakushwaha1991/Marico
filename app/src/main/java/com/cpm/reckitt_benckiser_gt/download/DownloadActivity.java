@@ -9,7 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 
@@ -18,7 +18,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class DownloadActivity extends AppCompatActivity {
-    RBGTDatabase db;
+    MondelezDatabase db;
     String userId, date, rightname;
     private SharedPreferences preferences = null;
     Context context;
@@ -30,7 +30,7 @@ public class DownloadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_download);
         context = this;
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         userId = preferences.getString(CommonString.KEY_USERNAME, null);
         date = preferences.getString(CommonString.KEY_DATE, "");
@@ -56,8 +56,6 @@ public class DownloadActivity extends AppCompatActivity {
             keysList.add("Posm_Master");
             keysList.add("Mapping_Visicooler");
             keysList.add("Non_Execution_Reason");
-            keysList.add("Mapping_Posm");
-            keysList.add("Posm_Master");
             keysList.add("Mapping_Window");
             keysList.add("Brand_Master");
             keysList.add("Window_Master");
@@ -71,6 +69,9 @@ public class DownloadActivity extends AppCompatActivity {
             keysList.add("Sku_Master");
             keysList.add("mapping_Back_Of_Store");
             keysList.add("Mapping_Monkeysun");
+            keysList.add("Sub_Category_Master");
+            keysList.add("mapping_Share_Of_Shelf");
+            keysList.add("Category_Master");
 
 
 

@@ -4,6 +4,8 @@ package com.cpm.reckitt_benckiser_gt.getterSetter;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
+
 public class CategoryMaster {
 
     @SerializedName("Category_Id")
@@ -95,5 +97,87 @@ public class CategoryMaster {
     boolean exist;
     int reasonId;
     String reason;
+
+    private String Brand_Id ="0";
+    private String Brand="";
+    private String Category_Facing="";
+    private String Category_Image="";
+    private String Brand_Facing="";
+    private String Checklist_Question="";
+    private String Checklist_Question_Id="0";
+    private String Checklist_Correct_Answer_Id="0";
+    ArrayList<ChecklistMaster> checklistQuestions = new ArrayList<>();
+
+    public ArrayList<ChecklistMaster> getChecklistQuestions() {
+        return checklistQuestions;
+    }
+
+    public void setChecklistQuestions(ArrayList<ChecklistMaster> checklistQuestions) {
+        this.checklistQuestions = checklistQuestions;
+    }
+
+    public String getBrand_Id() {
+        return Brand_Id;
+    }
+
+    public void setBrand_Id(String brand_Id) {
+        Brand_Id = brand_Id;
+    }
+
+    public String getBrand() {
+        return Brand;
+    }
+
+    public void setBrand(String brand) {
+        Brand = brand;
+    }
+
+    public String getCategory_Facing() {
+        return Category_Facing;
+    }
+
+    public void setCategory_Facing(String category_Facing) {
+        Category_Facing = category_Facing;
+    }
+
+    public String getCategory_Image() {
+        return Category_Image;
+    }
+
+    public void setCategory_Image(String category_Image) {
+        Category_Image = category_Image;
+    }
+
+    public String getBrand_Facing() {
+        return Brand_Facing;
+    }
+
+    public void setBrand_Facing(String brand_Facing) {
+        Brand_Facing = brand_Facing;
+    }
+
+    public String getChecklist_Question() {
+        return Checklist_Question;
+    }
+
+    public void setChecklist_Question(String checklist_Question) {
+        Checklist_Question = checklist_Question;
+    }
+
+    public String getChecklist_Question_Id() {
+        return Checklist_Question_Id;
+    }
+
+    public void setChecklist_Question_Id(String checklist_Question_Id) {
+        Checklist_Question_Id = checklist_Question_Id;
+    }
+
+    public String getChecklist_Correct_Answer_Id() {
+        return Checklist_Correct_Answer_Id;
+    }
+
+    public void setChecklist_Correct_Answer_Id(String checklist_Correct_Answer_Id) {
+        Checklist_Correct_Answer_Id = checklist_Correct_Answer_Id;
+    }
 
 }

@@ -34,7 +34,6 @@
                 android:gravity="center"
                 android:padding="10dp"
                 android:text="Order Entry"
-                android:textAppearance="?android:textAppearanceMedium"
                 android:textColor="@color/black"
                 android:textStyle="bold"
                  />

@@ -3,6 +3,7 @@ package com.cpm.reckitt_benckiser_gt.upload.Retrofit_method;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -13,7 +14,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.BrandMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
@@ -22,6 +23,7 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistAnswerGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.DisplayMasterGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GeotaggingBeans;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JCPGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
@@ -35,6 +37,7 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMonkeysunStoreGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingPosmGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingSecondaryVisibilityGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingShareOfShelfGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingVisicoolerGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingWindChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
@@ -49,6 +52,7 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.ReferenceVariablesForDownloadAc
 import com.cpm.reckitt_benckiser_gt.getterSetter.SkuMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreProfileGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreTypeMasterGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.SubCategoryMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.TableStructure;
 import com.cpm.reckitt_benckiser_gt.getterSetter.TableStructureGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.WindowCheckAnswerGetterSetter;
@@ -106,7 +110,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
     public static int uploadedFiles = 0;
     public int listSize = 0;
     int status = 0;
-    RBGTDatabase db;
+    MondelezDatabase db;
     ProgressDialog pd;
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
@@ -119,7 +123,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
         this.context = context;
     }
 
-    public UploadImageWithRetrofit(Context context, String progessTitle, String progressStr, RBGTDatabase db) {
+    public UploadImageWithRetrofit(Context context, String progessTitle, String progressStr, MondelezDatabase db) {
         this.context = context;
         this.db = db;
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -134,7 +138,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
         }
     }
 
-    public UploadImageWithRetrofit(Context context, RBGTDatabase db, ProgressDialog pd, int from) {
+    public UploadImageWithRetrofit(Context context, MondelezDatabase db, ProgressDialog pd, int from) {
         this.context = context;
         this.db = db;
         this.pd = pd;
@@ -752,7 +756,34 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     //endregion
                     break;
 
+                case "Focus_Product":
+                    db.open();
+                    //String jsonString = null;
+                    /*ArrayList<FocusProductGetterSetter> salesEntry = db.getFocusProductUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
+                    if (salesEntry.size() > 0) {
+                        JSONArray promoArray = new JSONArray();
+                        for (int j = 0; j < salesEntry.size(); j++) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("MID", coverageList.get(coverageIndex).getMID());
+                            obj.put("UserId", coverageList.get(coverageIndex).getUserId());
+                            obj.put("SKU_CD", salesEntry.get(j).getSku_id());
+                            obj.put("STOCK", salesEntry.get(j).getStock());
 
+
+                            promoArray.put(obj);
+                        }
+
+
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "SALES_STOCK_DATA");
+                        jsonObject.put("JsonData", promoArray.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+
+                        jsonString = jsonObject.toString();
+                    }*/
+                    //endregion
+                    break;
             }
             //endregion
 
@@ -1051,7 +1082,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
         protected String doInBackground(String... strings) {
 
             try {
-                db = new RBGTDatabase(context);
+                db = new MondelezDatabase(context);
                 db.open();
                 ArrayList<JourneyPlan> storeList = db.getStoreData(coverageDate);
                 if (storeList.size() == 0) {
@@ -1701,8 +1732,34 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                                 throw new java.lang.Exception();
                                             }
                                             break;
+
+
+                                        case "Sub_Category_Master":
+                                            if (!data.contains("No Data")) {
+                                                subCategoryMasterGetterSetter = new Gson().fromJson(data, SubCategoryMasterGetterSetter.class);
+                                                if (subCategoryMasterGetterSetter != null && !db.insertSubCategoryMaster(subCategoryMasterGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Sub_Category_Master data not saved");
+                                                }
+                                            } else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
+
+                                        case "mapping_Share_Of_Shelf":
+                                            if(!data.contains("No Data")){
+                                                mappingShareOfShelfGetterSetter = new Gson().fromJson(data, MappingShareOfShelfGetterSetter.class);
+                                                if (mappingShareOfShelfGetterSetter != null && !db.insertShareOfShelfMaster(mappingShareOfShelfGetterSetter)) {
+                                                    pd.dismiss();
+                                                    AlertandMessages.showSnackbarMsg(context, "Sub_Category_Master data not saved");
+                                                }
+                                            }else {
+                                                throw new java.lang.Exception();
+                                            }
+                                            break;
                                     }
                                     //endregion
+
                                 }
                             }
                             // jsonStringList.remove(finalJsonIndex);
@@ -1716,7 +1773,19 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                 editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
                                 editor.apply();
                                 pd.dismiss();
-                                AlertandMessages.showAlert((Activity) context, "All data downloaded Successfully", true);
+                                //AlertandMessages.showAlert((Activity) context, "All data downloaded Successfully", true);
+                                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                                builder.setCancelable(false);
+                                builder.setMessage("All data downloaded Successfully").setCancelable(false)
+                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog, int id) {
+                                                dialog.dismiss();
+                                            }
+
+                                        });
+
+                                android.support.v7.app.AlertDialog alert = builder.create();
+                                alert.show();
                                 //downloadImages();
                                 pd.setMessage("Downloading Images");
                                 new DownloadImageTask().execute();

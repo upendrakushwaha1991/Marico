@@ -29,10 +29,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistAnswer;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
@@ -46,8 +45,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import java.util.ArrayList;
-
 public class MonkeysunActivity extends AppCompatActivity implements View.OnClickListener{
     private Spinner sp_present, sp_reason;
     private ImageView image_closeup, image_long_shot;
@@ -55,7 +52,7 @@ public class MonkeysunActivity extends AppCompatActivity implements View.OnClick
     String[] string_present = {"Select", "YES", "NO"};
     String string_present_cd;
     String visit_date, username, _pathforcheck, _pathforcheck2, _path, str, image1 = "", image2 = "";
-    RBGTDatabase db;
+    MondelezDatabase db;
     Context context;
     private SharedPreferences preferences;
     JourneyPlan jcpGetset;
@@ -99,7 +96,7 @@ public class MonkeysunActivity extends AppCompatActivity implements View.OnClick
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = this;
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         username = preferences.getString(CommonString.KEY_USERNAME, null);

@@ -7,21 +7,17 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.RectF;
-import android.os.AsyncTask;
 import android.util.Log;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
-import com.google.gson.JsonSyntaxException;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.MultipartBuilder;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.ResponseBody;
-
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -32,7 +28,6 @@ import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import retrofit.Converter;
@@ -57,7 +52,7 @@ public class UploadImageWithRetrofitOne {
     Context context;
     String visitDate, userID, uploadStatus;
     int storeId = 0;
-    RBGTDatabase db;
+    MondelezDatabase db;
     ProgressDialog pd;
    // ArrayList<JourneyPlan> storeList, storeList_deviation;
 

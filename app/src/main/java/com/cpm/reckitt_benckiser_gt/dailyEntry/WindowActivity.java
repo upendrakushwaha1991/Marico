@@ -31,7 +31,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.AnswerChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
@@ -49,7 +49,7 @@ public class WindowActivity extends AppCompatActivity {
 
     ExpandableListAdapter adapter;
     JourneyPlan journeyPlan;
-    RBGTDatabase db;
+    MondelezDatabase db;
     Context context;
     String _pathforcheck = "", image = "", path = "", msg = "";
     ArrayList<WindowMaster> listDataHeader;
@@ -638,7 +638,7 @@ public class WindowActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         username = preferences.getString(CommonString.KEY_USERNAME, null);

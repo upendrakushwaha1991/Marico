@@ -161,7 +161,7 @@ public class CommonString {
     public static final int CHECKOUTDetail_CLIENT = 11;
 
     public static String URL = "http://mgt.parinaam.in/Webservice/Mondlezeservice.svc/";
-    public static String URL3 = "http://mgt.parinaam.in/webservice/Imageupload.asmx/";
+    public static String URL3 = "http://rbgt.parinaam.in/webservice/Imageupload.asmx/";
     public static String URLGORIMAG = "http://mgt.parinaam.in/webservice/Imageupload.asmx/";
 
     public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/Mondelez_GT_Backup/";
@@ -441,6 +441,7 @@ public class CommonString {
     public static final String KEY_STORE_TYPE_ID = "Store_Type_Id";
     public static final String KEY_IMAGE_CLOSEUP = "IMAGE_CLOSEUP";
     public static final String KEY_IMAGE_LONGSHOT = "LONGSHOT";
+    public static final String KEY_LONGSHOT = "LONGSHOT";
     public static final String KEY_ANSWER = "ANSWER";
 
     public static final String CREATE_TABLE_POSM_DEPLOYMENT = "CREATE TABLE  IF NOT EXISTS " + TABLE_POSM_DEPLOYMENT
@@ -716,4 +717,66 @@ public class CommonString {
             + KEY_CHEKLIST + " VARCHAR,"
             + KEY_ANSWER_CD + " INTEGER,"
             + KEY_ANSWER + " VARCHAR)";
+
+    //-------------------------------------Neeraj--------------------------
+
+    public static final String TABLE_FEEDBACK_QUESTIONS_DATA = "Feedback_Questions_Data";
+    public static final String TABLE_SOS_CHECKLIST_QUESTIONS_DATA = "SOS_Feedback_Questions_Data";
+    public static final String TABLE_SOS_HEADER_DATA = "SOS_Header_Data";
+    public static final String TABLE_SOS_CHILD_DATA = "SOS_Child_Data";
+    public static final String KEY_QUESTION_ID = "Question_Id";
+    public static final String KEY_QUESTION = "Question";
+    public static final String KEY_CORRECT_ANSWER_ID = "Correct_Answer_Id";
+    public static final String KEY_CATEGORY_FACING = "Category_Facing";
+    public static final String KEY_BRAND_FACING = "Brand_Facing";
+
+    public static final String CREATE_TABLE_SOS_CHECKLIST_QUESTIONS_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_SOS_CHECKLIST_QUESTIONS_DATA
+            + " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_MENU_ID + " VARCHAR,"
+            + KEY_QUESTION_ID + " VARCHAR,"
+            + KEY_BRAND_ID + " VARCHAR,"
+            + KEY_COMMON_ID + " VARCHAR,"
+            + KEY_CATEGORY_ID + " VARCHAR,"
+            + KEY_QUESTION + " VARCHAR,"
+            + KEY_CORRECT_ANSWER_ID + " VARCHAR)";
+
+
+    public static final String CREATE_TABLE_SOS_HEADER_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_SOS_HEADER_DATA
+            + " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_MENU_ID + " VARCHAR,"
+            + KEY_CATEGORY + " VARCHAR,"
+            + KEY_CATEGORY_FACING + " VARCHAR,"
+            + KEY_CATEGORY_IMAGE + " VARCHAR,"
+            + KEY_CATEGORY_ID + " VARCHAR)";
+
+
+
+    public static final String CREATE_TABLE_SOS_CHILD_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_SOS_CHILD_DATA
+            + " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_MENU_ID + " VARCHAR,"
+            + KEY_COMMON_ID + " VARCHAR,"
+            + KEY_BRAND_FACING + " VARCHAR,"
+            + KEY_BRAND_ID + " VARCHAR,"
+            + KEY_BRAND + " VARCHAR)";
+
+
+
+    public static final String CREATE_TABLE_FEEDBACK_QUESTIONS_DATA = "CREATE TABLE  IF NOT EXISTS "
+            + TABLE_FEEDBACK_QUESTIONS_DATA
+            + " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
+            + KEY_STORE_ID + " INTEGER,USER_ID VARCHAR, "
+            + KEY_VISIT_DATE + " VARCHAR,"
+            + KEY_MENU_ID + " VARCHAR,"
+            + KEY_QUESTION_ID + " VARCHAR,"
+            + KEY_QUESTION + " VARCHAR,"
+            + KEY_CORRECT_ANSWER_ID + " VARCHAR)";
 }

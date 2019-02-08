@@ -28,7 +28,7 @@ import android.widget.TextView;
 
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.adapter.SpinnerAdapterView;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CommonChillerDataGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
@@ -48,7 +48,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
     private ArrayList<CommonChillerDataGetterSetter> deploymentData = new ArrayList<>();
     boolean checkflag = true;
     String Error_Message = "", visit_date, _pathforcheck1 = "", str, image1 = "", visit_date_formatted, _path = "", store_id, _UserId;
-    private RBGTDatabase db;
+    private MondelezDatabase db;
     JourneyPlan jcpGetset;
     MenuMaster menuMaster;
     RecyclerView recyclerView;
@@ -68,7 +68,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_posmdeployment);
 
 
-        db = new RBGTDatabase(this);
+        db = new MondelezDatabase(this);
         declaration();
 
         if (getIntent().getSerializableExtra(CommonString.TAG_OBJECT) != null && getIntent().getSerializableExtra(CommonString.KEY_MENU_ID) !=null) {

@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 
 public class PreviousDataUploadActivity extends AppCompatActivity {
 
-    RBGTDatabase db;
+    MondelezDatabase db;
     ArrayList<CoverageBean> coverageList;
     String date, userId, app_version;
     String Path;
@@ -64,7 +64,7 @@ public class PreviousDataUploadActivity extends AppCompatActivity {
         userId = preferences.getString(CommonString.KEY_USERNAME, null);
         app_version = preferences.getString(CommonString.KEY_VERSION, null);
 
-        db = new RBGTDatabase(this);
+        db = new MondelezDatabase(this);
         db.open();
         context = this;
         Path = CommonString.FILE_PATH;
@@ -189,7 +189,7 @@ public class PreviousDataUploadActivity extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             String strflag = null;
             try {
-                RBGTDatabase db = new RBGTDatabase(context);
+                MondelezDatabase db = new MondelezDatabase(context);
                 db.open();
                 // for failure
                 JSONObject jsonObject = new JSONObject();
@@ -311,7 +311,7 @@ public class PreviousDataUploadActivity extends AppCompatActivity {
         protected String doInBackground(Void... params) {
             String strflag = null;
             try {
-                RBGTDatabase db = new RBGTDatabase(context);
+                MondelezDatabase db = new MondelezDatabase(context);
                 db.open();
                 // for failure
                 JSONObject jsonObject = new JSONObject();

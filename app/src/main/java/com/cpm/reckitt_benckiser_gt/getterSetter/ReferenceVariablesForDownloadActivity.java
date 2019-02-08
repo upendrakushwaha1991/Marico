@@ -43,6 +43,8 @@ public class ReferenceVariablesForDownloadActivity {
     protected SkuMasterGetterSetter skuMasterGetterSetter;
     protected MappingBackOfStoreGetterSetter mappingBackOfStoreGetterSetter;
     protected MappingMonkeysunStoreGetterSetter mappingMonkeysunStoreGetterSetter;
+    protected SubCategoryMasterGetterSetter subCategoryMasterGetterSetter;
+    protected MappingShareOfShelfGetterSetter mappingShareOfShelfGetterSetter;
 
 
 

@@ -17,7 +17,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,9 +37,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.AnswerChecklistGetterSetter;
-import com.cpm.reckitt_benckiser_gt.getterSetter.BrandMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
@@ -61,7 +59,7 @@ public class CategoryDressingActivity extends AppCompatActivity {
     WebView webview;
     ExpandableListAdapter adapter;
     JourneyPlan journeyPlan;
-    RBGTDatabase db;
+    MondelezDatabase db;
     Context context;
     String _pathforcheck = "", image = "", path = "", msg = "";
     ArrayList<CategoryMaster> listDataHeader;
@@ -587,7 +585,7 @@ public class CategoryDressingActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         username = preferences.getString(CommonString.KEY_USERNAME, null);

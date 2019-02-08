@@ -3,7 +3,6 @@ package com.cpm.reckitt_benckiser_gt.dailyEntry;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -23,10 +22,9 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
@@ -38,7 +36,7 @@ import java.util.List;
 
 public class FocusProductActivity extends AppCompatActivity {
     JourneyPlan jcpGetset;
-    RBGTDatabase db;
+    MondelezDatabase db;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor = null;
     String store_cd, visit_date, username;
@@ -111,7 +109,7 @@ public class FocusProductActivity extends AppCompatActivity {
 
 
         getSupportActionBar().setTitle("Focus Product -" + visit_date);
-        db = new RBGTDatabase(this);
+        db = new MondelezDatabase(this);
         db.open();
         if (getIntent().getSerializableExtra(CommonString.TAG_OBJECT) != null && getIntent().getSerializableExtra(CommonString.KEY_MENU_ID) !=null) {
             jcpGetset = (JourneyPlan) getIntent().getSerializableExtra(CommonString.TAG_OBJECT);

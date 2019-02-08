@@ -1,7 +1,9 @@
 package com.cpm.reckitt_benckiser_gt.dailyEntry;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,33 +14,27 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.adapter.ChecklistAnswerAdapter;
-import com.cpm.reckitt_benckiser_gt.adapter.ReasonSpinnerAdapter;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.BrandMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistAnswer;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
-import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
-import com.cpm.reckitt_benckiser_gt.getterSetter.PosmMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.WindowMaster;
-import com.cpm.reckitt_benckiser_gt.utilities.CommonFunctions;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 
 import java.util.ArrayList;
@@ -46,7 +42,7 @@ import java.util.HashMap;
 
 public class WindowBrandVisibilityActivity extends AppCompatActivity {
 
-    RBGTDatabase database;
+    MondelezDatabase database;
     JourneyPlan journeyPlan;
     WindowMaster windowMaster;
     TextView txt_label;
@@ -80,7 +76,7 @@ public class WindowBrandVisibilityActivity extends AppCompatActivity {
 
         fab = findViewById(R.id.fab);
 
-        database = new RBGTDatabase(getApplicationContext());
+        database = new MondelezDatabase(getApplicationContext());
         database.open();
 
         if (getIntent().getSerializableExtra(CommonString.TAG_OBJECT) != null) {
@@ -421,4 +417,29 @@ public class WindowBrandVisibilityActivity extends AppCompatActivity {
         }
         return flag;
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(WindowBrandVisibilityActivity.this);
+            builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }

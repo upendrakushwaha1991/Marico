@@ -28,16 +28,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistAnswer;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JarGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
-import com.cpm.reckitt_benckiser_gt.getterSetter.NonExecutionReason;
-import com.cpm.reckitt_benckiser_gt.getterSetter.VisiColoersGetterSetter;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 
@@ -53,7 +50,7 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
     String[] string_present = {"Select", "YES", "NO"};
     String string_present_cd;
     String visit_date, username, _pathforcheck, _pathforcheck2, _path, str, image1 = "", image2 = "";
-    RBGTDatabase db;
+    MondelezDatabase db;
     Context context;
     private SharedPreferences preferences;
     JourneyPlan jcpGetset;
@@ -90,7 +87,7 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = this;
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         username = preferences.getString(CommonString.KEY_USERNAME, null);

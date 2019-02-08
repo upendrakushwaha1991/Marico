@@ -116,5 +116,12 @@
     <string name="title_activity_back_of_store">BackOfStoreActivity</string>
     <string name="title_activity_jar">JarActivity</string>
     <string name="title_activity_ctu_actiivty">CtuActiivty</string>
+    <string name="title_activity_feed_back">FeedBackActivity</string>
+    <string name="title_activity_sos">SOSActivity</string>
+    <string name="cat_facing_error">Please enter category facing</string>
+    <string name="cat_img_error">Please capture category image</string>
+    <string name="brand_facing_error"> Please enter brand facing </string>
+    <string name="checklist_error">Please fill checklist data</string>
+    <string name="answer_error">All answers are madetory to fill</string>
 
 </resources>

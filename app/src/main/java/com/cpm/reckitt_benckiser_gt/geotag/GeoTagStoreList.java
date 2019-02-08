@@ -24,7 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.download.DownloadActivity;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
@@ -37,7 +37,7 @@ public class GeoTagStoreList extends AppCompatActivity {
     private SharedPreferences preferences;
     ArrayList<JourneyPlan> storelist = new ArrayList<JourneyPlan>();
     String date, visit_status;
-    RBGTDatabase db;
+    MondelezDatabase db;
     ValueAdapter adapter;
     RecyclerView recyclerView;
     private SharedPreferences.Editor editor = null;
@@ -211,7 +211,7 @@ public class GeoTagStoreList extends AppCompatActivity {
         visit_status = preferences.getString(CommonString.KEY_STOREVISITED_STATUS, "");
         TextView txt_label = (TextView) findViewById(R.id.txt_label);
         txt_label.setText(getResources().getString(R.string.title_activity_geo_tag_store_list) + " - " + date);
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
     }
 
