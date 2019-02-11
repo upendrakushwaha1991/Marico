@@ -116,5 +116,29 @@
     <string name="title_activity_back_of_store">BackOfStoreActivity</string>
     <string name="title_activity_jar">JarActivity</string>
     <string name="title_activity_ctu_actiivty">CtuActiivty</string>
+    <string name="title_activity_feed_back">FeedBackActivity</string>
+    <string name="title_activity_sos">SOSActivity</string>
+    <string name="cat_facing_error">Please enter category facing</string>
+    <string name="cat_img_error">Please capture category image</string>
+    <string name="brand_facing_error"> Please enter brand facing </string>
+    <string name="checklist_error">Please fill checklist data</string>
+    <string name="answer_error">All answers are madetory to fill</string>
+    <string name="title_activity_change_password">ChangePasswordActivity</string>
+
+    <!-- Change Password-->
+    <string name="submit">Submit</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="password_rules">Password Rules</string>
+    <string name="pw_rules">1. Must be between 6 to 8 characters long. \n\n 2. Must contain following combinations \n\n a. Uppercase characters(A-Z) \n b. Lowercase characters(a-z) \n c. Numbers(0-9) \n d. Special characters(@#$%)</string>
+    <string name="invalid_password">Invalid Password</string>
+    <string name="password_and_confirm_password_not_match">Password and confirm password does not match</string>
+    <string name="space_not_allowed_in_password">Space is not allowed in password</string>
+    <string name="new_password_not_equal_to_old_password">New password should not be equal to old password</string>
+    <string name="password_updated_successfully">Password updated successfully</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="title_activity_mpin">MPinActivity</string>
+    <string name="error_incorrect_pin">This pin is incorrect</string>
 
 </resources>

@@ -33,7 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GeotaggingBeans;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
@@ -82,7 +82,7 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
     FloatingActionButton fab, fabcarmabtn;
     SharedPreferences preferences;
     String username, str, storename, visitData, storeid;
-    RBGTDatabase db;
+    MondelezDatabase db;
     LocationManager locationManager;
     Marker currLocationMarker;
     Geocoder geocoder;
@@ -426,7 +426,7 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
         visitData = preferences.getString(CommonString.KEY_DATE, "");
         fab = findViewById(R.id.fab);
         fabcarmabtn = findViewById(R.id.camrabtn);
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
         str = CommonString.FILE_PATH;
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);

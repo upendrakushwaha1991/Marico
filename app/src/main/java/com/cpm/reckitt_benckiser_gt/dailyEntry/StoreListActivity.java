@@ -17,9 +17,9 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -43,12 +43,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.download.DownloadActivity;
 import com.cpm.reckitt_benckiser_gt.geotag.GeoTagStoreList;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreProfileGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.WindowMaster;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
@@ -95,7 +96,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
     private ArrayList<CoverageBean> coverage = new ArrayList<>();
     private ArrayList<JourneyPlan> storelist = new ArrayList<>();
     private String date;
-    private RBGTDatabase db;
+    private MondelezDatabase db;
     private ValueAdapter adapter;
     private RecyclerView recyclerView;
     private Button search_btn;
@@ -246,8 +247,8 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
 
             final JourneyPlan current = data.get(position);
             viewHolder.chkbtn.setBackgroundResource(R.mipmap.checkout);
-            viewHolder.txt.setText(current.getStoreName() + " - " + current.getStoreType() + " - " + current.getStoreCategory()+","+current.getClassification());
-            viewHolder.address.setText(current.getAddress1()+"\n"+"Store Id - "+current.getStoreId() +"\n"+"Store Code - "+current.getStore_Code());
+            viewHolder.txt.setText(current.getStoreName() + " - " + current.getStoreType() + " - " + current.getStoreCategory() + "," + current.getClassification());
+            viewHolder.address.setText(current.getAddress1() + "\n" + "Store Id - " + current.getStoreId() + "\n" + "Store Code - " + current.getStore_Code());
 
             if (current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_VALID)) {
                 viewHolder.chkbtn.setVisibility(View.VISIBLE);
@@ -272,7 +273,8 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                 viewHolder.imageview.setBackgroundResource(R.mipmap.tick);
                 viewHolder.chkbtn.setVisibility(View.INVISIBLE);
                 viewHolder.Cardbtn.setCardBackgroundColor(getResources().getColor(current.getColourCode()));
-            } else if (isValid(current) || (rightname.equalsIgnoreCase("DBSR")) && current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_VALID)) {
+                // } else if (isValid(current) || (rightname.equalsIgnoreCase("DBSR")) && current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_VALID)) {
+            } else if (chekDataforCheckout(current) || (rightname.equalsIgnoreCase("DBSR")) && current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_VALID)) {
                 viewHolder.imageview.setVisibility(View.INVISIBLE);
                 viewHolder.chkbtn.setVisibility(View.VISIBLE);
                 viewHolder.Cardbtn.setCardBackgroundColor(getResources().getColor(current.getColourCode()));
@@ -564,7 +566,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
 
                 } else if (checkedId == R.id.no) {
                     dialog.cancel();
-                    RBGTDatabase db = new RBGTDatabase(context);
+                    MondelezDatabase db = new MondelezDatabase(context);
                     db.open();
                     ArrayList<CoverageBean> coverage = db.getCoverageWithStoreIDAndVisitDate_Data(current.getStoreId() + "", current.getVisitDate());
                     if (current.getUploadStatus().equals(CommonString.KEY_CHECK_IN)) {
@@ -796,7 +798,7 @@ distance > distanceGeoPhence) {
 
                 } else if (checkedId == R.id.no) {
                     dialog.cancel();
-                    RBGTDatabase db = new RBGTDatabase(context);
+                    MondelezDatabase db = new MondelezDatabase(context);
                     db.open();
                     ArrayList<CoverageBean> coverage = db.getCoverageWithStoreIDAndVisitDate_Data(current.getStoreId() + "", current.getVisitDate());
                     if (current.getUploadStatus().equals(CommonString.KEY_CHECK_IN)) {
@@ -904,7 +906,7 @@ distance > distanceGeoPhence) {
         txt_label = (TextView) findViewById(R.id.txt_label);
         context = this;
         tag_from = getIntent().getStringExtra(CommonString.TAG_FROM);
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
         getSupportActionBar().setTitle("");
         txt_label.setText("Store List - " + date);
@@ -1207,7 +1209,7 @@ distance > distanceGeoPhence) {
         protected String doInBackground(Void... params) {
             String strflag = null;
             try {
-                RBGTDatabase db = new RBGTDatabase(context);
+                MondelezDatabase db = new MondelezDatabase(context);
                 db.open();
                 // for failure
                 JSONObject jsonObject = new JSONObject();
@@ -1330,7 +1332,7 @@ distance > distanceGeoPhence) {
         protected String doInBackground(Void... params) {
             String strflag = null;
             try {
-                RBGTDatabase db = new RBGTDatabase(context);
+                MondelezDatabase db = new MondelezDatabase(context);
                 db.open();
                 // for failure
                 JSONObject jsonObject = new JSONObject();
@@ -1477,6 +1479,16 @@ distance > distanceGeoPhence) {
 
     @Override
     public void onConnected(Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -1688,6 +1700,101 @@ distance > distanceGeoPhence) {
         }
         dialog.cancel();
     }
+    private boolean chekDataforCheckout(JourneyPlan journeyPlan) {
+        boolean status = true;
+        db.open();
+        ArrayList<MenuMaster> menu_list = db.getMenuData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId());
+        for(int i=0; i<menu_list.size();i++){
+            switch (menu_list.get(i).getMenuId()) {
 
+                case 3:
+                    if (db.isBackofStoreFilled(journeyPlan.getStoreId())) {
+
+                    } else {
+                        status=false;
+                        break;
+                    }
+                    break;
+                case 4:
+                    if (db.isVisiCoolerFilledData(journeyPlan.getStoreId())) {
+
+                    } else {
+                        status=false;
+                        break;
+                    }
+                    break;
+                case 5:
+                    if (db.isPosmFilledData(journeyPlan.getStoreId())) {
+
+                    } else {
+                        status=false;
+                        break;
+                    }
+                    break;
+                case 6:
+                    if (db.isFocusproductFilled(journeyPlan.getStoreId())) {
+
+                    } else {
+                        status=false;
+                        break;
+                    }
+                    break;
+                case 8:
+                    if (db.isJarFilledData(journeyPlan.getStoreId())) {
+
+                    } else {
+                        status=false;
+                        break;
+                    }
+                    break;
+                case 10:
+                    if (db.isMonkeySunFilledData(journeyPlan.getStoreId())) {
+
+                    } else {
+                        status=false;
+                        break;
+                    }
+                    break;
+
+                case 1:
+                    if (db.isWindowFilledData(journeyPlan.getStoreId())) {
+
+                    } else {
+                        status=false;
+                        break;
+                    }
+                    break;
+
+                case 11:
+                    if (db.isSecondaryFilledData(journeyPlan.getStoreId())) {
+
+                    } else {
+                        status=false;
+                        break;
+                    }
+                    break;
+
+                case 2:
+                    if (db.isCTUFilledData(journeyPlan.getStoreId())) {
+
+                    } else {
+                        status=false;
+                        break;
+                    }
+                    break;
+
+                case 7:
+                    if (db.isFeedBackFilledData(journeyPlan.getStoreId())) {
+
+                    } else {
+                        status=false;
+                        break;
+                    }
+                    break;
+            }
+        }
+
+        return status;
+    }
 }
 

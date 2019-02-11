@@ -23,26 +23,48 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/icon"
+        android:icon="@mipmap/mondelez_icon"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:roundIcon="@mipmap/icon"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".dailyEntry.CTUActivity"
-            android:label="@string/title_activity_ctu"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".password.MPinActivity"
+            android:label="@string/title_activity_mpin"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".password.ChangePasswordActivity"
+            android:label="@string/title_activity_change_password"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".dailyEntry.SOSActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
+            android:label="@string/title_activity_sos"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"></activity>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".dailyEntry.FeedBackActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:label="@string/title_activity_feed_back"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".dailyEntry.CTUActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:label="@string/title_activity_ctu"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".dailyEntry.SecondaryVisibilityActivity"
-            android:label="@string/title_activity_secondary_visibility"
-            android:theme="@style/AppTheme.NoActionBar"
             android:configChanges="screenSize|orientation|keyboardHidden"
+            android:label="@string/title_activity_secondary_visibility"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan"/>
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".dailyEntry.WindowBrandVisibilityActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
@@ -63,12 +85,8 @@
             android:value="false" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-
-            android:value="AIzaSyDf_qvzh-RZAPGIzmTbQPeI9CpdnwcfshM" />
-
-           <!-- android:value="AIzaSyCV9SELy-EXFg9pcKtCLqzp-DAo-aRsjj0" />-->
+            android:value="AIzaSyDf_qvzh-RZAPGIzmTbQPeI9CpdnwcfshM" /> <!-- android:value="AIzaSyCV9SELy-EXFg9pcKtCLqzp-DAo-aRsjj0" /> -->
         <!-- android:value="AIzaSyA-MIPQ2JhVqtewf3nx2MJHwIdniVzuoaI" /> -->
-
         <activity
             android:name=".SplashScreenActivity"
             android:label="@string/app_name"
@@ -227,7 +245,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
     </application>
 
 </manifest>

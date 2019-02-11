@@ -31,7 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
@@ -72,7 +72,7 @@ public class StoreimageActivity extends AppCompatActivity implements View.OnClic
     private SharedPreferences preferences;
     AlertDialog alert;
     String img_str, strflag;
-    private RBGTDatabase database;
+    private MondelezDatabase database;
     double lat, lon;
     GoogleApiClient mGoogleApiClient;
     Toolbar toolbar;
@@ -500,7 +500,7 @@ public class StoreimageActivity extends AppCompatActivity implements View.OnClic
         @Override
         protected String doInBackground(Void... params) {
             try {
-                RBGTDatabase db = new RBGTDatabase(context);
+                MondelezDatabase db = new MondelezDatabase(context);
                 db.open();
 
                 //coverage = db.getCoverageWithStoreID_Data(store_id);
@@ -603,7 +603,7 @@ public class StoreimageActivity extends AppCompatActivity implements View.OnClic
                     }
                 }
             } else {
-                RBGTDatabase db = new RBGTDatabase(context);
+                MondelezDatabase db = new MondelezDatabase(context);
                 db.open();
                 dialog.dismiss();
                 db.deleteTableWithStoreID(store_id);
@@ -650,7 +650,7 @@ public class StoreimageActivity extends AppCompatActivity implements View.OnClic
         txt_label = (TextView) findViewById(R.id.txt_label);
         getSupportActionBar().setTitle("");
         txt_label.setText("Store Image - " + date);
-        database = new RBGTDatabase(this);
+        database = new MondelezDatabase(this);
         database.open();
     }
 }

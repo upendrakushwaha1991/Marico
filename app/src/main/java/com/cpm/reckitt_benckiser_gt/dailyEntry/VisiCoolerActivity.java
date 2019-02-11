@@ -1,6 +1,5 @@
 package com.cpm.reckitt_benckiser_gt.dailyEntry;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -21,9 +20,8 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
-import com.cpm.reckitt_benckiser_gt.getterSetter.StoreProfileGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.VisiColoersGetterSetter;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
@@ -41,7 +39,7 @@ public class VisiCoolerActivity extends AppCompatActivity implements View.OnClic
     String[] string_present = {"Select", "YES", "NO"};
     String string_present_cd, spinner_profile_store_format_sppiner, string_working_cd, string_location_cd, string_purity_cd, string_planogram_cd;
     String visit_date, username, _pathforcheck, _pathforcheck2, _path, str, image1 = "", image2 = "";
-    RBGTDatabase db;
+    MondelezDatabase db;
     Context context;
     private SharedPreferences preferences;
     JourneyPlan jcpGetset;
@@ -71,7 +69,7 @@ public class VisiCoolerActivity extends AppCompatActivity implements View.OnClic
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         context = this;
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         username = preferences.getString(CommonString.KEY_USERNAME, null);

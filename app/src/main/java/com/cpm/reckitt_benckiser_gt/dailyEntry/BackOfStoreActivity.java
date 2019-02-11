@@ -24,7 +24,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.BaseAdapter;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
@@ -34,13 +33,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.BackofStoreGetterSetter;
-import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
-import com.cpm.reckitt_benckiser_gt.getterSetter.NonExecutionReason;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
+import com.cpm.reckitt_benckiser_gt.utilities.CommonFunctions;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 
 import java.io.File;
@@ -58,7 +56,7 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
     String[] string_present = {"Select", "YES", "NO"};
     String string_present_cd;
     String visit_date, username, _pathforcheck, _pathforcheck2, _path, str, image1 = "", image2 = "";
-    RBGTDatabase db;
+    MondelezDatabase db;
     Context context;
     private SharedPreferences preferences;
     JourneyPlan jcpGetset;
@@ -99,7 +97,7 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         context = this;
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
         preferences = PreferenceManager.getDefaultSharedPreferences(context);
         username = preferences.getString(CommonString.KEY_USERNAME, null);
@@ -236,12 +234,14 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
 
                 _pathforcheck = "_CLOSEUPIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
-                startCameraActivity();
+                CommonFunctions.startAnncaCameraActivity(BackOfStoreActivity.this, _path, null, false);
+                //startCameraActivity();
                 break;
             case R.id.image_long_shot:
                 _pathforcheck2 = "_LONGSHOTIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck2;
-                startCameraActivity();
+                CommonFunctions.startAnncaCameraActivity(BackOfStoreActivity.this, _path, null, false);
+                //startCameraActivity();
 
                 break;
         }

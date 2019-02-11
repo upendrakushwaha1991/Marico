@@ -20,7 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.PostApiForFile;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.StringConverterFactory;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
@@ -183,7 +183,7 @@ public class ServiceActivityFragment extends Fragment {
                                 long date = System.currentTimeMillis();
                                 SimpleDateFormat sdf = new SimpleDateFormat("MMM/dd/yy");
                                 String dateString = sdf.format(date);
-                                String currentDBPath = "//data//com.cpm.mondelezgt//databases//" + RBGTDatabase.DATABASE_NAME;
+                                String currentDBPath = "//data//com.cpm.mondelezgt//databases//" + MondelezDatabase.DATABASE_NAME;
                                 String backupDBPath = user_name + "Mondelez_GT_Backup" + dateString.replace('/', '_') + getCurrentTime().replace(":", "") + ".db";
                                 String path = Environment.getExternalStorageDirectory().getPath() + "/Mondelez_GT_Backup";
                                 File currentDB = new File(data, currentDBPath);

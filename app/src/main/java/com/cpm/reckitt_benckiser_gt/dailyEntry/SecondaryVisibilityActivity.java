@@ -20,6 +20,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,16 +38,13 @@ import android.widget.TextView;
 
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.adapter.ChecklistAnswerAdapter;
-import com.cpm.reckitt_benckiser_gt.adapter.NonExecutionAdapter;
 import com.cpm.reckitt_benckiser_gt.adapter.ReasonSpinnerAdapter;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
-import com.cpm.reckitt_benckiser_gt.getterSetter.BrandMaster;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistAnswer;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.DisplayMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
-import com.cpm.reckitt_benckiser_gt.getterSetter.NonExecutionReason;
 import com.cpm.reckitt_benckiser_gt.getterSetter.PosmMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.WindowMaster;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonFunctions;
@@ -63,7 +61,7 @@ import java.util.HashMap;
 
 public class SecondaryVisibilityActivity extends AppCompatActivity {
 
-    RBGTDatabase database;
+    MondelezDatabase database;
     JourneyPlan journeyPlan;
     WindowMaster windowMaster;
     TextView txt_label;
@@ -107,7 +105,7 @@ public class SecondaryVisibilityActivity extends AppCompatActivity {
         }
 
 
-        database = new RBGTDatabase(getApplicationContext());
+        database = new MondelezDatabase(getApplicationContext());
         database.open();
 
         displayMasterList = database.getSecondaryVisibilityDisplayData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId(), journeyPlan.getStateId());
@@ -222,6 +220,30 @@ public class SecondaryVisibilityActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(SecondaryVisibilityActivity.this);
+            builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                            finish();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public class ExpandableListAdapter extends BaseExpandableListAdapter {

@@ -34,7 +34,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.NonWorkingReason;
@@ -66,7 +66,7 @@ public class NonWorkingActivity extends AppCompatActivity implements AdapterView
 
     ArrayList<NonWorkingReason> reasondata = new ArrayList<>();
     private Spinner reasonspinner;
-    private RBGTDatabase database;
+    private MondelezDatabase database;
     String reasonname = "", reasonid = "", entry_allow = "", image_allow = "", image, intime = "";
     Button save;
     private ArrayAdapter<CharSequence> reason_adapter;
@@ -707,7 +707,7 @@ public class NonWorkingActivity extends AppCompatActivity implements AdapterView
         store_id = String.valueOf(getIntent().getIntExtra(CommonString.KEY_STORE_ID, 0));
         app_ver = preferences.getString(CommonString.KEY_VERSION, "");
         getSupportActionBar().setTitle("Non Working -" + visit_date);
-        database = new RBGTDatabase(context);
+        database = new MondelezDatabase(context);
     }
 
 }

@@ -50,6 +50,8 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.MappingPosm;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingPosmGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingSecondaryVisibility;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingSecondaryVisibilityGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingShareOfShelf;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingShareOfShelfGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingVisibilityInitiative;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingVisicooler;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingVisicoolerGetterSetter;
@@ -74,6 +76,8 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.SkuMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreProfileGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreTypeMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreTypeMasterGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.SubCategoryMaster;
+import com.cpm.reckitt_benckiser_gt.getterSetter.SubCategoryMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.VisiColoersGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.WindowCheckAnswerGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.WindowChecklist;
@@ -88,14 +92,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class RBGTDatabase extends SQLiteOpenHelper {
+public class MondelezDatabase extends SQLiteOpenHelper {
 
     public static final String DATABASE_NAME = "Modelez_GT_DB5";
     public static final int DATABASE_VERSION = 1;
     private SQLiteDatabase db;
     Context context;
 
-    public RBGTDatabase(Context context) {
+    public MondelezDatabase(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
@@ -146,6 +150,14 @@ public class RBGTDatabase extends SQLiteOpenHelper {
             db.execSQL(CommonString.CREATE_TABLE_CTU_BRAND_CHECK_LIST);
             db.execSQL(CommonString.CREATE_TABLE_SECONDARY_VISIBILITY_HEADER);
             db.execSQL(CommonString.CREATE_TABLE_SECONDARY_VISIBILITY_CHECK_LIST);
+
+            //------------Neeraj---------------------------------
+            db.execSQL(CommonString.CREATE_TABLE_SOS_HEADER_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_SOS_CHILD_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_POSM_DEPLOYMENT);
+            db.execSQL(CommonString.CREATE_TABLE_FEEDBACK_QUESTIONS_DATA);
+            db.execSQL(CommonString.CREATE_TABLE_TABLE_VISICOOLER_CHEKLIST);
+            db.execSQL(CommonString.CREATE_TABLE_SOS_CHECKLIST_QUESTIONS_DATA);
 
 
         } catch (SQLException e) {
@@ -2007,10 +2019,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
                     } else if (sb.getStoreTypeId() == 3) {
                         sb.setColourCode(R.color.gainsboro);
                     } else {
-                        sb.setColourCode(R.color.green_light);
-                    }
-                    else {
-                        sb.setColourCode(R.color.green_light);
+                        sb.setColourCode(R.color.lightsalmon);
                     }
 
                     list.add(sb);
@@ -3080,12 +3089,14 @@ public class RBGTDatabase extends SQLiteOpenHelper {
             db.beginTransaction();
             for (int i = 0; i < save_listDataHeader.size(); i++) {
                 values.put("STORE_ID", jcp.getStoreId());
+                values.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
                 values.put("BRAND_CD", save_listDataHeader.get(i).getBrand_id());
                 values.put("BRAND", save_listDataHeader.get(i).getBrand());
                 long l = db.insert(CommonString.TABLE_INSERT_FOCUS_PRODUCT_STOCK_OPENINGHEADER_DATA, null, values);
                 for (int j = 0; j < data.get(save_listDataHeader.get(i)).size(); j++) {
                     values1.put("Common_Id", (int) l);
-                    values1.put("STORE_ID", jcp.getStateId());
+                    values1.put("STORE_ID", jcp.getStoreId());
+                    values.put(CommonString.KEY_VISIT_DATE, jcp.getVisitDate());
                     values1.put("BRAND_CD", save_listDataHeader.get(i).getBrand_id());
                     values1.put("BRAND", save_listDataHeader.get(i).getBrand());
                     values1.put("SKU", data.get(save_listDataHeader.get(i)).get(j).getSku());
@@ -4152,7 +4163,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
     public long insertWindowData(JourneyPlan jcp, ArrayList<WindowMaster> windowList, HashMap<WindowMaster, ArrayList<ChecklistMaster>> hashMapListChildData) {
 
         db.delete(CommonString.TABLE_WINDOW_HEADER, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
-                +"'"+ jcp.getVisitDate() +"'", null);
+                +"='"+ jcp.getVisitDate() +"'", null);
         ContentValues values = new ContentValues();
         ContentValues values_window_checklist = new ContentValues();
         ContentValues values_brand = new ContentValues();
@@ -4175,7 +4186,7 @@ public class RBGTDatabase extends SQLiteOpenHelper {
 
                 //Window Check List
                 db.delete(CommonString.TABLE_WINDOW_CHECK_LIST, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
-                        +"'"+ jcp.getVisitDate() +"'", null);
+                        +"='"+ jcp.getVisitDate() +"'", null);
                 ArrayList<ChecklistMaster> windowCheckList = hashMapListChildData.get(windowList.get(i));
 
                 for(int j=0; j<windowCheckList.size(); j++){
@@ -4192,11 +4203,11 @@ public class RBGTDatabase extends SQLiteOpenHelper {
 
                 //Brand List
                 db.delete(CommonString.TABLE_WINDOW_BRAND_LIST, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
-                        +"'"+ jcp.getVisitDate() +"'", null);
+                        +"='"+ jcp.getVisitDate() +"'", null);
 
                 //Window Check List
                 db.delete(CommonString.TABLE_BRAND_CHECK_LIST, CommonString.KEY_STORE_ID +"="+ jcp.getStoreId() +" AND "+ CommonString.KEY_VISIT_DATE
-                        +"'"+ jcp.getVisitDate() +"'", null);
+                        +"='"+ jcp.getVisitDate() +"'", null);
 
                 ArrayList<BrandMaster> brandList = windowList.get(i).getBrandList();
                 HashMap<BrandMaster, ArrayList<ChecklistMaster>> brandCheckList = windowList.get(i).getHashMapListChildData();
@@ -4461,4 +4472,621 @@ public class RBGTDatabase extends SQLiteOpenHelper {
         }
     }
 
+    //get wINDOW data
+    public ArrayList<WindowMaster> getWindowDefaultData(int Store_Type_Id, int Store_Category_Id, String State_Id) {
+        Log.d("Fetchecklidata->Start<-", "-");
+        ArrayList<WindowMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT DISTINCT WM.Window_Id, WM.Window FROM Mapping_Window M INNER JOIN Window_Master WM ON M.Window_Id = WM.Window_Id " +
+                    "WHERE M.Store_Type_Id="+ Store_Type_Id +" AND M.Store_Category_Id="+ Store_Category_Id + " AND M.State_Id='"+ State_Id + "'", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    WindowMaster ch = new WindowMaster();
+                    ch.setWindowId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Window_Id")));
+                    ch.setWindow(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Window")));
+                    list.add(ch);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+        } catch (Exception e) {
+            Log.d("Exc get Display list!", e.toString());
+            return list;
+        }
+        Log.d("Fetching check->Stop<", "-");
+        return list;
+    }
+
+    public boolean isWindowFilledData(int storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  WINDOW_ID " + "FROM WINDOW_HEADER WHERE STORE_ID= '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("WINDOW_ID")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("WINDOW_ID")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+    public boolean isSecondaryFilledData(int storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  DISPLAY_ID " + "FROM SECONDARY_VISIBILITY_HEADER WHERE STORE_ID= '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("DISPLAY_ID")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("DISPLAY_ID")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+    public boolean isCTUFilledData(int storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  BRAND_ID " + "FROM CTU_BRAND_HEADER WHERE STORE_ID= '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("BRAND_ID")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("BRAND_ID")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+    //--------------------------------Neeraj------------------------------
+
+    public boolean insertSubCategoryMaster(SubCategoryMasterGetterSetter subCategoryMasterGetterSetter) {
+        db.delete("Sub_Category_Master", null, null);
+        ContentValues values = new ContentValues();
+        List<SubCategoryMaster> data = subCategoryMasterGetterSetter.getSubCategoryMaster();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+            for (int i = 0; i < data.size(); i++) {
+                values.put("Sub_Category_Id", data.get(i).getSubCategoryId());
+                values.put("Sub_Category", data.get(i).getSubCategory());
+                values.put("Category_Id", data.get(i).getCategoryId());
+                values.put("Sub_Category_Sequence", data.get(i).getSubCategorySequence());
+                long id = db.insert("Sub_Category_Master", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public ArrayList<MappingMenuChecklist> getCheckListId(String menu_id) {
+        ArrayList<MappingMenuChecklist> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM Mapping_Menu_Checklist WHERE Menu_Id = " + menu_id, null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    MappingMenuChecklist sb1  = new MappingMenuChecklist();
+                    sb1.setChecklistId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Checklist_Id")));
+                    list.add(sb1);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return list;
+    }
+
+    public ChecklistMaster getCheckListQuestions(Integer menuChecklistId) {
+        ChecklistMaster sb1  = new ChecklistMaster();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM Checklist_Master WHERE Checklist_Id = " + menuChecklistId, null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    sb1.setChecklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Checklist")));
+                    sb1.setChecklistId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Checklist_Id")));
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return sb1;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return sb1;
+    }
+
+    public ArrayList<ChecklistAnswer> getCheckListQuestionsAnswer(Integer checklistId) {
+        ArrayList<ChecklistAnswer> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM Checklist_Answer WHERE Checklist_Id = " + checklistId, null);
+            final ChecklistAnswer sb = new ChecklistAnswer();
+            sb.setAnswer("-Select Answer-");
+            sb.setAnswerId(0);
+            list.add(0,sb);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ChecklistAnswer sb1  = new ChecklistAnswer();
+                    sb1.setAnswer(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Answer")));
+                    sb1.setAnswerId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Answer_Id")));
+                    list.add(sb1);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return list;
+    }
+
+    public long insertFeedBackQuestionsData(String visit_date, ArrayList<ChecklistMaster> checklistQuestions, String store_id, String menu_id) {
+        long id = 0;
+        db.delete(CommonString.TABLE_FEEDBACK_QUESTIONS_DATA, CommonString.KEY_STORE_ID + "=" + store_id + " and " + CommonString.KEY_MENU_ID + " = " + menu_id + "", null);
+        ContentValues values;
+        try {
+
+            for (int i = 0; i < checklistQuestions.size(); i++) {
+                values = new ContentValues();
+                values.put(CommonString.KEY_VISIT_DATE, visit_date);
+                values.put(CommonString.KEY_MENU_ID,menu_id);
+                values.put(CommonString.KEY_STORE_ID, store_id);
+                values.put(CommonString.KEY_QUESTION, checklistQuestions.get(i).getChecklist());
+                values.put(CommonString.KEY_QUESTION_ID, checklistQuestions.get(i).getChecklistId());
+                values.put(CommonString.KEY_CORRECT_ANSWER_ID, checklistQuestions.get(i).getCorrectAnswer_Id());
+
+                id = db.insert(CommonString.TABLE_FEEDBACK_QUESTIONS_DATA, null, values);
+            }
+
+            if (id > 0) {
+                return id;
+            } else {
+                return 0;
+            }
+
+        } catch (Exception ex) {
+            Log.d("Database Exception in Insert Feedback Data ", ex.toString());
+            return 0;
+        }
+    }
+
+
+    public long insertSOSChecklistQuestionsData(String username, String visit_date, ArrayList<ChecklistMaster> checklistQuestions, String store_id, String menu_id, String brand_id, Integer categoryId) {
+        long id = 0;
+        db.delete(CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA, CommonString.KEY_STORE_ID + "=" + store_id + " and " + CommonString.KEY_MENU_ID + " = " + menu_id + " " +
+                "AND "+CommonString.KEY_BRAND_ID+" = '"+brand_id+"' AND "+CommonString.KEY_CATEGORY_ID+" = '"+categoryId+"'", null);
+        ContentValues values;
+        try {
+
+            for (int i = 0; i < checklistQuestions.size(); i++) {
+                values = new ContentValues();
+                values.put(CommonString.KEY_VISIT_DATE, visit_date);
+                values.put(CommonString.KEY_MENU_ID,menu_id);
+                values.put(CommonString.KEY_STORE_ID, store_id);
+                values.put(CommonString.KEY_QUESTION, checklistQuestions.get(i).getChecklist());
+                values.put(CommonString.KEY_QUESTION_ID, checklistQuestions.get(i).getChecklistId());
+                values.put(CommonString.KEY_CORRECT_ANSWER_ID, checklistQuestions.get(i).getCorrectAnswer_Id());
+                values.put(CommonString.KEY_BRAND_ID, brand_id);
+                values.put(CommonString.KEY_CATEGORY_ID,categoryId);
+                values.put(CommonString.KEY_USER_ID,username);
+
+                id = db.insert(CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA, null, values);
+            }
+
+            if (id > 0) {
+                return id;
+            } else {
+                return 0;
+            }
+
+        } catch (Exception ex) {
+            Log.d("Database Exception in Insert Feedback Data ", ex.toString());
+            return 0;
+        }
+    }
+
+
+    public ArrayList<ChecklistMaster> getSavedFeedBackData(String store_id, String menu_id, String visit_date) {
+        ArrayList<ChecklistMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM  "+CommonString.TABLE_FEEDBACK_QUESTIONS_DATA+" WHERE "+CommonString.KEY_STORE_ID+" = '" + store_id +"' AND "+CommonString.KEY_MENU_ID+" = '"+menu_id+"' ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ChecklistMaster sb1  = new ChecklistMaster();
+                    sb1.setCorrectAnswer_Id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CORRECT_ANSWER_ID)));
+                    sb1.setChecklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_QUESTION)));
+                    sb1.setChecklistId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_QUESTION_ID)));
+                    list.add(sb1);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return list;
+    }
+
+
+
+    public ArrayList<ChecklistMaster> getSavedFeedBackData(String store_id, String visit_date) {
+        ArrayList<ChecklistMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM  "+CommonString.TABLE_FEEDBACK_QUESTIONS_DATA+" WHERE "+CommonString.KEY_STORE_ID+" = '" + store_id +"'  ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ChecklistMaster sb1  = new ChecklistMaster();
+                    sb1.setCorrectAnswer_Id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CORRECT_ANSWER_ID)));
+                    sb1.setChecklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_QUESTION)));
+                    sb1.setChecklistId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_QUESTION_ID)));
+                    list.add(sb1);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return list;
+    }
+
+
+    public ArrayList<ChecklistMaster> getSavedSOSChecklistQuestionData(String username, String store_id, String menu_id, String visit_date, String brand_id, Integer categoryId) {
+        ArrayList<ChecklistMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM  "+CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA+" WHERE "+CommonString.KEY_STORE_ID+" = '" + store_id +"'" +
+                    " AND "+CommonString.KEY_MENU_ID+" = '"+menu_id+"' AND "+CommonString.KEY_BRAND_ID+" = '"+brand_id+"' AND "+CommonString.KEY_CATEGORY_ID+" = '"+categoryId+"' AND "+CommonString.KEY_USER_ID+" = '"+username+"'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    ChecklistMaster sb1  = new ChecklistMaster();
+                    sb1.setCorrectAnswer_Id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CORRECT_ANSWER_ID)));
+                    sb1.setChecklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_QUESTION)));
+                    sb1.setChecklistId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_QUESTION_ID)));
+                    sb1.setBrand_Id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BRAND_ID)));
+                    sb1.setCategory_Id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CATEGORY_ID)));
+
+                    list.add(sb1);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return list;
+    }
+
+    public boolean insertShareOfShelfMaster(MappingShareOfShelfGetterSetter mappingShareOfShelfGetterSetter) {
+        db.delete("mapping_Share_Of_Shelf", null, null);
+        ContentValues values = new ContentValues();
+        List<MappingShareOfShelf> data = mappingShareOfShelfGetterSetter.getMappingShareOfShelf();
+        try {
+            if (data.size() == 0) {
+                return false;
+            }
+
+            for (int i = 0; i < data.size(); i++) {
+                values.put("State_Id", data.get(i).getStateId());
+                values.put("Store_Category_Id", data.get(i).getStoreCategoryId());
+                values.put("Store_Type_Id", data.get(i).getStoreTypeId());
+                values.put("Brand_Id", data.get(i).getBrandId());
+                long id = db.insert("mapping_Share_Of_Shelf", null, values);
+                if (id == -1) {
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            Log.d("Database Exception  ", ex.toString());
+            return false;
+        }
+    }
+
+    public ArrayList<CategoryMaster> getSOSCategoryMasterData(JourneyPlan journeyPlan) {
+        ArrayList<CategoryMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("select distinct ca.Category_Id, ca.Category FROM  mapping_Share_Of_Shelf sos " +
+                    "inner join Brand_Master bm ON sos.Brand_Id = bm.Brand_Id " +
+                    "inner join Sub_Category_Master sb on bm.Sub_Category_Id = sb.Sub_Category_Id " +
+                    "inner join Category_Master ca on sb.Category_Id = ca.Category_Id " +
+                    "where sos.Store_Category_Id = '"+journeyPlan.getStoreCategoryId()+"' " +
+                    "and sos.Store_Type_Id='"+journeyPlan.getStoreTypeId()+"' " +
+                    "and sos.State_Id = '"+journeyPlan.getStateId()+"' ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    CategoryMaster sb1  = new CategoryMaster();
+                    sb1.setCategory(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Category")));
+                    sb1.setCategoryId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow("Category_Id")));
+                    list.add(sb1);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return list;
+    }
+
+    public ArrayList<CategoryMaster> getSOSBrandData(Integer categoryId) {
+        ArrayList<CategoryMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("select distinct  bm.Brand,bm.Brand_Id from Sub_Category_Master cm " +
+                    "inner join Brand_Master bm on cm.Sub_Category_Id = bm.Sub_Category_Id " +
+                    "where cm.Category_Id = '"+categoryId+"' ", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    CategoryMaster sb1  = new CategoryMaster();
+                    sb1.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand")));
+                    sb1.setBrand_Id(dbcursor.getString(dbcursor.getColumnIndexOrThrow("Brand_Id")));
+                    list.add(sb1);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return list;
+    }
+
+    public long insertSOSCompleteData(HashMap<CategoryMaster, List<CategoryMaster>> listDataChild, List<CategoryMaster> listDataHeader, String store_id, String menu_id, String visit_date, String username) {
+        long l = 0, common_id = 0,l2=0;
+        db.delete(CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA, "STORE_ID ='" + store_id + "'", null);
+        db.delete(CommonString.TABLE_SOS_HEADER_DATA, "STORE_ID ='" + store_id + "'", null);
+        db.delete(CommonString.TABLE_SOS_CHILD_DATA, "STORE_ID ='" + store_id + "'", null);
+        ContentValues values;
+        ContentValues values1,values2;
+        try {
+
+            for (int i = 0; i < listDataHeader.size(); i++) {
+                values = new ContentValues();
+                values.put(CommonString.KEY_VISIT_DATE, visit_date);
+                values.put(CommonString.KEY_USER_ID, username);
+                values.put(CommonString.KEY_STORE_ID, store_id);
+                values.put(CommonString.KEY_MENU_ID, menu_id);
+                values.put(CommonString.KEY_CATEGORY_ID, listDataHeader.get(i).getCategoryId());
+                values.put(CommonString.KEY_CATEGORY, listDataHeader.get(i).getCategory());
+                values.put(CommonString.KEY_CATEGORY_FACING, listDataHeader.get(i).getCategory_Facing());
+                values.put(CommonString.KEY_CATEGORY_IMAGE, listDataHeader.get(i).getCategory_Facing());
+
+
+                common_id = db.insert(CommonString.TABLE_SOS_HEADER_DATA, null, values);
+                if (common_id > 0) {
+
+                    for (int j = 0; j < listDataChild.get(listDataHeader.get(i)).size(); j++) {
+                        values1 = new ContentValues();
+                        values1.put(CommonString.KEY_COMMON_ID, common_id);
+                        values1.put(CommonString.KEY_VISIT_DATE, visit_date);
+                        values1.put(CommonString.KEY_USER_ID, username);
+                        values1.put(CommonString.KEY_STORE_ID, store_id);
+                        values1.put(CommonString.KEY_MENU_ID, menu_id);
+                        values1.put(CommonString.KEY_CATEGORY_ID, listDataChild.get(listDataHeader.get(i)).get(j).getCategoryId());
+                        values1.put(CommonString.KEY_BRAND_ID, listDataChild.get(listDataHeader.get(i)).get(j).getBrand_Id());
+                        values1.put(CommonString.KEY_BRAND, listDataChild.get(listDataHeader.get(i)).get(j).getBrand());
+                        values1.put(CommonString.KEY_BRAND_FACING, listDataChild.get(listDataHeader.get(i)).get(j).getBrand_Facing());
+
+                        l = db.insert(CommonString.TABLE_INSERT_CHECKLIST_DATA, null, values1);
+                        if (l > 0) {
+                            for (int k = 0; k < listDataChild.get(listDataHeader.get(i)).get(j).getChecklistQuestions().size(); k++) {
+                                values2 = new ContentValues();
+                                values2.put(CommonString.KEY_COMMON_ID, l);
+                                values2.put(CommonString.KEY_VISIT_DATE, visit_date);
+                                values2.put(CommonString.KEY_USER_ID, username);
+                                values2.put(CommonString.KEY_STORE_ID, store_id);
+                                values2.put(CommonString.KEY_MENU_ID, menu_id);
+                                values2.put(CommonString.KEY_CATEGORY_ID, listDataChild.get(listDataHeader.get(i)).get(j).getChecklistQuestions().get(k).getCategory_Id());
+                                values2.put(CommonString.KEY_BRAND_ID, listDataChild.get(listDataHeader.get(i)).get(j).getChecklistQuestions().get(k).getBrand_Id());
+                                values2.put(CommonString.KEY_QUESTION_ID, listDataChild.get(listDataHeader.get(i)).get(j).getChecklistQuestions().get(k).getChecklistId());
+                                values2.put(CommonString.KEY_QUESTION, listDataChild.get(listDataHeader.get(i)).get(j).getChecklistQuestions().get(k).getChecklist());
+                                values2.put(CommonString.KEY_CORRECT_ANSWER_ID, listDataChild.get(listDataHeader.get(i)).get(j).getChecklistQuestions().get(k).getCorrectAnswer_Id());
+
+                                l2 = db.insert(CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA, null, values2);
+                            }
+                        }
+                    }
+
+                }
+
+                if (l2 > 0) {
+                    return l2;
+                } else {
+                    return 0;
+                }
+            }
+        } catch (Exception ex) {
+            Log.d("Database Exception while Insert Store Data ", ex.toString());
+            return 0;
+        }
+        return l2;
+    }
+
+    public boolean isFeedBackFilledData(Integer storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  STORE_ID " + "FROM "+CommonString.TABLE_FEEDBACK_QUESTIONS_DATA+" WHERE STORE_ID = '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("STORE_ID")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("STORE_ID")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
+
+    public boolean isSOSFilledData(Integer storeId) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  STORE_ID " + "FROM "+CommonString.TABLE_SOS_HEADER_DATA+" WHERE STORE_ID = '" + storeId + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("STORE_ID")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("STORE_ID")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
 }

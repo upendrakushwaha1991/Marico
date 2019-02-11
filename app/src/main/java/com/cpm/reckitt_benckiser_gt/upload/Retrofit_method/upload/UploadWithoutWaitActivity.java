@@ -11,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.WindowManager;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 
 public class UploadWithoutWaitActivity extends AppCompatActivity {
 
-    RBGTDatabase db;
+    MondelezDatabase db;
     ArrayList<CoverageBean> coverageList;
     String date, userId, app_version;
     String Path, app_ver;
@@ -60,7 +60,7 @@ public class UploadWithoutWaitActivity extends AppCompatActivity {
         app_version = preferences.getString(CommonString.KEY_VERSION, null);
         toolbar.setTitle("Upload - " + date);
         Path = CommonString.FILE_PATH;
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
         coverageList = db.getCoverageData(date);
         pb = new ProgressDialog(context);

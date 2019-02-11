@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 import com.cpm.reckitt_benckiser_gt.dailyEntry.ServiceActivity;
 import com.cpm.reckitt_benckiser_gt.dailyEntry.StoreListActivity;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.download.DownloadActivity;
 import com.cpm.reckitt_benckiser_gt.geotag.GeoTagStoreList;
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private WebView webView;
     private ImageView imageView;
     private String noticeboard, quiz_url;
-    private RBGTDatabase db;
+    private MondelezDatabase db;
     private View headerView;
     //private ArrayList<CoverageBean> coverageList;
     private String error_msg;
@@ -447,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fab = (FloatingActionButton) findViewById(R.id.fab);
         toolbar.setTitle(getString(R.string.main_menu_activity_name) + " - " + visit_date);
         //getSupportActionBar().setTitle(getString(R.string.main_menu_activity_name) + " \n- " + date);
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
     }
 

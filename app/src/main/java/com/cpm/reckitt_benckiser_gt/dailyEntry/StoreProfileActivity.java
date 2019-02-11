@@ -14,16 +14,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreProfileGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreTypeMaster;
-import com.cpm.reckitt_benckiser_gt.getterSetter.StoreTypeMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 
@@ -34,7 +32,7 @@ public class StoreProfileActivity extends AppCompatActivity {
     private Spinner storeType;
     FloatingActionButton fab;
     private ArrayAdapter<CharSequence> store_visited_adapter;
-    RBGTDatabase db;
+    MondelezDatabase db;
     ArrayList<StoreTypeMaster> storeVisitedWitheData = new ArrayList<>();
     String store_type, store_type_cd;
     Context context;
@@ -58,7 +56,7 @@ public class StoreProfileActivity extends AppCompatActivity {
         storeType = (Spinner) findViewById(R.id.storeType);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        db = new RBGTDatabase(this);
+        db = new MondelezDatabase(this);
         db.open();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         username = preferences.getString(CommonString.KEY_USERNAME, null);

@@ -33,7 +33,7 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
-import com.cpm.reckitt_benckiser_gt.database.RBGTDatabase;
+import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 
 import java.io.File;
@@ -53,7 +53,7 @@ public class CamTestActivity extends AppCompatActivity implements View.OnClickLi
     LinearLayout okcancellayout;
     Button btnok, btncam, btncancel;
     byte[] datacam;
-    RBGTDatabase db;
+    MondelezDatabase db;
     private SharedPreferences preferences;
     boolean backwall_click_flag = false;
 
@@ -74,7 +74,7 @@ public class CamTestActivity extends AppCompatActivity implements View.OnClickLi
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
         visit_date_formatted = preferences.getString(CommonString.KEY_YYYYMMDD_DATE, null);
         store_id = String.valueOf(jcpGetset.getStoreId());
-        db = new RBGTDatabase(context);
+        db = new MondelezDatabase(context);
         db.open();
 
         preview = new Preview(getApplicationContext(), (SurfaceView) findViewById(R.id.surfaceView));

@@ -32,4 +32,6 @@
 
     <color name="text_grey_color">#c8c3c3</color>
 
+    <color name="grey_dark_background">#888</color>
+
 </resources>
