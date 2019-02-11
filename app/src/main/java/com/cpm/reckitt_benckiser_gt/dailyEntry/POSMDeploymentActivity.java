@@ -155,7 +155,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
                         deploymentData.get(position).setNew_deployment("");
 
                         if (!deploymentData.get(position).getImg1().equalsIgnoreCase("")) {
-                            holder.deploymentImage.setImageResource(R.mipmap.camera_grey);
+                            holder.deploymentImage.setImageResource(R.drawable.camera_orange);
                             image1 = "";
                         }
 
@@ -251,7 +251,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
             }
 
             if (deploymentData.get(position).getImg1().equalsIgnoreCase("")) {
-                holder.deploymentImage.setImageResource(R.mipmap.camera_grey);
+                holder.deploymentImage.setImageResource(R.drawable.camera_orange);
             } else {
                 holder.deploymentImage.setImageResource(R.drawable.camera_green);
             }

@@ -110,6 +110,9 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
 
         }
 
+
+
+
         //get data reason sppiner
         reasonDataHeader = db.getPOSMReason(menuMaster.getMenuId());
         fab.setOnClickListener(this);
@@ -119,6 +122,18 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         str = CommonString.FILE_PATH;
         setSppinerData();
         setInsertData();
+
+        //RECYCLER
+        posmDeploymentSavedData = db.getVisicoolerSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
+        if (posmDeploymentSavedData.size() > 0) {
+            createView(posmDeploymentSavedData);
+        } else {
+            //set recyclerview data
+            posmDeploymentData = db.getVISICOOLER_Data(jcpGetset, menuMaster.getMenuId());
+            createView(posmDeploymentData);
+            recyclerView.setVisibility(View.VISIBLE);
+
+        }
 
     }
 
@@ -247,33 +262,24 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                         lay_image_name.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.VISIBLE);
                         lay_reason.setVisibility(View.GONE);
-                        posmDeploymentSavedData = db.getVisicoolerSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
-                        if (posmDeploymentSavedData.size() > 0) {
-                            createView(posmDeploymentSavedData);
-                        } else {
-                            //set recyclerview data
-                            posmDeploymentData = db.getVISICOOLER_Data(jcpGetset, menuMaster.getMenuId());
-                            createView(posmDeploymentData);
-                            recyclerView.setVisibility(View.VISIBLE);
+                        sp_reason.setSelection(0);
 
-                        }
                     } else {
                         ClearData();
+
                         lay_image.setVisibility(View.GONE);
                         lay_image_name.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.GONE);
                         lay_reason.setVisibility(View.VISIBLE);
                         visiColoersGetterSetter.setImage_close_up("");
                         visiColoersGetterSetter.setImage_long_shot("");
-
-                      /*  for (int i = 0; i < reasonDataHeader.size(); i++) {
-                            reasonDataHeader.get(i).setReasonId(0);
-                            reasonDataHeader.get(i).setReason("");
-                        }*/
+                        image_closeup.setImageResource(R.drawable.camera_orange);
+                        image_long_shot.setImageResource(R.drawable.camera_orange);
 
                     }
                 } else {
                     ClearData();
+                    sp_reason.setSelection(0);
                     visiColoersGetterSetter.setPresent_name("");
                     visiColoersGetterSetter.setImage_close_up("");
                     visiColoersGetterSetter.setImage_long_shot("");
@@ -538,7 +544,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
             value = false;
             showMessage("Please Select Present");
         } else if (string_present_cd.equalsIgnoreCase("1")) {
-            if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
+            if (visiColoersGetterSetter.getImage_close_up().equalsIgnoreCase("")) {
                 value = false;
                 showMessage("Please Capture Photo Close Up");
             } else if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
@@ -614,10 +620,15 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
             posmDeploymentSavedData.get(i).setAnswer("");
             posmDeploymentSavedData.get(i).setAnswer_cd("0");
 
-            adapter.notifyDataSetChanged();
-
         }
+//
+        /*for (int i = 0; i < reasonDataHeader.size(); i++) {
+            reasonDataHeader.get(i).setReason("");
+            reasonDataHeader.get(i).setReasonId(0);
 
+        }*/
+
+        adapter.notifyDataSetChanged();
 
     }
 

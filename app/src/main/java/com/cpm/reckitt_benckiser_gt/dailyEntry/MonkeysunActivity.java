@@ -265,6 +265,8 @@ public class MonkeysunActivity extends AppCompatActivity implements View.OnClick
                         lay_reason.setVisibility(View.GONE);
                         visiColoersGetterSetter.setImage_close_up("");
                         visiColoersGetterSetter.setImage_long_shot("");
+                        image_closeup.setImageResource(R.drawable.camera_orange);
+                        image_long_shot.setImageResource(R.drawable.camera_orange);
 
                     }
                 } else {
