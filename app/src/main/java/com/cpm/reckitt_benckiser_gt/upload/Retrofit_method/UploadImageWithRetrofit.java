@@ -16,11 +16,13 @@ import android.util.Log;
 
 import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
+import com.cpm.reckitt_benckiser_gt.getterSetter.BrandMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.BrandMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistAnswerGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.DisplayMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
@@ -584,45 +586,68 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     //region Window_Data
                     db.open();
                     String presentValue = "";
-                    ArrayList<WindowMaster> windowMasterList = db.getWindowData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+                    ArrayList<WindowMaster> windowMasterList = db.getWindowInsertedData(Integer.parseInt(coverageList.get(coverageIndex).getStoreId()), coverageList.get(coverageIndex).getVisitDate());
                     if (windowMasterList.size() > 0) {
                         JSONArray compArray = new JSONArray();
                         for (int j = 0; j < windowMasterList.size(); j++) {
+
+                            //Window Checklist
                             JSONArray checklistArray = new JSONArray();
-                            if (windowMasterList.get(j).isExist()) {
-                                presentValue = "1";
-                            } else {
-                                presentValue = "0";
-                            }
-                            if (presentValue.equals("1")) {
-                                ArrayList<ChecklistGetterSetter> windowCheckListData = db.getWindowCheckListData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate(), windowMasterList.get(j).getKey_Id());
+                            ArrayList<BrandMaster> brandList = windowMasterList.get(j).getBrandList();
+                            JSONArray brandArray = new JSONArray();
+                            if (windowMasterList.get(j).getAnswered_id()==1) {
+                                ArrayList<ChecklistMaster> windowCheckListData = db.getWindowCheckListInsertedData(windowMasterList.get(j).getKey_Id());
                                 if (windowCheckListData.size() > 0) {
                                     for (int k = 0; k < windowCheckListData.size(); k++) {
                                         JSONObject obj = new JSONObject();
-                                        obj.put("Key_Id", windowCheckListData.get(k).getCOMMON_ID());
-                                        obj.put("Window_Cd", windowCheckListData.get(k).getWINDOW_CD());
-                                        obj.put("Checklist_Id", windowCheckListData.get(k).getCHECKLIST_CD());
-                                        obj.put("Checklist_Answer", windowCheckListData.get(k).getANSWER_CD());
+                                        obj.put("Key_Id", windowMasterList.get(j).getKey_Id());
+                                        obj.put("Window_Cd", windowMasterList.get(j).getWindowId());
+                                        obj.put("Checklist_Id", windowCheckListData.get(k).getChecklistId());
+                                        obj.put("Checklist_Answer", windowCheckListData.get(k).getAnswered_cd());
                                         checklistArray.put(obj);
 
                                     }
                                 }
+
+                                //Brand List
+                                for(int b=0;b<brandList.size();b++){
+                                    JSONObject brandObj = new JSONObject();
+                                    brandObj.put(CommonString.KEY_COMMON_ID, windowMasterList.get(j).getKey_Id());
+                                    brandObj.put(CommonString.KEY_BRAND_ID, brandList.get(b).getBrandId());
+                                    brandObj.put(CommonString.KEY_QUANTITY, brandList.get(b).getQuantity());
+                                    brandObj.put("Brand_Common_Id", brandList.get(b).getKey_Id());
+
+                                    ArrayList<ChecklistMaster> brandCheckList = windowMasterList.get(j).getHashMapListChildData().get(brandList.get(b));
+                                    JSONArray brandCheckListArray = new JSONArray();
+                                    for(int ch=0;ch<brandCheckList.size();ch++){
+                                        JSONObject brandChecklistObj = new JSONObject();
+                                        brandChecklistObj.put("Brand_Common_Id", brandList.get(b).getKey_Id());
+                                        brandChecklistObj.put(CommonString.KEY_BRAND_ID, brandList.get(b).getBrandId());
+                                        brandChecklistObj.put("Checklist_Id", brandCheckList.get(ch).getChecklistId());
+                                        brandChecklistObj.put("Checklist_Answer", brandCheckList.get(ch).getAnswered_cd());
+                                        brandCheckListArray.put(brandChecklistObj);
+                                    }
+                                    brandObj.put("Brand_CheckList", brandCheckListArray);
+                                    brandArray.put(brandObj);
+                                }
                             }
+
 
                             JSONObject obj = new JSONObject();
                             obj.put("MID", coverageList.get(coverageIndex).getMID());
                             obj.put("UserId", coverageList.get(coverageIndex).getUserId());
-                            obj.put("Key_Id", windowMasterList.get(j).getKey_Id());
-                            obj.put("Brand_Id", windowMasterList.get(j).getBrand_Id());
+                            obj.put(CommonString.KEY_COMMON_ID, windowMasterList.get(j).getKey_Id());
                             obj.put("Window_Cd", windowMasterList.get(j).getWindowId());
                             obj.put("Window_Exist", presentValue);
-                            obj.put("Window_Img", windowMasterList.get(j).getImage());
-                            obj.put("Window_Img2", windowMasterList.get(j).getImage2());
-                            obj.put("Reason_Cd", windowMasterList.get(j).getReasonId());
-                            if (presentValue.equals("1")) {
-                                obj.put("CHECKLIST", checklistArray);
+                            obj.put("Window_Img_CloseUp", windowMasterList.get(j).getImg_close_up());
+                            obj.put("Window_Img_LongShot", windowMasterList.get(j).getImg_long_shot());
+                            obj.put("Reason_Cd", windowMasterList.get(j).getNonExecutionReasonId());
+                            if (windowMasterList.get(j).getAnswered_id()==1) {
+                                obj.put("Window_CheckList", checklistArray);
+                                obj.put("Brand_CheckList", brandArray);
                             } else {
-                                obj.put("CHECKLIST", "");
+                                obj.put("Window_CheckList", "");
+                                obj.put("Brand_CheckList", "");
                             }
                             compArray.put(obj);
 
@@ -756,34 +781,6 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     //endregion
                     break;
 
-                case "Focus_Product":
-                    db.open();
-                    //String jsonString = null;
-                    /*ArrayList<FocusProductGetterSetter> salesEntry = db.getFocusProductUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
-                    if (salesEntry.size() > 0) {
-                        JSONArray promoArray = new JSONArray();
-                        for (int j = 0; j < salesEntry.size(); j++) {
-                            JSONObject obj = new JSONObject();
-                            obj.put("MID", coverageList.get(coverageIndex).getMID());
-                            obj.put("UserId", coverageList.get(coverageIndex).getUserId());
-                            obj.put("SKU_CD", salesEntry.get(j).getSku_id());
-                            obj.put("STOCK", salesEntry.get(j).getStock());
-
-
-                            promoArray.put(obj);
-                        }
-
-
-                        jsonObject = new JSONObject();
-                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
-                        jsonObject.put("Keys", "SALES_STOCK_DATA");
-                        jsonObject.put("JsonData", promoArray.toString());
-                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
-
-                        jsonString = jsonObject.toString();
-                    }*/
-                    //endregion
-                    break;
             }
             //endregion
 
@@ -1021,11 +1018,11 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
 
             if (status != null && !status.equalsIgnoreCase(CommonString.KEY_D) && !coverageList.get(coverageIndex).getReasonid().equalsIgnoreCase("11")) {
                 keyList.add("CoverageDetail_latest");
-                keyList.add("Store_Profile");
-                keyList.add("Window_Data");
+                /*keyList.add("Store_Profile");
                 keyList.add("Category_Dressing_data");
                 keyList.add("Category_DBSR_data");
-                keyList.add("GeoTag");
+                keyList.add("GeoTag");*/
+                keyList.add("Window_Data");
             }
 
             if (keyList.size() > 0) {

@@ -32,9 +32,9 @@
                 android:visibility="gone"/>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@mipmap/mz_logo"
+                android:layout_width="294dp"
+                android:layout_height="75dp"
+                android:background="@mipmap/mondelez_logo"
                 android:layout_centerInParent="true"
                 />
         </RelativeLayout>

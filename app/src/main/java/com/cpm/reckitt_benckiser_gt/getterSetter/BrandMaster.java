@@ -95,6 +95,16 @@ public class BrandMaster implements Serializable {
 
     int nonExecutionReasonId = -1;
 
+    public int getKey_Id() {
+        return key_Id;
+    }
+
+    public void setKey_Id(int key_Id) {
+        this.key_Id = key_Id;
+    }
+
+    int key_Id;
+
     public String getImg_close_up() {
         return img_close_up;
     }
@@ -134,4 +144,6 @@ public class BrandMaster implements Serializable {
     public void setNonExecutionReasonId(int nonExecutionReasonId) {
         this.nonExecutionReasonId = nonExecutionReasonId;
     }
+
+
 }

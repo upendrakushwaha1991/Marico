@@ -5089,4 +5089,149 @@ public class MondelezDatabase extends SQLiteOpenHelper {
 
         return filled;
     }
+
+    //get Window Data after insertion
+    public ArrayList<WindowMaster> getWindowInsertedData(int storeId, String visitDate) {
+        Log.d("Fetching", "Storedata--------------->Start<------------");
+        ArrayList<WindowMaster> list = new ArrayList<>();
+        Cursor dbcursor = null, dbcursor2 = null, dbcursor3 = null, dbcursor4 = null;
+
+        try {
+            dbcursor = db.rawQuery("SELECT * FROM WINDOW_HEADER WHERE STORE_ID ='" + storeId + "' AND VISIT_DATE='" + visitDate + "' ", null);
+
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    WindowMaster sb = new WindowMaster();
+                    sb.setKey_Id(String.valueOf(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ID))));
+                    sb.setWindow(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_WINDOW)));
+                    sb.setWindowId((dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_WINDOW_ID))));
+                    sb.setAnswered_id(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_EXIST)));
+                    sb.setNonExecutionReasonId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON_ID)));
+                    sb.setImg_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_LONGSHOT)));
+                    sb.setImg_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
+
+                    dbcursor2 = db.rawQuery("SELECT * FROM "+ CommonString.TABLE_WINDOW_BRAND_LIST +" WHERE "+ CommonString.KEY_COMMON_ID +" ='" + sb.getKey_Id() + "'", null);
+
+                    ArrayList<BrandMaster> brandList = new ArrayList<>();
+                    HashMap<BrandMaster, ArrayList<ChecklistMaster>> hashMapListChildData = new HashMap<>();
+
+                    if (dbcursor2 != null) {
+                        dbcursor2.moveToFirst();
+                        while (!dbcursor2.isAfterLast()) {
+                            BrandMaster brand = new BrandMaster();
+                            brand.setKey_Id(dbcursor2.getInt(dbcursor2.getColumnIndexOrThrow(CommonString.KEY_ID)));
+                            brand.setBrandId(dbcursor2.getInt(dbcursor2.getColumnIndexOrThrow(CommonString.KEY_BRAND_ID)));
+                            brand.setBrand((dbcursor2.getString(dbcursor2.getColumnIndexOrThrow(CommonString.KEY_BRAND))));
+                            brand.setQuantity(dbcursor2.getString(dbcursor2.getColumnIndexOrThrow(CommonString.KEY_STOCK)));
+
+                            brandList.add(brand);
+
+                            dbcursor3 = db.rawQuery("SELECT * FROM "+ CommonString.TABLE_BRAND_CHECK_LIST +" WHERE "+ CommonString.KEY_COMMON_ID+" ='" + brand.getKey_Id() + "'", null);
+
+                            ArrayList<ChecklistMaster> checkList = new ArrayList<>();
+
+                            if (dbcursor3 != null) {
+                                dbcursor3.moveToFirst();
+                                while (!dbcursor3.isAfterLast()) {
+                                    ChecklistMaster checklist = new ChecklistMaster();
+                                    checklist.setChecklistId(dbcursor3.getInt(dbcursor3.getColumnIndexOrThrow(CommonString.KEY_CHECKLIST_ID)));
+                                    checklist.setChecklist((dbcursor3.getString(dbcursor3.getColumnIndexOrThrow(CommonString.KEY_CHECKLIST))));
+                                    checklist.setAnswered_cd(dbcursor3.getInt(dbcursor3.getColumnIndexOrThrow(CommonString.KEY_ANSWER_CD)));
+
+                                    ArrayList<ChecklistAnswer> answerList = new ArrayList<>();
+                                    ChecklistAnswer reason1 = new ChecklistAnswer();
+
+                                    reason1.setAnswerId(0);
+                                    reason1.setAnswer("Select Reason");
+                                    answerList.add(reason1);
+
+                                    dbcursor4 = db.rawQuery("select * from Checklist_Answer where checklist_Id ='" + checklist.getChecklistId() + "' ", null);
+
+                                    if (dbcursor4 != null) {
+                                        dbcursor4.moveToFirst();
+                                        while (!dbcursor4.isAfterLast()) {
+                                            ChecklistAnswer reason = new ChecklistAnswer();
+                                            reason.setAnswer(dbcursor4.getString(dbcursor4.getColumnIndexOrThrow("Answer")));
+                                            reason.setAnswerId(Integer.valueOf(dbcursor4.getString(dbcursor4.getColumnIndexOrThrow("Answer_Id"))));
+                                            reason.setChecklistId(Integer.valueOf(dbcursor4.getString(dbcursor4.getColumnIndexOrThrow("Checklist_Id"))));
+
+                                            answerList.add(reason);
+                                            dbcursor4.moveToNext();
+                                        }
+                                        dbcursor4.close();
+                                        //return list;
+                                    }
+
+                                    checklist.setCheckListAnswer(answerList);
+                                    checkList.add(checklist);
+
+                                    dbcursor3.moveToNext();
+                                }
+                                dbcursor3.close();
+                                //return list;
+                                //sb.setBrandList(brandList);
+                                hashMapListChildData.put(brand,checkList);
+                            }
+
+                            dbcursor2.moveToNext();
+                        }
+                        dbcursor2.close();
+                        //return list;
+                        sb.setBrandList(brandList);
+                        sb.setHashMapListChildData(hashMapListChildData);
+                    }
+
+                    list.add(sb);
+                    dbcursor.moveToNext();
+
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Window" + e.toString());
+            return list;
+        }
+
+        Log.d("Fetching ", "Window---------------------->Stop<-----------");
+        return list;
+    }
+
+    //getWindow Checklist inserted data
+    public ArrayList<ChecklistMaster> getWindowCheckListInsertedData(String CommonId) {
+        ArrayList<ChecklistMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT * FROM  "+CommonString.TABLE_WINDOW_CHECK_LIST+" WHERE "+CommonString.KEY_COMMON_ID+" = '" + CommonId +"'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+
+                    ChecklistMaster checklist = new ChecklistMaster();
+                    checklist.setChecklistId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHECKLIST_ID)));
+                    checklist.setChecklist((dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHECKLIST))));
+                    checklist.setAnswered_cd(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ANSWER_CD)));
+
+                    list.add(checklist);
+
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return list;
+    }
+
 }
