@@ -779,4 +779,12 @@ public class CommonString {
             + KEY_QUESTION_ID + " VARCHAR,"
             + KEY_QUESTION + " VARCHAR,"
             + KEY_CORRECT_ANSWER_ID + " VARCHAR)";
+
+    //Change Password service
+    public static final String METHOD_UPDATE_PASSWORD = "Update_Password";
+    public static final String SOAP_ACTION_UPDATE_PASSWORD = "http://tempuri.org/"
+            + METHOD_UPDATE_PASSWORD;
+
+    public static String IS_PASSWORD_CHECK = "IS_PASSWORD_CHECK";
+    public static String MPIN = "MPIN";
 }

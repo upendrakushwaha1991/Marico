@@ -30,20 +30,27 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".dailyEntry.SOSActivity"
-            android:label="@string/title_activity_sos"
-            android:screenOrientation="portrait"
-            android:configChanges="screenSize|orientation|keyboardHidden"
-            android:windowSoftInputMode="adjustPan"
+            android:name=".password.MPinActivity"
+            android:label="@string/title_activity_mpin"
             android:theme="@style/AppTheme.NoActionBar"></activity>
         <activity
-            android:name=".dailyEntry.FeedBackActivity"
-            android:label="@string/title_activity_feed_back"
+            android:name=".password.ChangePasswordActivity"
+            android:label="@string/title_activity_change_password"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".dailyEntry.SOSActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
+            android:label="@string/title_activity_sos"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
-
+        <activity
+            android:name=".dailyEntry.FeedBackActivity"
+            android:configChanges="screenSize|orientation|keyboardHidden"
+            android:label="@string/title_activity_feed_back"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".dailyEntry.CTUActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
