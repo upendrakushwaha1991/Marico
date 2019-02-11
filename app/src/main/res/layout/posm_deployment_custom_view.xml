@@ -132,7 +132,7 @@
                             android:id="@+id/deploymentImage"
                             android:layout_width="60dp"
                             android:layout_height="60dp"
-                            android:src="@mipmap/camera_grey" />
+                            android:src="@drawable/camera_orange" />
 
                     </LinearLayout>
                 </LinearLayout>

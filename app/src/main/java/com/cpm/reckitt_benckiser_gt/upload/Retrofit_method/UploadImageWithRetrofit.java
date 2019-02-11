@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
+import com.cpm.reckitt_benckiser_gt.getterSetter.BackofStoreGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.BrandMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMasterGetterSetter;
@@ -23,10 +24,12 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistAnswerGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMasterGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.CommonChillerDataGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.DisplayMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GeotaggingBeans;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JCPGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.JarGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingBackOfStoreGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MappingCTUGetterSetter;
@@ -56,6 +59,7 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.StoreTypeMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.SubCategoryMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.TableStructure;
 import com.cpm.reckitt_benckiser_gt.getterSetter.TableStructureGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.VisiColoersGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.WindowCheckAnswerGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.WindowChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.WindowMaster;
@@ -582,6 +586,38 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     //endregion
                     break;
 
+                case "FeedBack_Data":
+                    //region Coverage Data
+                    db.open();
+                    ArrayList<ChecklistMaster> checklistQuestions = db.getSavedFeedBackData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+                    if(checklistQuestions.size() > 0) {
+                        JSONArray feedBackArray = new JSONArray();
+                        for (int i = 0; i < checklistQuestions.size(); i++) {
+                            jsonObject = new JSONObject();
+                            jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                            jsonObject.put("User_Id", _UserId);
+                            jsonObject.put(CommonString.KEY_STORE_ID, checklistQuestions.get(i).getStore_Id());
+                            jsonObject.put(CommonString.KEY_MENU_ID, checklistQuestions.get(i).getMenu_Id());
+                            jsonObject.put(CommonString.KEY_QUESTION_ID, checklistQuestions.get(i).getChecklistId());
+                            jsonObject.put(CommonString.KEY_CORRECT_ANSWER_ID, checklistQuestions.get(i).getCorrectAnswer_Id());
+                            jsonObject.put(CommonString.KEY_VISIT_DATE, checklistQuestions.get(i).getVisited_date());
+                            feedBackArray.put(jsonObject);
+                        }
+
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "FeedBack_Data");
+                        jsonObject.put("JsonData", feedBackArray.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+
+                    //endregion
+                    break;
+
+
                // StoreProfileGetterSetter storePGT;/
                 case "Window_Data":
                     //region Window_Data
@@ -862,7 +898,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                 case "Focus_Product":
                     db.open();
                     //String jsonString = null;
-                    /*ArrayList<FocusProductGetterSetter> salesEntry = db.getFocusProductUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
+                    ArrayList<FocusProductGetterSetter> salesEntry = db.getFocusProductUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
                     if (salesEntry.size() > 0) {
                         JSONArray promoArray = new JSONArray();
                         for (int j = 0; j < salesEntry.size(); j++) {
@@ -872,21 +908,281 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             obj.put("SKU_CD", salesEntry.get(j).getSku_id());
                             obj.put("STOCK", salesEntry.get(j).getStock());
 
-
                             promoArray.put(obj);
                         }
 
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "FOCUS_PRODUCT_DATA");
+                        jsonObject.put("JsonData", promoArray.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+                    //endregion
+                    break;
+
+                case "Visicooler":
+                    db.open();
+                    ArrayList<VisiColoersGetterSetter> visiColoerHeader = db.getVisicoolerUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
+                    JSONArray promoArray = new JSONArray();
+                    if (visiColoerHeader.size() > 0) {
+                        promoArray = new JSONArray();
+                        for (int j = 0; j < visiColoerHeader.size(); j++) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("MID", coverageList.get(coverageIndex).getMID());
+                            obj.put("UserId", coverageList.get(coverageIndex).getUserId());
+                            obj.put("CHEKLIST_ID", visiColoerHeader.get(j).getCheklist_cd());
+                            obj.put("ANSWER_ID", visiColoerHeader.get(j).getAnswer_cd());
+                            obj.put("STORE_ID", visiColoerHeader.get(j).getStore_id());
+                            promoArray.put(obj);
+                        }
+                    }
+                    VisiColoersGetterSetter visicooler = db.getVisicoolerHeaderUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
+
+                    if (visicooler.getPresent_name() != null && !visicooler.getPresent_name().equals("")) {
+                        JSONArray storeDetail = new JSONArray();
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+                        jsonObject.put("EXIT", visicooler.getPresent_name());
+                        jsonObject.put("Reason_cd", visicooler.getReason_cd());
+                        jsonObject.put("long_shot_image", visicooler.getImage_long_shot());
+                        jsonObject.put("close_ip_image", visicooler.getImage_close_up());
+                        jsonObject.put("STORE_ID", visicooler.getStore_id());
+                        if (visicooler.getPresent_name().equalsIgnoreCase("1")){
+                            jsonObject.put("CHEKLIST_DATA", promoArray);
+
+                        }else {
+                            jsonObject.put("CHEKLIST_DATA", "");
+
+                        }
+
+                        storeDetail.put(jsonObject);
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "VISICOOLER_DATA");
+                        jsonObject.put("JsonData", storeDetail.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+                    //endregion
+                    break;
+
+                case "MonkeySun":
+                    db.open();
+                    ArrayList<VisiColoersGetterSetter> moky_sun = db.getMonkeysunUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
+                    JSONArray monkysunArray = new JSONArray();
+                    if (moky_sun.size() > 0) {
+                        monkysunArray = new JSONArray();
+                        for (int j = 0; j < moky_sun.size(); j++) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("MID", coverageList.get(coverageIndex).getMID());
+                            obj.put("UserId", coverageList.get(coverageIndex).getUserId());
+                            obj.put("CHEKLIST_CD", moky_sun.get(j).getCheklist_cd());
+                            obj.put("ANSWER_ID", moky_sun.get(j).getAnswer_cd());
+                            obj.put("STORE_ID", moky_sun.get(j).getStore_id());
+                            monkysunArray.put(obj);
+                        }
+                    }
+                    VisiColoersGetterSetter monky_sun_header = db.getMonkyHeaderUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
+
+                    if (monky_sun_header.getPresent_name() != null && !monky_sun_header.getPresent_name().equals("")) {
+                        JSONArray storeDetail = new JSONArray();
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+                        jsonObject.put("EXIT", monky_sun_header.getPresent_name());
+                        jsonObject.put("Reason_cd", monky_sun_header.getReason_cd());
+                        jsonObject.put("long_shot_image", monky_sun_header.getImage_long_shot());
+                        jsonObject.put("close_ip_image", monky_sun_header.getImage_close_up());
+                        jsonObject.put("STORE_ID", monky_sun_header.getStore_id());
+                        if (monky_sun_header.getPresent_name().equalsIgnoreCase("1")){
+                            jsonObject.put("CHEKLIST_DATA", monkysunArray);
+
+                        }else {
+                            jsonObject.put("CHEKLIST_DATA", "");
+
+                        }
+                        storeDetail.put(jsonObject);
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "MONKEY_SUN_DATA");
+                        jsonObject.put("JsonData", storeDetail.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+                    //endregion
+                    break;
+
+                case "jor":
+
+                    db.open();
+                    ArrayList<JarGetterSetter> jor_ = db.getJorChildUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
+                    JSONArray jorArray = new JSONArray();
+                    if (jor_.size() > 0) {
+                        jorArray = new JSONArray();
+                        for (int j = 0; j < jor_.size(); j++) {
+                            JSONObject obj = new JSONObject();
+                            obj.put("MID", coverageList.get(coverageIndex).getMID());
+                            obj.put("UserId", coverageList.get(coverageIndex).getUserId());
+                            obj.put("CHEKLIST_CD",(jor_.get(j).getCheklist_cd()));
+                            obj.put("ANSWER_ID", jor_.get(j).getAnswer_cd());
+                            obj.put("STORE_ID", jor_.get(j).getStore_id());
+                            jorArray.put(obj);
+                        }
+                    }
+                    JarGetterSetter jor_header = db.getJorHeaderUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
+
+                    if (jor_header.getPresent_name() != null && !jor_header.getPresent_name().equals("")) {
+                        JSONArray storeDetail = new JSONArray();
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+                        jsonObject.put("EXIT", jor_header.getPresent_name());
+                        jsonObject.put("long_shot_image", jor_header.getImage_long_shot());
+                        jsonObject.put("close_ip_image", jor_header.getImage_close_up());
+                        jsonObject.put("STORE_ID", jor_header.getStore_id());
+                        if (jor_header.getPresent_name().equalsIgnoreCase("1")){
+                            jsonObject.put("CHEKLIST_DATA", jorArray);
+
+                        }else {
+                            jsonObject.put("CHEKLIST_DATA", "");
+
+                        }
+
+                        storeDetail.put(jsonObject);
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "JOR_DATA");
+                        jsonObject.put("JsonData", storeDetail.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+                    //endregion
+                    break;
+
+                case "POSM":
+
+                    db.open();
+                    ArrayList<CommonChillerDataGetterSetter> posmData = db.getPOSMDeploymentSavedData(Integer.valueOf(coverageList.get(coverageIndex).getStoreId()),coverageList.get(coverageIndex).getVisitDate());
+                    if(posmData.size() > 0){
+                        JSONArray posmDetails = new JSONArray();
+                        for(int i=0;i<posmData.size();i++) {
+                            jsonObject = new JSONObject();
+                            jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                            jsonObject.put("User_Id", _UserId);
+                            jsonObject.put("STORE_ID", posmData.get(i).getStore_id());
+                            jsonObject.put(CommonString.KEY_EXIST, posmData.get(i).getExist());
+                            jsonObject.put(CommonString.KEY_IMAGE, posmData.get(i).getImg1());
+                            jsonObject.put(CommonString.KEY_POSM_ID, posmData.get(i).getPosm_id());
+                            if(posmData.get(i).getReason_id().equalsIgnoreCase("")) {
+                                jsonObject.put(CommonString.KEY_REASON_ID,"0");
+                            }else{
+                                jsonObject.put(CommonString.KEY_REASON_ID, posmData.get(i).getReason_id());
+                            }
+                            jsonObject.put(CommonString.KEY_VISIT_DATE, posmData.get(i).getVisit_date());
+                            posmDetails.put(jsonObject);
+                        }
 
                         jsonObject = new JSONObject();
                         jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
-                        jsonObject.put("Keys", "SALES_STOCK_DATA");
-                        jsonObject.put("JsonData", promoArray.toString());
-                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+                        jsonObject.put("Keys", "POSM_DATA");
+                        jsonObject.put("JsonData", posmDetails.toString());
+                        jsonObject.put("UserId", _UserId);
 
                         jsonString = jsonObject.toString();
-                    }*/
-                    //endregion
+                        type = CommonString.UPLOADJsonDetail;
+
+                    }
                     break;
+                case "BACK_OF_STORE_DATA":
+
+                    BackofStoreGetterSetter backof_office = db.getBackofStoreUploadImgData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
+                    if (backof_office.getPresent_name() != null && !backof_office.getPresent_name().equals("")) {
+                        JSONArray storeDetail = new JSONArray();
+
+                        if (backof_office.getPresent_name().equalsIgnoreCase("1")){
+                            db.open();
+                            ArrayList<BackofStoreGetterSetter> semip_visibilityHeaderList = db.getHeaderBackOfStoreUploadData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+                            if (semip_visibilityHeaderList.size() > 0) {
+                                JSONArray soft_child_array = null;
+                                JSONArray softheaderArray = new JSONArray();
+                                for (int k = 0; k < semip_visibilityHeaderList.size(); k++) {
+                                    db.open();
+                                    ArrayList<BackofStoreGetterSetter> semipmerchChildList = db.getBackOfStoreChildUploadData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate(), semip_visibilityHeaderList.get(k).getKey_id());
+                                    if (semipmerchChildList.size() > 0) {
+                                        soft_child_array = new JSONArray();
+                                        for (int j = 0; j < semipmerchChildList.size(); j++) {
+                                            JSONObject obj = new JSONObject();
+                                            obj.put("MID", coverageList.get(coverageIndex).getMID());
+                                            obj.put("UserId", _UserId);
+                                            obj.put("BRAND_ID", semip_visibilityHeaderList.get(k).getBrand_id());
+                                            obj.put("STOCK", semip_visibilityHeaderList.get(k).getStock());
+                                            obj.put("ANSWER_ID", semipmerchChildList.get(j).getAnswerId().toString());
+                                            obj.put("CHEKLIST_ID", semipmerchChildList.get(j).getChecklist_id());
+                                            obj.put("KEY_Id", semip_visibilityHeaderList.get(k).getKey_id());
+                                            soft_child_array.put(obj);
+
+                                        }
+                                    }
+
+                                    JSONObject obj = new JSONObject();
+                                    obj.put("MID", coverageList.get(coverageIndex).getMID());
+                                    obj.put("UserId", _UserId);
+                                    obj.put("BRAND_ID", semip_visibilityHeaderList.get(k).getBrand_id());
+                                    obj.put("STOCK", semip_visibilityHeaderList.get(k).getStock());
+                                    obj.put("KEY_Id", semip_visibilityHeaderList.get(k).getKey_id());
+
+                                    softheaderArray.put(obj);
+                                }
+                                jsonObject = new JSONObject();
+                                jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                                jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+                                jsonObject.put("EXIT", backof_office.getPresent_name());
+                                jsonObject.put("long_shot_image", backof_office.getImage_long_shot());
+                                jsonObject.put("close_ip_image", backof_office.getImage_close_up());
+                                jsonObject.put("STORE_ID", backof_office.getStore_id());
+                                jsonObject.put("CHILD_DATA",softheaderArray);
+                                storeDetail.put(jsonObject);
+
+                                jsonObject = new JSONObject();
+                                jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                                jsonObject.put("Keys", "BACK_OF_STORE_DATA");
+                                jsonObject.put("JsonData", storeDetail.toString());
+                                jsonObject.put("UserId", _UserId);
+
+                                jsonString = jsonObject.toString();
+                                type = CommonString.UPLOADJsonDetail;
+                            }
+                        }else {
+                            jsonObject = new JSONObject();
+                            jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                            jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+                            jsonObject.put("EXIT", backof_office.getPresent_name());
+                            jsonObject.put("long_shot_image", backof_office.getImage_long_shot());
+                            jsonObject.put("close_ip_image", backof_office.getImage_close_up());
+                            jsonObject.put("STORE_ID", backof_office.getStore_id());
+                            jsonObject.put("CHILD_DATA","");
+                            storeDetail.put(jsonObject);
+
+                            jsonObject = new JSONObject();
+                            jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                            jsonObject.put("Keys", "BACK_OF_STORE_DATA");
+                            jsonObject.put("JsonData", storeDetail.toString());
+                            jsonObject.put("UserId", _UserId);
+
+                            jsonString = jsonObject.toString();
+                            type = CommonString.UPLOADJsonDetail;
+                        }
+                    }
+
+                    break;
+
+
             }
             //endregion
 
@@ -1131,6 +1427,18 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                 keyList.add("Category_Dressing_data");
                 keyList.add("Category_DBSR_data");
                 keyList.add("GeoTag");
+                keyList.add("Focus_Product");
+                keyList.add("Visicooler");
+                keyList.add("MonkeySun");
+                keyList.add("jor");
+                keyList.add("POSM_Deployment");
+                keyList.add("POSM");
+                keyList.add("BACK_OF_STORE_DATA");
+                keyList.add("SOS_Data");
+                keyList.add("Store_Profile");
+
+
+
             }
 
             if (keyList.size() > 0) {
