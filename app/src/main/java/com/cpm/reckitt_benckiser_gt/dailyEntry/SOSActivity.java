@@ -66,7 +66,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-public class SOSActivity extends AppCompatActivity implements View.OnClickListener {
+public class SOSActivity extends AppCompatActivity {
 
     List<Integer> checkHeaderArray = new ArrayList<Integer>();
     boolean checkflag = true,category_img=true;
@@ -76,10 +76,8 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
     SharedPreferences preferences;
     FloatingActionButton fab;
     boolean flag = true;
-    CategoryMaster headerTitle;
     Toolbar toolbar;
     String _pathforcheck, _path, str;
-    QuesutionAdapter quesutionAdapter;
     private String username, store_id, visit_date, visit_date_formatted,menu_id="";
     String img_str2 = "";
     boolean spinnerTouched = false;
@@ -93,6 +91,7 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
     ArrayList<CategoryMaster> brandData;
     static int grp_position = -1;
     String Error_Message;
+    QuesutionAdapter quesutionAdapter;
     ChecklistMaster checklistQuestionObj;
     ArrayList<MappingMenuChecklist>  menuChecklist = new ArrayList<>();
     ArrayList<ChecklistMaster> checklistQuestions = new ArrayList<>();
@@ -102,7 +101,6 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sos);
-
         declaration();
         prepareListData();
 
@@ -177,6 +175,27 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
 
     }
 
+    private void prepareListData() {
+        listDataHeader = new ArrayList<>();
+        listDataChild = new HashMap<CategoryMaster, List<CategoryMaster>>();
+        database.open();
+        listDataHeader = database.getSavedSOSHeaderData(store_id,visit_date);
+        if(listDataHeader.size() == 0) {
+            listDataHeader = database.getSOSCategoryMasterData(journeyPlan);
+        }
+        if (listDataHeader.size() > 0) {
+            // Adding child data
+            for (int i = 0; i < listDataHeader.size(); i++) {
+                database.open();
+                brandData = database.getSavedSOSInsertedChildData(listDataHeader.get(i).getCategoryId(),store_id,visit_date);
+                if(brandData.size() == 0) {
+                    brandData = database.getSOSBrandData(listDataHeader.get(i).getCategoryId());
+                }
+                listDataChild.put(listDataHeader.get(i), brandData);
+            }
+        }
+    }
+
     private void declaration() {
         context = this;
         database = new MondelezDatabase(context);
@@ -203,22 +222,13 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
         getSupportActionBar().setTitle("SOS - " + visit_date);
         getSupportActionBar().setSubtitle( journeyPlan.getStoreName() + " - " + journeyPlan.getStoreId());
 
-        fab.setOnClickListener(this);
-        str = CommonString.FILE_PATH;
-
-
-    }
-
-    @Override
-    public void onClick(View view) {
-        int id = view.getId();
-        switch (id) {
-            case R.id.fab: {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 expListView.clearFocus();
-                expListView.invalidateViews();
 
                 if (validateData(listDataChild, listDataHeader)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SOSActivity.this);
                     builder.setMessage("Are you sure you want to save ?")
                             .setCancelable(false)
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -240,8 +250,10 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                     Snackbar.make(expListView, Error_Message, Snackbar.LENGTH_LONG).show();
                 }
             }
-        }
+        });
+        str = CommonString.FILE_PATH;
     }
+
 
 
     // @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -286,160 +298,10 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                         Crashlytics.logException(e);
                         e.printStackTrace();
                     }
-
                 }
-
-
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-    private class QuesutionAdapter extends RecyclerView.Adapter<QuesutionAdapter.ViewHolder> {
-
-        private Context context;
-        int itemPos = 0;
-        List<ChecklistMaster> data = new ArrayList<>();
-        String brand_id="0",categoryId="0";
-
-        public QuesutionAdapter(Context context, List<ChecklistMaster> data, String brand_id, String categoryId) {
-            this.context = context;
-            this.data = data;
-            this.brand_id = brand_id;
-            this.categoryId = categoryId;
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.question_list, parent, false);
-            return new ViewHolder(view);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-            final ChecklistMaster object = data.get(position);
-
-            holder.question.setText(object.getChecklist());
-
-            holder.answer.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    System.out.println("Real touch felt.");
-                    spinnerTouched = true;
-                    return false;
-                }
-            });
-
-            holder.ll_view.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
-            CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), object.getChecklistAnswers());
-            holder.answer.setAdapter(customAdapter);
-            holder.answer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> adapterView, View view, final int pos, long l) {
-                    if (spinnerTouched) {
-                        if (pos != 0) {
-                            itemPos = pos;
-                            checklistQuestions.get(position).setCorrectAnswer_Id(String.valueOf(object.getChecklistAnswers().get(itemPos).getAnswerId()));
-                            quesutionAdapter.notifyDataSetChanged();
-                        } else {
-                            object.setCorrectAnswer_Id("0");
-                        }
-                    }
-                    spinnerTouched = false;
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> adapterView) {
-
-                }
-            });
-
-            object.setBrand_Id(brand_id);
-            object.setCategory_Id(categoryId);
-
-            if (!data.get(position).getCorrectAnswer_Id().equals("0"))
-            {
-                for (int j = 0; j < object.getChecklistAnswers().size(); j++) {
-                    // compare correct answer cd with answer cd of question
-                    if (Integer.parseInt(data.get(position).getCorrectAnswer_Id()) == object.getChecklistAnswers().get(j).getAnswerId()) {
-                        holder.answer.setSelection(j);
-                    }
-                }
-            }
-
-            if (!flag)
-            {
-                boolean checkFlag = true;
-                if(checklistQuestions.get(position).getCorrectAnswer_Id().equalsIgnoreCase("0")) {
-                    checkFlag = false;
-                }
-                if (!checkFlag) {
-                    holder.ll_view.setBackgroundColor(getResources().getColor(R.color.red));
-                } else {
-                    holder.ll_view.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
-                }
-            } else {
-                holder.ll_view.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
-            }
-        }
-
-        @Override
-        public int getItemCount() {
-            return data.size();
-        }
-
-        public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView question;
-            Spinner answer;
-            CardView question_view;
-            LinearLayout ll_view;
-
-            public ViewHolder(View itemView) {
-                super(itemView);
-                question = itemView.findViewById(R.id.question);
-                answer = itemView.findViewById(R.id.spinner_ans);
-                question_view = itemView.findViewById(R.id.question_view);
-                ll_view = itemView.findViewById(R.id.ll_view);
-            }
-        }
-    }
-
-
-    private class CustomAdapter extends BaseAdapter {
-        Context context;
-        ArrayList<ChecklistAnswer> answerList;
-        LayoutInflater inflter;
-
-        public CustomAdapter(Context context, ArrayList<ChecklistAnswer> answerList) {
-            this.context = context;
-            this.answerList = answerList;
-            inflter = (LayoutInflater.from(context));
-        }
-
-        @Override
-        public int getCount() {
-            return answerList.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            view = inflter.inflate(R.layout.answer_items, null);
-            TextView names = (TextView) view.findViewById(R.id.answer);
-            names.setText(answerList.get(i).getAnswer());
-            return view;
-        }
     }
 
 
@@ -475,26 +337,6 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
         return bitmap;
     }
 
-    private void prepareListData() {
-        listDataHeader = new ArrayList<>();
-        listDataChild = new HashMap<CategoryMaster, List<CategoryMaster>>();
-      //  categoryData = database.getSOSInsertedData(store_id, visit_date);
-        //if (categoryData.size() == 0) {
-        listDataHeader = database.getSOSCategoryMasterData(journeyPlan);
-      //  }
-        if (listDataHeader.size() > 0) {
-            // Adding child data
-            for (int i = 0; i < listDataHeader.size(); i++) {
-
-                //skuData = database.getSecondaryWindowInsertedchecklistData1(store_id, brandData.get(i).getWindow_id());
-                //if (skuData.size() == 0) {
-                brandData = database.getSOSBrandData(listDataHeader.get(i).getCategoryId());
-            //}
-
-                listDataChild.put(listDataHeader.get(i), brandData); // Header, Child data
-            }
-        }
-    }
 
     public class ExpandableListAdapter extends BaseExpandableListAdapter {
         private Context _context;
@@ -559,10 +401,16 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                 }
             });
 
+            holder.brand_facing.setText(childText.getBrand_Facing());
+
             if(childText.getChecklistQuestions().size() >0){
                 for(int i=0;i<childText.getChecklistQuestions().size();i++){
-                    if(childText.getChecklistQuestions().get(i).getBrand_Id().equalsIgnoreCase(childText.getBrand_Id())){
-                        holder.chceklist_btn.setTextColor(getApplication().getResources().getColor(R.color.green));
+                    if(!childText.getChecklistQuestions().get(i).getCorrectAnswer_Id().equalsIgnoreCase("0")) {
+                        if (childText.getChecklistQuestions().get(i).getBrand_Id().equalsIgnoreCase(childText.getBrand_Id())) {
+                            holder.chceklist_btn.setTextColor(getApplication().getResources().getColor(R.color.green));
+                        } else {
+                            holder.chceklist_btn.setTextColor(getApplication().getResources().getColor(R.color.white));
+                        }
                     }else{
                         holder.chceklist_btn.setTextColor(getApplication().getResources().getColor(R.color.white));
                     }
@@ -570,7 +418,6 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
             }else{
                 holder.chceklist_btn.setTextColor(getApplication().getResources().getColor(R.color.white));
             }
-
 
 
             holder.chceklist_btn.setOnClickListener(new View.OnClickListener() {
@@ -595,6 +442,14 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                         } else {
                             AlertandMessages.showToastMsg(SOSActivity.this, "Data not found for checklist");
                         }
+                    }else{
+                        if (checklistQuestions.size() > 0) {
+                            for (int i = 0; i < checklistQuestions.size(); i++) {
+                                checklistQuestions.get(i).setChecklistAnswers(database.getCheckListQuestionsAnswer(checklistQuestions.get(i).getChecklistId()));
+                            }
+                        } else {
+                            AlertandMessages.showToastMsg(SOSActivity.this, "Data not found for checklist");
+                        }
                     }
                     dialog = new Dialog(SOSActivity.this);
                     dialog.setContentView(R.layout.checklist_dialog); //layout for dialog
@@ -610,7 +465,7 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                     Button cancelBtn = (Button) dialog.findViewById(R.id.cancel_btn);
                     RecyclerView checklistView = (RecyclerView) dialog.findViewById(R.id.checklist_view);
 
-                    quesutionAdapter = new QuesutionAdapter(context, checklistQuestions,childText.getBrand_Id(),String.valueOf(headerTitle.getCategoryId()));
+                    quesutionAdapter = new QuesutionAdapter(context, checklistQuestions,childText.getBrand_Id(),_listDataHeader.get(groupPosition).getCategoryId());
                     checklistView.setAdapter(quesutionAdapter);
                     checklistView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
 
@@ -622,17 +477,6 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                                 dialog.dismiss();
                                 expListView.invalidateViews();
                                 listAdapter.notifyDataSetChanged();
-
-//                                long i = database.insertSOSChecklistQuestionsData(username,visit_date, checklistQuestions, store_id, menu_id,childText.getBrand_Id(),headerTitle.getCategoryId());
-//                                if (i > 0) {
-//                                    expListView.invalidateViews();
-//                                    listAdapter.notifyDataSetChanged();
-//                                    AlertandMessages.showToastMsg(context, "Data saved successfully");
-//                                    dialog.dismiss();
-//                                } else {
-//                                    AlertandMessages.showToastMsg(context, "Data not saved");
-//                                    dialog.dismiss();
-//                                }
                             }else{
                                 AlertandMessages.showSnackbarMsg(view,Error_Message);
                             }
@@ -649,13 +493,11 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                 }
             });
 
-            holder.brand_facing.setText(childText.getBrand_Facing());
-
             if(checkHeaderArray.contains(groupPosition)) {
-                    if (!checkflag) {
-                        holder.child_card_view.setCardBackgroundColor(getResources().getColor(R.color.red));
-                    }else holder.child_card_view.setCardBackgroundColor(getResources().getColor(R.color.white));
+                if (!checkflag) {
+                    holder.child_card_view.setCardBackgroundColor(getResources().getColor(R.color.red));
                 }else holder.child_card_view.setCardBackgroundColor(getResources().getColor(R.color.white));
+            }else holder.child_card_view.setCardBackgroundColor(getResources().getColor(R.color.white));
 
             return convertView;
         }
@@ -682,7 +524,9 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
 
         @Override
         public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
-            headerTitle = (CategoryMaster) getGroup(groupPosition);
+
+            final  CategoryMaster headerTitle = (CategoryMaster) getGroup(groupPosition);
+
             if (convertView == null) {
                 LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = infalInflater.inflate(R.layout.list_group_sos, null);
@@ -712,12 +556,13 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
                     if(!hasFocus){
+                        grp_position = groupPosition;
                         final EditText Caption = (EditText) view;
-                        String value1 = Caption.getText().toString().replaceAll("[&^<>{}'$]", "").replaceFirst("^0+(?!$)", "");
-                        if (value1.equals("")) {
+                        String value = Caption.getText().toString().replaceAll("[&^<>{}'$]", "").replaceFirst("^0+(?!$)", "");
+                        if (value.equals("")) {
                             headerTitle.setCategory_Facing("");
                         } else {
-                            headerTitle.setCategory_Facing(value1);
+                            headerTitle.setCategory_Facing(value);
                         }
                     }
                 }
@@ -742,12 +587,11 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                 if (checkHeaderArray.contains(groupPosition)) {
                     groupView.setBackgroundColor(getResources().getColor(R.color.red));
                 } else {
-                    groupView.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
+                    groupView.setBackgroundColor(getResources().getColor(R.color.white));
                 }
             } else {
-                groupView.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
+                groupView.setBackgroundColor(getResources().getColor(R.color.white));
             }
-
 
             cam_img.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -756,7 +600,7 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                     _pathforcheck =  store_id + "_" + username.replace(".", "") + "_SOS_IMAGE-" + visit_date_formatted + "-" + CommonFunctions.getCurrentTimeHHMMSS() + ".jpg";
                     _path = CommonString.FILE_PATH + _pathforcheck;
                     CommonFunctions.startAnncaCameraActivity(context, _path, null,false);
-                   // startCameraActivity();
+                    // startCameraActivity();
                     getCurrentFocus().clearFocus();
                 }
             });
@@ -783,6 +627,155 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
 
     }
 
+    private class QuesutionAdapter extends RecyclerView.Adapter<QuesutionAdapter.ViewHolder> {
+
+        private Context context;
+        int itemPos = 0;
+        List<ChecklistMaster> data = new ArrayList<>();
+        String brand_id="0";
+        int  categoryId = 0;
+
+        public QuesutionAdapter(Context context, List<ChecklistMaster> data, String brand_id, Integer categoryId) {
+            this.context = context;
+            this.data = data;
+            this.brand_id = brand_id;
+            this.categoryId = categoryId;
+        }
+
+        @NonNull
+        @Override
+        public QuesutionAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.question_list, parent, false);
+            return new QuesutionAdapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull final QuesutionAdapter.ViewHolder holder, final int position) {
+            final ChecklistMaster object = data.get(position);
+
+            holder.question.setText(object.getChecklist());
+
+            holder.answer.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    System.out.println("Real touch felt.");
+                    spinnerTouched = true;
+                    return false;
+                }
+            });
+
+            CustomAdapter customAdapter = new CustomAdapter(getApplicationContext(), object.getChecklistAnswers());
+            holder.answer.setAdapter(customAdapter);
+            holder.answer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, final int pos, long l) {
+                    if (spinnerTouched) {
+                        if (pos != 0) {
+                            itemPos = pos;
+                            checklistQuestions.get(position).setCorrectAnswer_Id(String.valueOf(object.getChecklistAnswers().get(itemPos).getAnswerId()));
+                            quesutionAdapter.notifyDataSetChanged();
+                        } else {
+                            object.setCorrectAnswer_Id("0");
+                        }
+                    }
+                    spinnerTouched = false;
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
+
+            object.setBrand_Id(brand_id);
+            object.setCategory_Id(String.valueOf(categoryId));
+
+            if (!data.get(position).getCorrectAnswer_Id().equals("0"))
+            {
+                for (int j = 0; j < object.getChecklistAnswers().size(); j++) {
+                    // compare correct answer cd with answer cd of question
+                    if (Integer.parseInt(data.get(position).getCorrectAnswer_Id()) == object.getChecklistAnswers().get(j).getAnswerId()) {
+                        holder.answer.setSelection(j);
+                    }
+                }
+            }
+
+            if (!flag)
+            {
+                boolean checkFlag = true;
+                if(checklistQuestions.get(position).getCorrectAnswer_Id().equalsIgnoreCase("0")) {
+                    checkFlag = false;
+                }
+                if (!checkFlag) {
+                    holder.ll_view.setBackgroundColor(getResources().getColor(R.color.red));
+                } else {
+                    holder.ll_view.setBackgroundColor(getResources().getColor(R.color.white));
+                }
+            } else {
+                holder.ll_view.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return data.size();
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder {
+            TextView question;
+            Spinner answer;
+            CardView question_view;
+            LinearLayout ll_view;
+
+            public ViewHolder(View itemView) {
+                super(itemView);
+                question = itemView.findViewById(R.id.question);
+                answer = itemView.findViewById(R.id.spinner_ans);
+                question_view = itemView.findViewById(R.id.question_view);
+                ll_view = itemView.findViewById(R.id.ll_view);
+            }
+        }
+    }
+
+
+    private class CustomAdapter extends BaseAdapter {
+        Context context;
+        ArrayList<ChecklistAnswer> answerList;
+        LayoutInflater inflter;
+
+        public CustomAdapter(Context context, ArrayList<ChecklistAnswer> answerList) {
+            this.context = context;
+            this.answerList = answerList;
+            inflter = (LayoutInflater.from(context));
+        }
+
+        @Override
+        public int getCount() {
+            return answerList.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            view = inflter.inflate(R.layout.answer_items, null);
+            TextView names = (TextView) view.findViewById(R.id.answer);
+            names.setText(answerList.get(i).getAnswer());
+            return view;
+        }
+    }
+
+
+
+
     private boolean checkDataFiled(ArrayList<ChecklistMaster> checklistQuestions) {
         flag = true;
         for (int i = 0; i < checklistQuestions.size(); i++) {
@@ -808,6 +801,7 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+
     boolean validateData(HashMap<CategoryMaster, List<CategoryMaster>> listDataChild2, List<CategoryMaster> listDataHeader2) {
         checkHeaderArray.clear();
         category_img  = true;
@@ -820,19 +814,31 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
             } else if (listDataHeader2.get(i).getCategory_Image().equalsIgnoreCase("")) {
                 checkflag = false;
                 Error_Message = getResources().getString(R.string.cat_img_error);
-            } else {
+            }else {
                 for (int j = 0; j < listDataChild2.get(listDataHeader2.get(i)).size(); j++) {
                     if (listDataChild2.get(listDataHeader2.get(i)).get(j).getBrand_Facing().equalsIgnoreCase("")) {
                         checkflag = false;
                         Error_Message = getResources().getString(R.string.brand_facing_error);
-                    } else if(listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() == 0){
-                        checkflag = false;
-                        Error_Message = getResources().getString(R.string.checklist_error);
-                    }else {
+                    } else if (listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() == 0 || listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
+                        if(listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
+                            for (int k = 0; k < listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size(); k++) {
+                                String correct_answer_cd = listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().get(k).getCorrectAnswer_Id();
+                                if (correct_answer_cd.equalsIgnoreCase("0")) {
+                                    checkflag = false;
+                                    Error_Message = getResources().getString(R.string.checklist_error);
+                                    break;
+                                }
+                            }
+                        }else{
+                            checkflag = false;
+                            Error_Message = getResources().getString(R.string.checklist_error);
+                        }
+                    }  else {
                         checkflag = true;
                     }
                 }
             }
+
             if (checkflag == false) {
                 if (!checkHeaderArray.contains(i)) {
                     checkHeaderArray.add(i);
@@ -840,23 +846,23 @@ public class SOSActivity extends AppCompatActivity implements View.OnClickListen
                 break;
             }
         }
-
         expListView.invalidateViews();
         listAdapter.notifyDataSetChanged();
         return checkflag;
     }
 
 
-
     public void saveData() {
 
         long i1 = database.insertSOSCompleteData(listDataChild,listDataHeader,store_id,menu_id, visit_date,username);
         if (i1 > 0) {
-            Snackbar.make(fab, "Data saved successfully", Snackbar.LENGTH_SHORT).show();
+            AlertandMessages.showToastMsg(SOSActivity.this,"Data saved successfully");
+            finish();
         } else {
-            Snackbar.make(fab, "Data not saved", Snackbar.LENGTH_SHORT).show();
+            AlertandMessages.showToastMsg(SOSActivity.this,"Data not saved");
         }
     }
+
 
     @Override
     public void onBackPressed() {

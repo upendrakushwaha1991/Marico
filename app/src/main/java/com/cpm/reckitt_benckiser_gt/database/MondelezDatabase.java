@@ -204,6 +204,14 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         db.delete(CommonString.TABLE_VISICOOLER_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_VISICOOLER_CHEKLIST, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
 
+        // neeraj table
+        db.delete(CommonString.TABLE_FEEDBACK_QUESTIONS_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_SOS_HEADER_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        //db.delete(CommonString.TABLE_Journey_Plan_DBSR_Saved, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_SOS_CHILD_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        //usk
+
     }
 
     public void updateStatus(String id, String status) {
@@ -4979,7 +4987,7 @@ public class MondelezDatabase extends SQLiteOpenHelper {
                 values.put(CommonString.KEY_CATEGORY_ID, listDataHeader.get(i).getCategoryId());
                 values.put(CommonString.KEY_CATEGORY, listDataHeader.get(i).getCategory());
                 values.put(CommonString.KEY_CATEGORY_FACING, listDataHeader.get(i).getCategory_Facing());
-                values.put(CommonString.KEY_CATEGORY_IMAGE, listDataHeader.get(i).getCategory_Facing());
+                values.put(CommonString.KEY_CATEGORY_IMAGE, listDataHeader.get(i).getCategory_Image());
 
 
                 common_id = db.insert(CommonString.TABLE_SOS_HEADER_DATA, null, values);
@@ -4992,12 +5000,13 @@ public class MondelezDatabase extends SQLiteOpenHelper {
                         values1.put(CommonString.KEY_USER_ID, username);
                         values1.put(CommonString.KEY_STORE_ID, store_id);
                         values1.put(CommonString.KEY_MENU_ID, menu_id);
-                        values1.put(CommonString.KEY_CATEGORY_ID, listDataChild.get(listDataHeader.get(i)).get(j).getCategoryId());
+                        values1.put(CommonString.KEY_STORE_ID, store_id);
+                        values1.put(CommonString.KEY_CATEGORY_ID, listDataHeader.get(i).getCategoryId());
                         values1.put(CommonString.KEY_BRAND_ID, listDataChild.get(listDataHeader.get(i)).get(j).getBrand_Id());
                         values1.put(CommonString.KEY_BRAND, listDataChild.get(listDataHeader.get(i)).get(j).getBrand());
                         values1.put(CommonString.KEY_BRAND_FACING, listDataChild.get(listDataHeader.get(i)).get(j).getBrand_Facing());
 
-                        l = db.insert(CommonString.TABLE_INSERT_CHECKLIST_DATA, null, values1);
+                        l = db.insert(CommonString.TABLE_SOS_CHILD_DATA, null, values1);
                         if (l > 0) {
                             for (int k = 0; k < listDataChild.get(listDataHeader.get(i)).get(j).getChecklistQuestions().size(); k++) {
                                 values2 = new ContentValues();
@@ -5018,18 +5027,17 @@ public class MondelezDatabase extends SQLiteOpenHelper {
                     }
 
                 }
+            }
 
-                if (l2 > 0) {
-                    return l2;
-                } else {
-                    return 0;
-                }
+            if (common_id > 0) {
+                return common_id;
+            } else {
+                return 0;
             }
         } catch (Exception ex) {
             Log.d("Database Exception while Insert Store Data ", ex.toString());
             return 0;
         }
-        return l2;
     }
 
     public boolean isFeedBackFilledData(Integer storeId) {
@@ -5088,5 +5096,90 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         }
 
         return filled;
+    }
+
+    public List<CategoryMaster> getSavedSOSHeaderData(String store_id, String visit_date) {
+        ArrayList<CategoryMaster> list = new ArrayList<>();
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("select * from "+CommonString.TABLE_SOS_HEADER_DATA+" where "+CommonString.KEY_STORE_ID+" = '"+store_id+"' and "+CommonString.KEY_VISIT_DATE+" = '"+visit_date+"'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    CategoryMaster sb1  = new CategoryMaster();
+                    sb1.setCategory(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CATEGORY)));
+                    sb1.setCategoryId(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CATEGORY_ID)));
+                    sb1.setCategory_Facing(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CATEGORY_FACING)));
+                    sb1.setCategory_Image(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CATEGORY_IMAGE)));
+                    sb1.setStore_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STORE_ID)));
+                    sb1.setMenu_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_MENU_ID)));
+                    list.add(sb1);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return list;
+    }
+
+    public ArrayList<CategoryMaster> getSavedSOSInsertedChildData(Integer categoryId, String store_id, String visit_date) {
+        ArrayList<CategoryMaster> list = new ArrayList<>();
+        Cursor dbcursor = null,dbcursor2=null;
+        String brand_id ="";
+        try {
+
+            dbcursor = db.rawQuery("select * from "+CommonString.TABLE_SOS_CHILD_DATA+" where "+CommonString.KEY_STORE_ID+" = '"+store_id+"' and "+CommonString.KEY_VISIT_DATE+" = '"+visit_date+"' and "+CommonString.KEY_CATEGORY_ID+" = '"+categoryId+"'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    CategoryMaster sb1  = new CategoryMaster();
+                    brand_id = dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BRAND_ID));
+                    sb1.setBrand(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BRAND)));
+                    sb1.setBrand_Id(brand_id);
+                    sb1.setBrand_Facing(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_BRAND_FACING)));
+
+                    ArrayList<ChecklistMaster> list2 = new ArrayList<>();
+                    dbcursor2 = db.rawQuery("select * from "+CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA+" where "+CommonString.KEY_STORE_ID+" = '"+store_id+"' and "+CommonString.KEY_VISIT_DATE+" = '"+visit_date+"' and "+CommonString.KEY_CATEGORY_ID+" = '"+categoryId+"' and "+CommonString.KEY_BRAND_ID+" = '"+brand_id+"'", null);
+
+                    if (dbcursor2 != null) {
+                        dbcursor2.moveToFirst();
+                        while (!dbcursor2.isAfterLast()) {
+                            ChecklistMaster chcekList  = new ChecklistMaster();
+                            chcekList.setCategory_Id(dbcursor2.getString(dbcursor2.getColumnIndexOrThrow(CommonString.KEY_CATEGORY_ID)));
+                            chcekList.setBrand_Id(dbcursor2.getString(dbcursor2.getColumnIndexOrThrow(CommonString.KEY_BRAND_ID)));
+                            chcekList.setChecklist(dbcursor2.getString(dbcursor2.getColumnIndexOrThrow(CommonString.KEY_QUESTION)));
+                            chcekList.setChecklistId(dbcursor2.getInt(dbcursor2.getColumnIndexOrThrow(CommonString.KEY_QUESTION_ID)));
+                            chcekList.setCorrectAnswer_Id(dbcursor2.getString(dbcursor2.getColumnIndexOrThrow(CommonString.KEY_CORRECT_ANSWER_ID)));
+                            list2.add(chcekList);
+                            dbcursor2.moveToNext();
+                        }
+                        dbcursor2.close();
+                    }
+
+                    sb1.setChecklistQuestions(list2);
+                    list.add(sb1);
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+                return list;
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching", e.toString());
+            return list;
+        }
+
+        Log.d("Fetching non working", "-------------------");
+        return list;
     }
 }
