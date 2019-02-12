@@ -343,7 +343,6 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             foldername = "CoverageImages";
                         } else if (file[i].getName().contains("_GeoTag-")) {
                             foldername = "GeoTagImages";
-
                         } else if (file[i].getName().contains("_BACK_OF_STORE_CLOSEUPIMG_") || file[i].getName().contains("_BACK_OF_STORE_LONGSHOTIMG_")) {
                             foldername = "BackOfStoreImages";
                         } else if (file[i].getName().contains("_JAR_CLOSEUPIMG_") || file[i].getName().contains("_JAR_LONGSHOTIMG_")) {
@@ -354,7 +353,16 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             foldername = "PosmImages";
                         } else if (file[i].getName().contains("_VISI_COOLER_CLOSEUPIMG_") || file[i].getName().contains("_VISI_COOLER_LONGSHOTIMG_")) {
                             foldername = "VisicoolerImages";
-                        } else {
+                        }  else if (file[i].getName().contains("_Window-") || file[i].getName().contains("_WINDOW_withGrid")) {
+                            foldername = "WindowImages";
+                        } else if (file[i].getName().contains("_Cat_Dressing-")) {
+                            foldername = "DressingImage";
+                        } else if (file[i].getName().contains("_Cat_dbsr-")) {
+                            foldername = "DBSRCategoryImages";
+                        } else if(file[i].getName().contains("_SOS_IMAGE-")){
+                            foldername = "SOSImages";
+                        }else {
+
                             foldername = "BulkImages";
                         }
                         filename = file[i].getName();
@@ -681,6 +689,106 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     }
                     //endregion
                     break;
+
+                case "FeedBack_Data":
+                    //region Coverage Data
+                    db.open();
+                    ArrayList<ChecklistMaster> checklistQuestions = db.getSavedFeedBackData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+                    if(checklistQuestions.size() > 0) {
+                        JSONArray feedBackArray = new JSONArray();
+                        for (int i = 0; i < checklistQuestions.size(); i++) {
+                            jsonObject = new JSONObject();
+                            jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                            jsonObject.put("User_Id", _UserId);
+                            jsonObject.put(CommonString.KEY_STORE_ID, checklistQuestions.get(i).getStore_Id());
+                            jsonObject.put(CommonString.KEY_MENU_ID, checklistQuestions.get(i).getMenu_Id());
+                            jsonObject.put(CommonString.KEY_QUESTION_ID, checklistQuestions.get(i).getChecklistId());
+                            jsonObject.put(CommonString.KEY_CORRECT_ANSWER_ID, checklistQuestions.get(i).getCorrectAnswer_Id());
+                            jsonObject.put(CommonString.KEY_VISIT_DATE, checklistQuestions.get(i).getVisited_date());
+                            feedBackArray.put(jsonObject);
+                        }
+
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "FeedBack_Data");
+                        jsonObject.put("JsonData", feedBackArray.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+
+                    //endregion
+                    break;
+
+
+                case "SOS_Data":
+                    //region Coverage Data
+                    db.open();
+
+                    List<CategoryMaster> listDataHeader = db.getSavedSOSHeaderData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+
+                    if(listDataHeader.size() > 0) {
+                        JSONArray headerArray = new JSONArray();
+                        JSONArray childArray = null;
+                        JSONArray questionArray = null;
+                        for (int i = 0; i < listDataHeader.size(); i++) {
+                            jsonObject = new JSONObject();
+                            jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                            jsonObject.put("User_Id", _UserId);
+                            jsonObject.put(CommonString.KEY_STORE_ID, listDataHeader.get(i).getStore_id());
+                            jsonObject.put(CommonString.KEY_MENU_ID, listDataHeader.get(i).getMenu_id());
+                            jsonObject.put(CommonString.KEY_CATEGORY_ID, listDataHeader.get(i).getCategoryId());
+                            jsonObject.put(CommonString.KEY_CATEGORY_FACING, listDataHeader.get(i).getCategory_Facing());
+                            jsonObject.put(CommonString.KEY_CATEGORY_IMAGE, listDataHeader.get(i).getCategory_Image());
+                            jsonObject.put(CommonString.KEY_VISIT_DATE, coverageList.get(coverageIndex).getVisitDate());
+
+                            ArrayList<CategoryMaster> brandData = db.getSavedSOSInsertedChildData(listDataHeader.get(i).getCategoryId(),coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+
+                            if(brandData.size() >0) {
+                                 childArray = new JSONArray();
+                                for (int j = 0; j < brandData.size(); j++) {
+                                    jsonObject1 = new JSONObject();
+                                    jsonObject1.put("MID", coverageList.get(coverageIndex).getMID());
+                                    jsonObject1.put("User_Id", _UserId);
+                                    jsonObject1.put(CommonString.KEY_CATEGORY_ID, brandData.get(j).getCategoryId());
+                                    jsonObject1.put(CommonString.KEY_BRAND_ID, brandData.get(j).getBrand_Id());
+                                    jsonObject1.put(CommonString.KEY_BRAND_FACING, brandData.get(j).getBrand_Facing());
+
+                                    if(brandData.get(j).getChecklistQuestions().size() >0){
+                                        questionArray = new JSONArray();
+                                        for (int k = 0; k < brandData.get(j).getChecklistQuestions().size(); k++) {
+                                            jsonObject2 = new JSONObject();
+                                            jsonObject2.put("MID", coverageList.get(coverageIndex).getMID());
+                                            jsonObject2.put("User_Id", _UserId);
+                                            jsonObject2.put(CommonString.KEY_CATEGORY_ID, brandData.get(j).getCategoryId());
+                                            jsonObject2.put(CommonString.KEY_BRAND_ID, brandData.get(j).getBrand_Id());
+                                            jsonObject2.put(CommonString.KEY_QUESTION_ID, brandData.get(j).getChecklist_Question_Id());
+                                            jsonObject2.put(CommonString.KEY_CORRECT_ANSWER_ID, brandData.get(j).getChecklist_Correct_Answer_Id());
+                                            questionArray.put(jsonObject2);
+                                        }
+                                    }
+                                    jsonObject1.put(CommonString.KEY_CHCECKLIST_DATA,questionArray);
+                                    childArray.put(jsonObject1);
+                                }
+                            }
+                            jsonObject.put(CommonString.KEY_BRAND_DATA,childArray);
+                            headerArray.put(jsonObject);
+                        }
+
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "SOS_Data");
+                        jsonObject.put("JsonData", headerArray.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+
+                    //endregion
+                    break;
+
                 case "Category_Dressing_data":
                     //region Category_Dressing_data
                     db.open();
@@ -1321,6 +1429,8 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
 
             if (status != null && !status.equalsIgnoreCase(CommonString.KEY_D) && !coverageList.get(coverageIndex).getReasonid().equalsIgnoreCase("11")) {
                 keyList.add("CoverageDetail_latest");
+                keyList.add("FeedBack_Data");
+                keyList.add("SOS_Data");
                 keyList.add("Store_Profile");
                 keyList.add("Window_Data");
                 keyList.add("Category_Dressing_data");

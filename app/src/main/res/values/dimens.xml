@@ -17,5 +17,7 @@
     <dimen name="text_size_big">25sp</dimen>
 
     <dimen name="button_margin">15dp</dimen>
+    <dimen name="txt_size">16sp</dimen>
+
 
 </resources>
