@@ -108,22 +108,47 @@ public class SecondaryVisibilityActivity extends AppCompatActivity {
         database = new MondelezDatabase(getApplicationContext());
         database.open();
 
-        displayMasterList = database.getSecondaryVisibilityDisplayData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId(), journeyPlan.getStateId());
+        displayMasterList = database.getSecondaryVisibilityInsertedData(String.valueOf(journeyPlan.getStoreId()), journeyPlan.getVisitDate());
 
         hashMapListChildData = new HashMap<>();
 
-        for (int i = 0; i < displayMasterList.size(); i++) {
+        //if data is already inserted
+        if(displayMasterList.size()>0){
 
-            //for Brand Checklist Menu_Id is - 0
-            ArrayList<ChecklistMaster> checklist = database.getCheckListData(menuMaster.getMenuId());
+            for (int i = 0; i < displayMasterList.size(); i++) {
 
-            for (int j = 0; j < checklist.size(); j++) {
-                ArrayList<ChecklistAnswer> checkListAnswer = database.getCheckListAnswer(checklist.get(j).getChecklistId());
-                checklist.get(j).setCheckListAnswer(checkListAnswer);
+                //for Display Checklist
+                ArrayList<ChecklistMaster> checklist = database.getSecondaryVisibilityCheckListInsertedData(displayMasterList.get(i));
+
+                if(checklist.size()==0){
+                    checklist = database.getCheckListData(menuMaster.getMenuId());
+
+                    for (int j = 0; j < checklist.size(); j++) {
+                        ArrayList<ChecklistAnswer> checkListAnswer = database.getCheckListAnswer(checklist.get(j).getChecklistId());
+                        checklist.get(j).setCheckListAnswer(checkListAnswer);
+                    }
+                }
+
+                hashMapListChildData.put(displayMasterList.get(i), checklist);
             }
-
-            hashMapListChildData.put(displayMasterList.get(i), checklist);
         }
+        else {//default data
+            displayMasterList = database.getSecondaryVisibilityDisplayData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId(), journeyPlan.getStateId());
+
+            for (int i = 0; i < displayMasterList.size(); i++) {
+
+                //for Display Checklist Menu_Id
+                ArrayList<ChecklistMaster> checklist = database.getCheckListData(menuMaster.getMenuId());
+
+                for (int j = 0; j < checklist.size(); j++) {
+                    ArrayList<ChecklistAnswer> checkListAnswer = database.getCheckListAnswer(checklist.get(j).getChecklistId());
+                    checklist.get(j).setCheckListAnswer(checkListAnswer);
+                }
+
+                hashMapListChildData.put(displayMasterList.get(i), checklist);
+            }
+        }
+
 
         expandableListAdapter = new ExpandableListAdapter(this, displayMasterList, hashMapListChildData);
         expandableListView.setAdapter(expandableListAdapter);
@@ -371,34 +396,41 @@ public class SecondaryVisibilityActivity extends AppCompatActivity {
 
                             } else {
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(SecondaryVisibilityActivity.this);
-                                builder.setMessage(R.string.DELETE_ALERT_MESSAGE)
-                                        .setCancelable(false)
-                                        .setPositiveButton(getResources().getString(R.string.yes),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog,
-                                                                        int id) {
+                                if(current.getAnswered_id()==1 && (!current.getImg_long_shot().equals("") || !current.getImg_close_up().equals("") || !current.getQuantity().equals(""))){
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(SecondaryVisibilityActivity.this);
+                                    builder.setMessage(R.string.DELETE_ALERT_MESSAGE)
+                                            .setCancelable(false)
+                                            .setPositiveButton(getResources().getString(R.string.yes),
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog,
+                                                                            int id) {
 
-                                                        current.setImg_long_shot("");
-                                                        current.setImg_close_up("");
+                                                            current.setImg_long_shot("");
+                                                            current.setImg_close_up("");
+                                                            current.setQuantity("");
 
-                                                        lin_camera.setVisibility(View.GONE);
-                                                        lin_stock.setVisibility(View.GONE);
+                                                            lin_camera.setVisibility(View.GONE);
+                                                            lin_stock.setVisibility(View.GONE);
 
-                                                    }
-                                                })
-                                        .setNegativeButton(getResources().getString(R.string.no),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog,
-                                                                        int id) {
+                                                        }
+                                                    })
+                                            .setNegativeButton(getResources().getString(R.string.no),
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog,
+                                                                            int id) {
 
-                                                        spin_present.setSelection(2);
-                                                        dialog.cancel();
-                                                    }
-                                                });
-                                AlertDialog alert = builder.create();
+                                                            spin_present.setSelection(2);
+                                                            dialog.cancel();
+                                                        }
+                                                    });
+                                    AlertDialog alert = builder.create();
 
-                                alert.show();
+                                    alert.show();
+                                }
+                                else {
+                                    lin_camera.setVisibility(View.GONE);
+                                    lin_stock.setVisibility(View.GONE);
+                                }
 
                             }
 
@@ -414,6 +446,14 @@ public class SecondaryVisibilityActivity extends AppCompatActivity {
                 }
             });
 
+            if(current.getAnswered_id()==1){
+                lin_camera.setVisibility(View.VISIBLE);
+                lin_stock.setVisibility(View.VISIBLE);
+            }
+            else {
+                lin_camera.setVisibility(View.GONE);
+                lin_stock.setVisibility(View.GONE);
+            }
 
             if (current.getImg_close_up().equals("")) {
 

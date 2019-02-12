@@ -104,22 +104,44 @@ public class CTUActivity extends AppCompatActivity {
         database.open();
 
         nonExecutionReason = database.getNonExecutionReason(menuMaster.getMenuId());
-        brandList = database.getCTUBrandData(journeyPlan.getStoreId());
 
-
+        brandList = database.getCTUInsertedData(String.valueOf(journeyPlan.getStoreId()), journeyPlan.getVisitDate());
         hashMapListChildData = new HashMap<>();
 
-        for (int i = 0; i < brandList.size(); i++) {
+        //default data
+        if(brandList.size()==0){
+            brandList = database.getCTUBrandData(journeyPlan.getStoreId());
 
-            ArrayList<ChecklistMaster> checklist = database.getCheckListData(menuMaster.getMenuId());
+            for (int i = 0; i < brandList.size(); i++) {
 
-            for (int j = 0; j < checklist.size(); j++) {
-                ArrayList<ChecklistAnswer> checkListAnswer = database.getCheckListAnswer(checklist.get(j).getChecklistId());
-                checklist.get(j).setCheckListAnswer(checkListAnswer);
+                ArrayList<ChecklistMaster> checklist = database.getCheckListData(menuMaster.getMenuId());
+
+                for (int j = 0; j < checklist.size(); j++) {
+                    ArrayList<ChecklistAnswer> checkListAnswer = database.getCheckListAnswer(checklist.get(j).getChecklistId());
+                    checklist.get(j).setCheckListAnswer(checkListAnswer);
+                }
+
+                hashMapListChildData.put(brandList.get(i), checklist);
             }
-
-            hashMapListChildData.put(brandList.get(i), checklist);
         }
+        else {//inserted data
+            for (int i = 0; i < brandList.size(); i++) {
+
+                ArrayList<ChecklistMaster> checklist = database.getCTUCheckListInsertedData(brandList.get(i));
+                if(checklist.size()==0){
+                    checklist = database.getCheckListData(menuMaster.getMenuId());
+
+                    for (int j = 0; j < checklist.size(); j++) {
+                        ArrayList<ChecklistAnswer> checkListAnswer = database.getCheckListAnswer(checklist.get(j).getChecklistId());
+                        checklist.get(j).setCheckListAnswer(checkListAnswer);
+                    }
+
+                }
+
+                hashMapListChildData.put(brandList.get(i), checklist);
+            }
+        }
+
 
         expandableListAdapter = new ExpandableListAdapter(this, brandList, hashMapListChildData);
         expandableListView.setAdapter(expandableListAdapter);
@@ -299,57 +321,40 @@ public class CTUActivity extends AppCompatActivity {
 
                             } else {
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(CTUActivity.this);
-                                builder.setMessage(R.string.DELETE_ALERT_MESSAGE)
-                                        .setCancelable(false)
-                                        .setPositiveButton(getResources().getString(R.string.yes),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog,
-                                                                        int id) {
+                                if(current.getAnswered_id()==1 && (!current.getImg_long_shot().equals("") || !current.getImg_close_up().equals(""))){
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(CTUActivity.this);
+                                    builder.setMessage(R.string.DELETE_ALERT_MESSAGE)
+                                            .setCancelable(false)
+                                            .setPositiveButton(getResources().getString(R.string.yes),
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog,
+                                                                            int id) {
 
-                                                        current.setImg_long_shot("");
-                                                        current.setImg_close_up("");
+                                                            current.setImg_long_shot("");
+                                                            current.setImg_close_up("");
 
-                                                        lay_present_yes.setVisibility(View.GONE);
-                                                        lay_reason.setVisibility(View.VISIBLE);
+                                                            lay_present_yes.setVisibility(View.GONE);
+                                                            lay_reason.setVisibility(View.VISIBLE);
 
-                                                        spin_reason.setAdapter(new NonExecutionAdapter(CTUActivity.this, R.layout.spinner_text_view, nonExecutionReason));
-
-                                                        for (int i = 0; i < nonExecutionReason.size(); i++) {
-                                                            if (nonExecutionReason.get(i).getReasonId() == current.getNonExecutionReasonId()) {
-                                                                spin_reason.setSelection(i);
-                                                                break;
-                                                            }
                                                         }
+                                                    })
+                                            .setNegativeButton(getResources().getString(R.string.no),
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog,
+                                                                            int id) {
 
-                                                        spin_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                                            @Override
-                                                            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                                                                if (pos != -1) {
-                                                                    NonExecutionReason ans = nonExecutionReason.get(pos);
-                                                                    current.setNonExecutionReasonId(ans.getReasonId());
-                                                                }
-                                                            }
+                                                            spin_present.setSelection(2);
+                                                            dialog.cancel();
+                                                        }
+                                                    });
+                                    AlertDialog alert = builder.create();
 
-                                                            @Override
-                                                            public void onNothingSelected(AdapterView<?> parent) {
-                                                            }
-                                                        });
-
-                                                    }
-                                                })
-                                        .setNegativeButton(getResources().getString(R.string.no),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog,
-                                                                        int id) {
-
-                                                        spin_present.setSelection(2);
-                                                        dialog.cancel();
-                                                    }
-                                                });
-                                AlertDialog alert = builder.create();
-
-                                alert.show();
+                                    alert.show();
+                                }
+                                else {
+                                    lay_present_yes.setVisibility(View.GONE);
+                                    lay_reason.setVisibility(View.VISIBLE);
+                                }
 
                             }
 
@@ -369,6 +374,37 @@ public class CTUActivity extends AppCompatActivity {
                 }
             });
 
+            if(current.getAnswered_id()==1){
+                lay_present_yes.setVisibility(View.VISIBLE);
+                lay_reason.setVisibility(View.GONE);
+            }
+            else if(current.getAnswered_id()==0){
+                lay_present_yes.setVisibility(View.GONE);
+                lay_reason.setVisibility(View.VISIBLE);
+                spin_reason.setAdapter(new NonExecutionAdapter(CTUActivity.this, R.layout.spinner_text_view, nonExecutionReason));
+
+                for (int i = 0; i < nonExecutionReason.size(); i++) {
+                    if (nonExecutionReason.get(i).getReasonId() == current.getNonExecutionReasonId()) {
+                        spin_reason.setSelection(i);
+                        break;
+                    }
+                }
+
+                spin_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                        if (pos != -1) {
+                            NonExecutionReason ans = nonExecutionReason.get(pos);
+                            current.setNonExecutionReasonId(ans.getReasonId());
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
+
+            }
 
             if (current.getImg_close_up().equals("")) {
 
@@ -556,6 +592,7 @@ public class CTUActivity extends AppCompatActivity {
         for (int i = 0; i < brandList.size(); i++) {
             BrandMaster brand = brandList.get(i);
             if (brand.getAnswered_id() == -1) {
+                error_msg = getResources().getString(R.string.pl_select_present);
                 flag = false;
                 break;
             } else if (brand.getAnswered_id() == 1) {
@@ -582,7 +619,7 @@ public class CTUActivity extends AppCompatActivity {
                     }
                 }
             } else {
-                if (brand.getNonExecutionReasonId() == -1) {
+                if (brand.getNonExecutionReasonId() == 0) {
                     error_msg = getResources().getString(R.string.pl_select_reason);
                     flag = false;
                     break;

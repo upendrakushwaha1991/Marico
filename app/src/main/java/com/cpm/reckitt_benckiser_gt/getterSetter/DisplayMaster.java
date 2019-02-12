@@ -67,4 +67,14 @@ public class DisplayMaster implements Serializable {
     public void setAnswered_id(int answered_id) {
         this.answered_id = answered_id;
     }
+
+    public int getKey_Id() {
+        return Key_Id;
+    }
+
+    public void setKey_Id(int Key_Id) {
+        this.Key_Id = Key_Id;
+    }
+
+    int Key_Id;
 }

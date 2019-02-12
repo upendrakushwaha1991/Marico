@@ -104,22 +104,46 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
         database.open();
 
         nonExecutionReason = database.getNonExecutionReason(menuMaster.getMenuId());
-        windowList = database.getWindowDefaultData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId(), journeyPlan.getStateId());
 
+        windowList =  database.getWindowInsertedData(journeyPlan.getStoreId(), journeyPlan.getVisitDate());
+        if(windowList.size()>0 ){
 
-        hashMapListChildData = new HashMap<>();
+            hashMapListChildData = new HashMap<>();
 
-        for (int i = 0; i < windowList.size(); i++) {
+            for (int i = 0; i < windowList.size(); i++) {
 
-            ArrayList<ChecklistMaster> checklist = database.getCheckListData(menuMaster.getMenuId());
+                ArrayList<ChecklistMaster> checklist = database.getWindowCheckListInsertedData(windowList.get(i).getKey_Id());
 
-            for (int j = 0; j < checklist.size(); j++) {
-                ArrayList<ChecklistAnswer> checkListAnswer = database.getCheckListAnswer(checklist.get(j).getChecklistId());
-                checklist.get(j).setCheckListAnswer(checkListAnswer);
+                for (int j = 0; j < checklist.size(); j++) {
+                    ArrayList<ChecklistAnswer> checkListAnswer = database.getCheckListAnswer(checklist.get(j).getChecklistId());
+                    checklist.get(j).setCheckListAnswer(checkListAnswer);
+                }
+
+                hashMapListChildData.put(windowList.get(i), checklist);
             }
-
-            hashMapListChildData.put(windowList.get(i), checklist);
         }
+        else {
+            windowList = database.getWindowDefaultData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId(), journeyPlan.getStateId());
+
+            hashMapListChildData = new HashMap<>();
+
+            for (int i = 0; i < windowList.size(); i++) {
+
+                ArrayList<ChecklistMaster> checklist = database.getCheckListData(menuMaster.getMenuId());
+
+                for (int j = 0; j < checklist.size(); j++) {
+                    ArrayList<ChecklistAnswer> checkListAnswer = database.getCheckListAnswer(checklist.get(j).getChecklistId());
+                    checklist.get(j).setCheckListAnswer(checkListAnswer);
+                }
+
+                hashMapListChildData.put(windowList.get(i), checklist);
+            }
+        }
+
+
+
+
+
 
         expandableListAdapter = new ExpandableListAdapter(this, windowList, hashMapListChildData);
         expandableListView.setAdapter(expandableListAdapter);

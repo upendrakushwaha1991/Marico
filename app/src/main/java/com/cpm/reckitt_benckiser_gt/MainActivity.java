@@ -34,6 +34,7 @@ import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.download.DownloadActivity;
 import com.cpm.reckitt_benckiser_gt.geotag.GeoTagStoreList;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
+import com.cpm.reckitt_benckiser_gt.password.ChangePasswordActivity;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.upload.PreviousDataUploadActivity;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.upload.UploadWithoutWaitActivity;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
@@ -79,6 +80,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         headerView = LayoutInflater.from(this).inflate(R.layout.nav_header_main, navigationView, false);
         TextView tv_username = (TextView) headerView.findViewById(R.id.nav_user_name);
         tv_username.setText(user_name);
+
+        ImageView img_change_password = (ImageView) headerView.findViewById(R.id.img_change_password);
+        img_change_password.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent in = new Intent(getApplicationContext(), ChangePasswordActivity.class);
+                startActivity(in);
+            }
+        });
+
         //tv_usertype.setText(user_type);
         navigationView.addHeaderView(headerView);
         navigationView.setNavigationItemSelectedListener(this);

@@ -621,6 +621,7 @@ public class CommonString {
             + KEY_DISPLAY_ID + " INTEGER,"
             + KEY_DISPLAY+ " VARCHAR,"
             + KEY_REASON_ID + " INTEGER,"
+            + KEY_STOCK + " INTEGER,"
             + KEY_IMAGE_LONGSHOT + " VARCHAR,"
             + KEY_IMAGE_CLOSEUP + " VARCHAR)";
 

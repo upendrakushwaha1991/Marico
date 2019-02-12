@@ -302,13 +302,14 @@ public class EntryMenuActivity extends AppCompatActivity {
                 public void onClick(View v) {
 
                     if (current.getMenuId()==1) {
-                        if (database.isWindowFilledData(journeyPlan.getStoreId())) {
+                       /* if (database.isWindowFilledData(journeyPlan.getStoreId())) {
                             Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
                         }else {
                             startActivity(new Intent(context, WindowWithBrandActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }
-
+                        }*/
+                        startActivity(new Intent(context, WindowWithBrandActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
 
                     if (current.getMenuId() == 3) {
@@ -328,23 +329,26 @@ public class EntryMenuActivity extends AppCompatActivity {
 
                     if (current.getMenuId()==11) {
 
-                        if (database.isSecondaryFilledData(journeyPlan.getStoreId())) {
+                        /*if (database.isSecondaryFilledData(journeyPlan.getStoreId())) {
                             Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
                         }else {
                             startActivity(new Intent(context, SecondaryVisibilityActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }
-
+                        }*/
+                        startActivity(new Intent(context, SecondaryVisibilityActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
 
                     if (current.getMenuId()==2) {
 
-                        if (database.isCTUFilledData(journeyPlan.getStoreId())) {
+                        /*if (database.isCTUFilledData(journeyPlan.getStoreId())) {
                             Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
                         }else {
                             startActivity(new Intent(context, CTUActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }
+                        }*/
+                        startActivity(new Intent(context, CTUActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
 
                      if (current.getMenuId() == 6) {

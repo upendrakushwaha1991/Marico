@@ -1,9 +1,11 @@
 package com.cpm.reckitt_benckiser_gt.password;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
@@ -22,8 +24,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.cpm.reckitt_benckiser_gt.R;
+import com.cpm.reckitt_benckiser_gt.getterSetter.GsonGetterSetter;
+import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
+import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 import com.crashlytics.android.Crashlytics;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -192,7 +200,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
                     cancel = true;
                 }
                 else {
-                    //new AuthenticateTask().execute();
+                   new AuthenticateTask().execute();
                 }
 
             }
@@ -234,6 +242,100 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
 
 
         return !cancel;
+    }
+
+    private class AuthenticateTask extends AsyncTask<Void, Void, String> {
+        private ProgressDialog dialog = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog = new ProgressDialog(ChangePasswordActivity.this);
+            dialog.setTitle("Login");
+            dialog.setMessage("Authenticating....");
+            dialog.setCancelable(false);
+            if (!dialog.isShowing()) {
+                dialog.show();
+            }
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("Userid", user_id);
+                jsonObject.put("Password", old_password);
+                jsonObject.put("New_Password", new_pw);
+
+
+                String jsonString2 = jsonObject.toString();
+                UploadImageWithRetrofit upload = new UploadImageWithRetrofit(getApplicationContext());
+                String result_str = upload.downloadDataUniversal(jsonString2, CommonString.LOGIN_SERVICE);
+
+                if(result_str.equals(CommonString.KEY_SUCCESS)){
+                    return CommonString.KEY_SUCCESS;
+                } else if (result_str.equalsIgnoreCase(CommonString.MESSAGE_SOCKETEXCEPTION)) {
+                    throw new IOException();
+                } else if (result_str.equalsIgnoreCase(CommonString.KEY_FAILURE)) {
+                    throw new Exception();
+                }
+
+
+            } catch (MalformedURLException e) {
+
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        AlertandMessages.showAlert(ChangePasswordActivity.this, CommonString.MESSAGE_EXCEPTION, false);
+                    }
+                });
+
+            } catch (IOException e) {
+
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        // TODO Auto-generated method stub
+                   /*     if (counter < 3) {
+                            new AuthenticateTask().execute();
+                        } else {
+                            showAlert(CommonString.MESSAGE_SOCKETEXCEPTION);
+                            counter = 1;
+                        }*/
+                        AlertandMessages.showAlert(ChangePasswordActivity.this, CommonString.MESSAGE_SOCKETEXCEPTION, false);
+                    }
+                });
+            } catch (Exception e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AlertandMessages.showAlert(ChangePasswordActivity.this, CommonString.MESSAGE_CHANGED, false);
+                    }
+                });
+            }
+            return "";
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            dialog.dismiss();
+            if (result.equals(CommonString.KEY_SUCCESS)) {
+                editor.putString(CommonString.KEY_PASSWORD, new_pw);
+
+                editor.commit();
+
+                dialog.dismiss();
+                showAlert(getString(R.string.password_updated_successfully), true);
+            }else {
+                dialog.dismiss();
+                showAlert(getString(R.string.error), true);
+            }
+        }
     }
 
     /*private class AuthenticateTask extends AsyncTask<Void, Void, String> {

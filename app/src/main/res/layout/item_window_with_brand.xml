@@ -37,11 +37,13 @@
                     android:textSize="@dimen/text_size_medium" />
 
                 <ImageView
+                    android:id="@+id/ref_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/ref_images_white"
-                    android:layout_margin="10dp"/>
+                    android:layout_margin="10dp"
+                   />
 
             </RelativeLayout>
 
