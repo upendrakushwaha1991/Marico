@@ -715,37 +715,6 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     //endregion
                     break;
 
-                case "FeedBack_Data":
-                    //region Coverage Data
-                    db.open();
-                    ArrayList<ChecklistMaster> checklistQuestions = db.getSavedFeedBackData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
-                    if(checklistQuestions.size() > 0) {
-                        JSONArray feedBackArray = new JSONArray();
-                        for (int i = 0; i < checklistQuestions.size(); i++) {
-                            jsonObject = new JSONObject();
-                            jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
-                            jsonObject.put("User_Id", _UserId);
-                            jsonObject.put(CommonString.KEY_STORE_ID, checklistQuestions.get(i).getStore_Id());
-                            jsonObject.put(CommonString.KEY_MENU_ID, checklistQuestions.get(i).getMenu_Id());
-                            jsonObject.put(CommonString.KEY_QUESTION_ID, checklistQuestions.get(i).getChecklistId());
-                            jsonObject.put(CommonString.KEY_CORRECT_ANSWER_ID, checklistQuestions.get(i).getCorrectAnswer_Id());
-                            jsonObject.put(CommonString.KEY_VISIT_DATE, checklistQuestions.get(i).getVisited_date());
-                            feedBackArray.put(jsonObject);
-                        }
-
-                        jsonObject = new JSONObject();
-                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
-                        jsonObject.put("Keys", "FeedBack_Data");
-                        jsonObject.put("JsonData", feedBackArray.toString());
-                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
-
-                        jsonString = jsonObject.toString();
-                        type = CommonString.UPLOADJsonDetail;
-                    }
-
-                    //endregion
-                    break;
-
 
                 case "SOS_Data":
                     //region Coverage Data

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/grey_dark_background">
 
-   <com.yadu.appflow.blurlockview.BlurView
+   <com.cpm.reckitt_benckiser_gt.blurlockview.BlurView
         android:id="@+id/blurview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -34,7 +34,7 @@
                 android:layout_marginTop="56dp"
                 />
 
-            <com.yadu.appflow.blurlockview.Indicator
+            <com.cpm.reckitt_benckiser_gt.blurlockview.Indicator
                 android:id="@+id/indicator"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
