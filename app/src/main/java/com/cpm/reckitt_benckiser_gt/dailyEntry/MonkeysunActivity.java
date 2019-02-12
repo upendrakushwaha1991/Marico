@@ -160,16 +160,14 @@ public class MonkeysunActivity extends AppCompatActivity implements View.OnClick
                 break;
             case R.id.image_closeup:
 
-                _pathforcheck = "_CLOSEUPIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
+                _pathforcheck = "_MONKEY_SUN_CLOSEUPIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
                 CommonFunctions.startAnncaCameraActivity(MonkeysunActivity.this, _path, null, false);
-                //startCameraActivity();
                 break;
             case R.id.image_long_shot:
-                _pathforcheck2 = "_LONGSHOTIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
+                _pathforcheck2 = "_MONKEY_SUN_LONGSHOTIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck2;
                 CommonFunctions.startAnncaCameraActivity(MonkeysunActivity.this, _path, null, false);
-                //startCameraActivity();
 
                 break;
         }

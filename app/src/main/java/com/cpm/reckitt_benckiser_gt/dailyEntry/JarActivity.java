@@ -60,7 +60,6 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
     POSMDeploymentAdapter adapter;
     ArrayList<JarGetterSetter> deploymentData = new ArrayList<>();
     private ArrayList<ChecklistAnswer> reasonData = new ArrayList<>();
-    private ArrayList<JarGetterSetter> posmDeploymentSavedData = new ArrayList<>();
     RecyclerView recyclerView;
     private ArrayList<JarGetterSetter> posmDeploymentData = new ArrayList<>();
     private LinearLayout lay_image, lay_image_name;
@@ -107,11 +106,11 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
         visiColoersGetterSetter = new JarGetterSetter();
         str = CommonString.FILE_PATH;
 
-        posmDeploymentSavedData = db.getJarSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
-        if (posmDeploymentSavedData.size() > 0) {
-            createView(posmDeploymentSavedData);
+        //recyclerview data set
+        deploymentData = db.getJarSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
+        if (deploymentData.size() > 0) {
+            createView(deploymentData);
         } else {
-            //recyclerview data set
             posmDeploymentData = db.getJar_Data(jcpGetset, menuMaster.getMenuId());
             createView(posmDeploymentData);
             recyclerView.setVisibility(View.VISIBLE);
@@ -159,16 +158,14 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
                 break;
             case R.id.image_closeup:
 
-                _pathforcheck = "_CLOSEUPIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
+                _pathforcheck = "_JAR_CLOSEUPIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
                 CommonFunctions.startAnncaCameraActivity(JarActivity.this, _path, null, false);
-                //startCameraActivity();
                 break;
             case R.id.image_long_shot:
-                _pathforcheck2 = "_LONGSHOTIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
+                _pathforcheck2 = "_JAR_LONGSHOTIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck2;
                 CommonFunctions.startAnncaCameraActivity(JarActivity.this, _path, null, false);
-                //startCameraActivity();
 
                 break;
         }
@@ -180,21 +177,6 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         String cdate = formatter.format(m_cal.getTime());
         return cdate;
-    }
-
-    protected void startCameraActivity() {
-
-        try {
-            Log.i("MakeMachine", "startCameraActivity()");
-            File file = new File(_path);
-            Uri outputFileUri = Uri.fromFile(file);
-            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            startActivityForResult(intent, 0);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     @SuppressWarnings("deprecation")
@@ -245,16 +227,7 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
                         lay_image.setVisibility(View.VISIBLE);
                         lay_image_name.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.VISIBLE);
-                     /*   posmDeploymentSavedData = db.getJarSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
-                        if (posmDeploymentSavedData.size() > 0) {
-                            createView(posmDeploymentSavedData);
-                        } else {
-                            //recyclerview data set
-                            posmDeploymentData = db.getJar_Data(jcpGetset, menuMaster.getMenuId());
-                            createView(posmDeploymentData);
-                            recyclerView.setVisibility(View.VISIBLE);
 
-                        }*/
                     } else {
                         ClearData();
                         lay_image.setVisibility(View.GONE);
@@ -506,14 +479,31 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
 
 
     private  void ClearData(){
-        for (int i = 0; i < posmDeploymentSavedData.size(); i++) {
-            posmDeploymentSavedData.get(i).setAnswer("");
-            posmDeploymentSavedData.get(i).setAnswer_cd("0");
-            adapter.notifyDataSetChanged();
-
+        for (int i = 0; i < deploymentData.size(); i++) {
+            deploymentData.get(i).setAnswer("");
+            deploymentData.get(i).setAnswer_cd("0");
 
         }
-
+        adapter.notifyDataSetChanged();
+    }
+    @Override
+    public void onBackPressed() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(JarActivity.this);
+        builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                        JarActivity.this.finish();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        android.app.AlertDialog alert = builder.create();
+        alert.show();
     }
 
 }

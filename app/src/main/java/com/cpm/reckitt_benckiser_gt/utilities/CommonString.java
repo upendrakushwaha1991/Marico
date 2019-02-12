@@ -163,7 +163,7 @@ public class CommonString {
     public static final String KEY_BRAND_DATA = "Brand_Data";
 
     public static String URL = "http://mgt.parinaam.in/Webservice/Mondlezeservice.svc/";
-    public static String URL3 = "http://rbgt.parinaam.in/webservice/Imageupload.asmx/";
+    public static String URL3 = "http://mgt.parinaam.in/webservice/Imageupload.asmx/";
     public static String URLGORIMAG = "http://mgt.parinaam.in/webservice/Imageupload.asmx/";
 
     public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/Mondelez_GT_Backup/";

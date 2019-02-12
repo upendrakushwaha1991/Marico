@@ -343,7 +343,17 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             foldername = "CoverageImages";
                         } else if (file[i].getName().contains("_GeoTag-")) {
                             foldername = "GeoTagImages";
-                        } else if (file[i].getName().contains("_Window-") || file[i].getName().contains("_WINDOW_withGrid")) {
+                        } else if (file[i].getName().contains("_BACK_OF_STORE_CLOSEUPIMG_") || file[i].getName().contains("_BACK_OF_STORE_LONGSHOTIMG_")) {
+                            foldername = "BackOfStoreImages";
+                        } else if (file[i].getName().contains("_JAR_CLOSEUPIMG_") || file[i].getName().contains("_JAR_LONGSHOTIMG_")) {
+                            foldername = "JarImages";
+                        } else if (file[i].getName().contains("_MONKEY_SUN_CLOSEUPIMG_") || file[i].getName().contains("_MONKEY_SUN_LONGSHOTIMG_")) {
+                            foldername = "MonkeysumImages";
+                        } else if (file[i].getName().contains("_POSMIMG")) {
+                            foldername = "PosmImages";
+                        } else if (file[i].getName().contains("_VISI_COOLER_CLOSEUPIMG_") || file[i].getName().contains("_VISI_COOLER_LONGSHOTIMG_")) {
+                            foldername = "VisicoolerImages";
+                        }  else if (file[i].getName().contains("_Window-") || file[i].getName().contains("_WINDOW_withGrid")) {
                             foldername = "WindowImages";
                         } else if (file[i].getName().contains("_Cat_Dressing-")) {
                             foldername = "DressingImage";
@@ -352,6 +362,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                         } else if(file[i].getName().contains("_SOS_IMAGE-")){
                             foldername = "SOSImages";
                         }else {
+
                             foldername = "BulkImages";
                         }
                         filename = file[i].getName();
@@ -945,7 +956,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                         jsonObject = new JSONObject();
                         jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
                         jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
-                        jsonObject.put("EXIT", visicooler.getPresent_name());
+                        jsonObject.put("present", visicooler.getPresent_name());
                         jsonObject.put("Reason_cd", visicooler.getReason_cd());
                         jsonObject.put("long_shot_image", visicooler.getImage_long_shot());
                         jsonObject.put("close_ip_image", visicooler.getImage_close_up());
@@ -993,7 +1004,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                         jsonObject = new JSONObject();
                         jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
                         jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
-                        jsonObject.put("EXIT", monky_sun_header.getPresent_name());
+                        jsonObject.put("present", monky_sun_header.getPresent_name());
                         jsonObject.put("Reason_cd", monky_sun_header.getReason_cd());
                         jsonObject.put("long_shot_image", monky_sun_header.getImage_long_shot());
                         jsonObject.put("close_ip_image", monky_sun_header.getImage_close_up());
@@ -1017,8 +1028,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     //endregion
                     break;
 
-                case "jor":
-
+                case "jar":
                     db.open();
                     ArrayList<JarGetterSetter> jor_ = db.getJorChildUploadData(coverageList.get(coverageIndex).getStoreId(),coverageList.get(coverageIndex).getVisitDate());
                     JSONArray jorArray = new JSONArray();
@@ -1041,7 +1051,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                         jsonObject = new JSONObject();
                         jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
                         jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
-                        jsonObject.put("EXIT", jor_header.getPresent_name());
+                        jsonObject.put("present", jor_header.getPresent_name());
                         jsonObject.put("long_shot_image", jor_header.getImage_long_shot());
                         jsonObject.put("close_ip_image", jor_header.getImage_close_up());
                         jsonObject.put("STORE_ID", jor_header.getStore_id());
@@ -1056,7 +1066,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                         storeDetail.put(jsonObject);
                         jsonObject = new JSONObject();
                         jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
-                        jsonObject.put("Keys", "JOR_DATA");
+                        jsonObject.put("Keys", "JAR_DATA");
                         jsonObject.put("JsonData", storeDetail.toString());
                         jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
                         jsonString = jsonObject.toString();
@@ -1120,8 +1130,6 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                             JSONObject obj = new JSONObject();
                                             obj.put("MID", coverageList.get(coverageIndex).getMID());
                                             obj.put("UserId", _UserId);
-                                            obj.put("BRAND_ID", semip_visibilityHeaderList.get(k).getBrand_id());
-                                            obj.put("STOCK", semip_visibilityHeaderList.get(k).getStock());
                                             obj.put("ANSWER_ID", semipmerchChildList.get(j).getAnswerId().toString());
                                             obj.put("CHEKLIST_ID", semipmerchChildList.get(j).getChecklist_id());
                                             obj.put("KEY_Id", semip_visibilityHeaderList.get(k).getKey_id());
@@ -1142,11 +1150,12 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                 jsonObject = new JSONObject();
                                 jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
                                 jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
-                                jsonObject.put("EXIT", backof_office.getPresent_name());
+                                jsonObject.put("present", backof_office.getPresent_name());
                                 jsonObject.put("long_shot_image", backof_office.getImage_long_shot());
                                 jsonObject.put("close_ip_image", backof_office.getImage_close_up());
                                 jsonObject.put("STORE_ID", backof_office.getStore_id());
-                                jsonObject.put("CHILD_DATA",softheaderArray);
+                                jsonObject.put("BRAND_DATA",softheaderArray);
+                                jsonObject.put("CHECKLIST_DATA",soft_child_array);
                                 storeDetail.put(jsonObject);
 
                                 jsonObject = new JSONObject();
@@ -1162,7 +1171,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             jsonObject = new JSONObject();
                             jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
                             jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
-                            jsonObject.put("EXIT", backof_office.getPresent_name());
+                            jsonObject.put("present", backof_office.getPresent_name());
                             jsonObject.put("long_shot_image", backof_office.getImage_long_shot());
                             jsonObject.put("close_ip_image", backof_office.getImage_close_up());
                             jsonObject.put("STORE_ID", backof_office.getStore_id());
@@ -1430,7 +1439,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                 keyList.add("Focus_Product");
                 keyList.add("Visicooler");
                 keyList.add("MonkeySun");
-                keyList.add("jor");
+                keyList.add("jar");
                 keyList.add("POSM_Deployment");
                 keyList.add("POSM");
                 keyList.add("BACK_OF_STORE_DATA");
