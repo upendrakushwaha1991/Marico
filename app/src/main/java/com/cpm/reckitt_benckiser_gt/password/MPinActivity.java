@@ -21,6 +21,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.LoginActivity;
+import com.cpm.reckitt_benckiser_gt.MainActivity;
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.blurlockview.BlurLockView;
 import com.cpm.reckitt_benckiser_gt.blurlockview.Directions.HideType;
@@ -125,10 +126,10 @@ public class MPinActivity extends AppCompatActivity implements
     public void correct(String inputPassword) {
 
         if (IS_PASSWORD_CHECK) {
-            /*Intent in = new Intent(getApplicationContext(), OneQADActivity.class);
+            Intent in = new Intent(getApplicationContext(), MainActivity.class);
             //Intent in = new Intent(getApplicationContext(), VideoActivity.class);
 
-            startActivity(in);*/
+            startActivity(in);
 
             finish();
         } else {
@@ -236,10 +237,10 @@ public class MPinActivity extends AppCompatActivity implements
 
                 editor.commit();
 
-               /* Intent in = new Intent(getApplicationContext(), OneQADActivity.class);
+                Intent in = new Intent(getApplicationContext(), MainActivity.class);
                 //Intent in = new Intent(getApplicationContext(), OneQADActivity.class);
 
-                startActivity(in);*/
+                startActivity(in);
 
                 finish();
             } else {

@@ -123,7 +123,7 @@
     <string name="brand_facing_error"> Please enter brand facing </string>
     <string name="checklist_error">Please fill checklist data</string>
     <string name="answer_error">All answers are madetory to fill</string>
-    <string name="title_activity_change_password">ChangePasswordActivity</string>
+    <string name="title_activity_change_password">Change Password</string>
 
     <!-- Change Password-->
     <string name="submit">Submit</string>
