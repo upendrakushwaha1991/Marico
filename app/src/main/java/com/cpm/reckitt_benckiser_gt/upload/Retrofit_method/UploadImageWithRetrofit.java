@@ -24,6 +24,7 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistAnswerGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.ChecklistMasterGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.DisplayMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.DisplayMasterGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GeotaggingBeans;
@@ -600,7 +601,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                 if (windowCheckListData.size() > 0) {
                                     for (int k = 0; k < windowCheckListData.size(); k++) {
                                         JSONObject obj = new JSONObject();
-                                        obj.put("Key_Id", windowMasterList.get(j).getKey_Id());
+                                        obj.put(CommonString.KEY_COMMON_ID, windowMasterList.get(j).getKey_Id());
                                         obj.put("Window_Cd", windowMasterList.get(j).getWindowId());
                                         obj.put("Checklist_Id", windowCheckListData.get(k).getChecklistId());
                                         obj.put("Checklist_Answer", windowCheckListData.get(k).getAnswered_cd());
@@ -638,7 +639,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             obj.put("UserId", coverageList.get(coverageIndex).getUserId());
                             obj.put(CommonString.KEY_COMMON_ID, windowMasterList.get(j).getKey_Id());
                             obj.put("Window_Cd", windowMasterList.get(j).getWindowId());
-                            obj.put("Window_Exist", presentValue);
+                            obj.put("Window_Exist", windowMasterList.get(j).getAnswered_id());
                             obj.put("Window_Img_CloseUp", windowMasterList.get(j).getImg_close_up());
                             obj.put("Window_Img_LongShot", windowMasterList.get(j).getImg_long_shot());
                             obj.put("Reason_Cd", windowMasterList.get(j).getNonExecutionReasonId());
@@ -781,6 +782,122 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     //endregion
                     break;
 
+                case "CTU_Data":
+                    //region CTU_Data
+                    db.open();
+
+                    ArrayList<BrandMaster> brandList = db.getCTUInsertedData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+                    if (brandList.size() > 0) {
+                        JSONArray compArray = new JSONArray();
+                        for (int j = 0; j < brandList.size(); j++) {
+
+                            //Brand Checklist
+                            JSONArray checklistArray = new JSONArray();
+
+                            if (brandList.get(j).getAnswered_id()==1) {
+
+                                ArrayList<ChecklistMaster> brandListCheckListData = db.getCTUCheckListInsertedData(brandList.get(j));
+                                if (brandListCheckListData.size() > 0) {
+                                    for (int k = 0; k < brandListCheckListData.size(); k++) {
+                                        JSONObject obj = new JSONObject();
+                                        obj.put(CommonString.KEY_COMMON_ID, brandList.get(j).getKey_Id());
+                                        obj.put(CommonString.KEY_BRAND_ID, brandList.get(j).getBrandId());
+                                        obj.put("Checklist_Id", brandListCheckListData.get(k).getChecklistId());
+                                        obj.put("Checklist_Answer", brandListCheckListData.get(k).getAnswered_cd());
+                                        checklistArray.put(obj);
+
+                                    }
+                                }
+                            }
+
+                            JSONObject obj = new JSONObject();
+                            obj.put("MID", coverageList.get(coverageIndex).getMID());
+                            obj.put("UserId", coverageList.get(coverageIndex).getUserId());
+                            obj.put(CommonString.KEY_COMMON_ID, brandList.get(j).getKey_Id());
+                            obj.put(CommonString.KEY_BRAND_ID, brandList.get(j).getBrandId());
+                            obj.put("Brand_Exist", brandList.get(j).getAnswered_id());
+                            obj.put("Brand_Img_CloseUp", brandList.get(j).getImg_close_up());
+                            obj.put("Brand_Img_LongShot", brandList.get(j).getImg_long_shot());
+                            obj.put("Reason_Cd", brandList.get(j).getNonExecutionReasonId());
+                            if (brandList.get(j).getAnswered_id()==1) {
+                                obj.put("Brand_CheckList", checklistArray);
+                            } else {
+                                obj.put("Brand_CheckList", "");
+                            }
+                            compArray.put(obj);
+
+                        }
+
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "CTU_Data");
+                        jsonObject.put("JsonData", compArray.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+                    //endregion
+                    break;
+
+                case "Secondary_Visibility_Data":
+                    //region Display_Data
+                    db.open();
+
+                    ArrayList<DisplayMaster> displayList = db.getSecondaryVisibilityInsertedData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+                    if (displayList.size() > 0) {
+                        JSONArray compArray = new JSONArray();
+                        for (int j = 0; j < displayList.size(); j++) {
+
+                            //Display Checklist
+                            JSONArray checklistArray = new JSONArray();
+
+                            if (displayList.get(j).getAnswered_id()==1) {
+
+                                ArrayList<ChecklistMaster> displayListCheckListData = db.getSecondaryVisibilityCheckListInsertedData(displayList.get(j));
+                                if (displayListCheckListData.size() > 0) {
+                                    for (int k = 0; k < displayListCheckListData.size(); k++) {
+                                        JSONObject obj = new JSONObject();
+                                        obj.put(CommonString.KEY_COMMON_ID, displayList.get(j).getKey_Id());
+                                        obj.put(CommonString.KEY_DISPLAY_ID, displayList.get(j).getDisplayId());
+                                        obj.put("Checklist_Id", displayListCheckListData.get(k).getChecklistId());
+                                        obj.put("Checklist_Answer", displayListCheckListData.get(k).getAnswered_cd());
+                                        checklistArray.put(obj);
+
+                                    }
+                                }
+                            }
+
+                            JSONObject obj = new JSONObject();
+                            obj.put("MID", coverageList.get(coverageIndex).getMID());
+                            obj.put("UserId", coverageList.get(coverageIndex).getUserId());
+                            obj.put(CommonString.KEY_COMMON_ID, displayList.get(j).getKey_Id());
+                            obj.put(CommonString.KEY_DISPLAY_ID, displayList.get(j).getDisplayId());
+                            obj.put("Display_Exist", displayList.get(j).getAnswered_id());
+                            obj.put("Display_Img_One", displayList.get(j).getImg_close_up());
+                            obj.put("Display_Img_Two", displayList.get(j).getImg_long_shot());
+                            obj.put("Display_Stock", displayList.get(j).getQuantity());
+
+                            if (displayList.get(j).getAnswered_id()==1) {
+                                obj.put("Display_CheckList", checklistArray);
+                            } else {
+                                obj.put("Display_CheckList", "");
+                            }
+                            compArray.put(obj);
+
+                        }
+
+                        jsonObject = new JSONObject();
+                        jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                        jsonObject.put("Keys", "Secondary_Visibility_Data");
+                        jsonObject.put("JsonData", compArray.toString());
+                        jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
+
+                        jsonString = jsonObject.toString();
+                        type = CommonString.UPLOADJsonDetail;
+                    }
+                    //endregion
+                    break;
             }
             //endregion
 
@@ -1021,8 +1138,11 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                 /*keyList.add("Store_Profile");
                 keyList.add("Category_Dressing_data");
                 keyList.add("Category_DBSR_data");
-                keyList.add("GeoTag");*/
+                */
+                keyList.add("GeoTag");
                 keyList.add("Window_Data");
+                keyList.add("CTU_Data");
+                keyList.add("Secondary_Visibility_Data");
             }
 
             if (keyList.size() > 0) {
