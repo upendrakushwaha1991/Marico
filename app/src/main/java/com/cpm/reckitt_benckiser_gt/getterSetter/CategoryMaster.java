@@ -18,6 +18,25 @@ public class CategoryMaster {
     @Expose
     private Integer categorySequence;
 
+    private String store_id;
+    private String menu_id;
+
+    public String getMenu_id() {
+        return menu_id;
+    }
+
+    public void setMenu_id(String menu_id) {
+        this.menu_id = menu_id;
+    }
+
+    public String getStore_id() {
+        return store_id;
+    }
+
+    public void setStore_id(String store_id) {
+        this.store_id = store_id;
+    }
+
     public Integer getCategoryId() {
         return categoryId;
     }

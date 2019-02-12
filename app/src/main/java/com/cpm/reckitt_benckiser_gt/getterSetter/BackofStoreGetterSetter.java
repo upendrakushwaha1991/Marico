@@ -18,6 +18,24 @@ public class BackofStoreGetterSetter implements Serializable {
     private String Answer;
     private Integer answerId;
     private Integer common_id;
+    private String key_id;
+    private String store_id;
+
+    public String getStore_id() {
+        return store_id;
+    }
+
+    public void setStore_id(String store_id) {
+        this.store_id = store_id;
+    }
+
+    public String getKey_id() {
+        return key_id;
+    }
+
+    public void setKey_id(String key_id) {
+        this.key_id = key_id;
+    }
 
     public Integer getCommon_id() {
         return common_id;

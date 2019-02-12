@@ -60,7 +60,6 @@ public class POSMDeploymentActivity extends AppCompatActivity {
     private ArrayList<Integer> global_List = new ArrayList<>();
     private ArrayList<CommonChillerDataGetterSetter> posmDeploymentData = new ArrayList<>();
     private ArrayList<NonExecutionReason> reasonData = new ArrayList<>();
-    private ArrayList<CommonChillerDataGetterSetter> posmDeploymentSavedData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +80,9 @@ public class POSMDeploymentActivity extends AppCompatActivity {
 
         db.open();
         reasonData = db.getPOSMReason(menuMaster.getMenuId());
-        posmDeploymentSavedData = db.getPOSMDeploymentSavedData(Integer.valueOf(store_id), visit_date);
-        if (posmDeploymentSavedData.size() > 0) {
-            createView(posmDeploymentSavedData);
+        posmDeploymentData = db.getPOSMDeploymentSavedData(Integer.valueOf(store_id), visit_date);
+        if (posmDeploymentData.size() > 0) {
+            createView(posmDeploymentData);
         } else {
             posmDeploymentData = db.getPOSMDeploymentData(jcpGetset);
             createView(posmDeploymentData);
@@ -131,31 +130,19 @@ public class POSMDeploymentActivity extends AppCompatActivity {
                         holder.reasonLayout.setVisibility(View.GONE);
                         deploymentData.get(position).setExist("");
                     } else if (itemPos == 1) {
-                        if (!deploymentData.get(position).getOld_deployment().equalsIgnoreCase("")) {
-                            holder.old_deployment.setText(deploymentData.get(position).getOld_deployment());
-                        } else {
-                            holder.old_deployment.setText("");
-                        }
-
-                        if (!deploymentData.get(position).getNew_deployment().equalsIgnoreCase("")) {
-                            holder.new_deployment.setText(deploymentData.get(position).getNew_deployment());
-                        } else {
-                            holder.new_deployment.setText("");
-                        }
-
                         holder.deploymentLayout.setVisibility(View.VISIBLE);
                         holder.reasonLayout.setVisibility(View.GONE);
                         deploymentData.get(position).setExist("1");
+                        holder.reasonSpinner.setSelection(0);
+
                     } else {
                         holder.deploymentLayout.setVisibility(View.GONE);
                         holder.reasonLayout.setVisibility(View.VISIBLE);
                         deploymentData.get(position).setExist("0");
                         deploymentData.get(position).setReason_id("0");
-                        deploymentData.get(position).setOld_deployment("");
-                        deploymentData.get(position).setNew_deployment("");
 
                         if (!deploymentData.get(position).getImg1().equalsIgnoreCase("")) {
-                            holder.deploymentImage.setImageResource(R.mipmap.camera_grey);
+                            holder.deploymentImage.setImageResource(R.drawable.camera_orange);
                             image1 = "";
                         }
 
@@ -209,18 +196,6 @@ public class POSMDeploymentActivity extends AppCompatActivity {
                 } else {
                     holder.existSpinner.setSelection(2);
                 }
-
-                if (!deploymentData.get(position).getOld_deployment().equalsIgnoreCase("")) {
-                    holder.old_deployment.setText(deploymentData.get(position).getOld_deployment());
-                } else {
-                    holder.old_deployment.setText("");
-                }
-
-                if (!deploymentData.get(position).getNew_deployment().equalsIgnoreCase("")) {
-                    holder.new_deployment.setText(deploymentData.get(position).getNew_deployment());
-                } else {
-                    holder.new_deployment.setText("");
-                }
             } else {
                 if (deploymentData.get(position).getExist().equalsIgnoreCase("")) {
                     holder.existSpinner.setSelection(0);
@@ -251,7 +226,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
             }
 
             if (deploymentData.get(position).getImg1().equalsIgnoreCase("")) {
-                holder.deploymentImage.setImageResource(R.mipmap.camera_grey);
+                holder.deploymentImage.setImageResource(R.drawable.camera_orange);
             } else {
                 holder.deploymentImage.setImageResource(R.drawable.camera_green);
             }
@@ -456,11 +431,6 @@ public class POSMDeploymentActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onBackPressed() {
-        finish();
-        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
-    }
 
 
     private class CustomAdapter extends BaseAdapter {
@@ -496,4 +466,25 @@ public class POSMDeploymentActivity extends AppCompatActivity {
             return view;
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(POSMDeploymentActivity.this);
+        builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                        POSMDeploymentActivity.this.finish();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        android.app.AlertDialog alert = builder.create();
+        alert.show();
+    }
+
 }

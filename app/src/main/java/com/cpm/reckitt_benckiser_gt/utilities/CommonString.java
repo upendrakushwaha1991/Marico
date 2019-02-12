@@ -159,9 +159,11 @@ public class CommonString {
     public static final int COVERAGE_NONWORKING = 9;
     public static final int COVERAGE_DETAIL_CLIENT = 10;
     public static final int CHECKOUTDetail_CLIENT = 11;
+    public static final String KEY_CHCECKLIST_DATA = "CheckList_Data";
+    public static final String KEY_BRAND_DATA = "Brand_Data";
 
     public static String URL = "http://mgt.parinaam.in/Webservice/Mondlezeservice.svc/";
-    public static String URL3 = "http://rbgt.parinaam.in/webservice/Imageupload.asmx/";
+    public static String URL3 = "http://mgt.parinaam.in/webservice/Imageupload.asmx/";
     public static String URLGORIMAG = "http://mgt.parinaam.in/webservice/Imageupload.asmx/";
 
     public static final String BACKUP_FILE_PATH = Environment.getExternalStorageDirectory() + "/Mondelez_GT_Backup/";
@@ -767,6 +769,7 @@ public class CommonString {
             + KEY_COMMON_ID + " VARCHAR,"
             + KEY_BRAND_FACING + " VARCHAR,"
             + KEY_BRAND_ID + " VARCHAR,"
+            + KEY_CATEGORY_ID + " VARCHAR,"
             + KEY_BRAND + " VARCHAR)";
 
 
@@ -780,6 +783,7 @@ public class CommonString {
             + KEY_QUESTION_ID + " VARCHAR,"
             + KEY_QUESTION + " VARCHAR,"
             + KEY_CORRECT_ANSWER_ID + " VARCHAR)";
+
 
     //Change Password service
     public static final String METHOD_UPDATE_PASSWORD = "Update_Password";
