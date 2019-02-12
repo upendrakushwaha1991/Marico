@@ -208,6 +208,7 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         //db.delete(CommonString.TABLE_Journey_Plan_DBSR_Saved, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_SOS_CHILD_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_POSM_DEPLOYMENT, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
 
     }
 
@@ -5133,7 +5134,6 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         BackofStoreGetterSetter sb = new BackofStoreGetterSetter();
         Cursor dbcursor = null;
         try {
-          //  dbcursor = db.rawQuery("SELECT * FROM " + CommonString.TABLE_BACKOF_STORE_HEADER_DATA + " WHERE " + CommonString.KEY_STORE_ID + " = " + jcp.getStoreId(), null);
             dbcursor = db.rawQuery("SELECT  * from "
                     + CommonString.TABLE_BACKOF_STORE_HEADER_DATA + " where "
                     + CommonString.KEY_STORE_ID + " = '" + storeId + "' and " + CommonString.KEY_VISIT_DATE + " =  '" + visit_date + "' ", null);
@@ -5141,6 +5141,11 @@ public class MondelezDatabase extends SQLiteOpenHelper {
                 dbcursor.moveToFirst();
                 while (!dbcursor.isAfterLast()) {
                     sb.setPresent_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PRESENT_EXIST)));
+                    if (sb.getPresent_name().equalsIgnoreCase("1")){
+                        sb.setPresent_name("1");
+                    }else {
+                        sb.setPresent_name("0");
+                    }
                     sb.setImage_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
                     sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGSHOT)));
                     sb.setStore_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STORE_ID)));
@@ -5235,7 +5240,6 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         Cursor dbcursor = null;
 
         try {
-            //dbcursor = db.rawQuery("SELECT * FROM " + CommonString.TABLE_VISICOOLER + " WHERE " + CommonString.KEY_STORE_ID + " = " + storeId, null);
             dbcursor = db.rawQuery("SELECT  * from "
                     + CommonString.TABLE_VISICOOLER_DATA + " where "
                     + CommonString.KEY_STORE_ID + " = '" + storeId + "' and " + CommonString.KEY_VISIT_DATE + " =  '" + visit_date + "' ", null);
@@ -5244,6 +5248,11 @@ public class MondelezDatabase extends SQLiteOpenHelper {
                 dbcursor.moveToFirst();
                 while (!dbcursor.isAfterLast()) {
                     sb.setPresent_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PRESENT_EXIST)));
+                    if (sb.getPresent_name().equalsIgnoreCase("1")){
+                        sb.setPresent_name("1");
+                    }else {
+                        sb.setPresent_name("0");
+                    }
                     sb.setImage_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
                     sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_LONGSHOT)));
                     sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON)));
@@ -5312,6 +5321,11 @@ public class MondelezDatabase extends SQLiteOpenHelper {
                 dbcursor.moveToFirst();
                 while (!dbcursor.isAfterLast()) {
                     sb.setPresent_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PRESENT_EXIST)));
+                    if (sb.getPresent_name().equalsIgnoreCase("1")){
+                        sb.setPresent_name("1");
+                    }else {
+                        sb.setPresent_name("0");
+                    }
                     sb.setImage_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
                     sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGSHOT)));
                     sb.setReason(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_REASON)));
@@ -5367,7 +5381,7 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         }
         return list;
     }
-    //jor data upload
+    //jar data upload
     public JarGetterSetter getJorHeaderUploadData(String store_id,String visit_date) {
         JarGetterSetter sb = new JarGetterSetter();
         Cursor dbcursor = null;
@@ -5381,6 +5395,11 @@ public class MondelezDatabase extends SQLiteOpenHelper {
                 dbcursor.moveToFirst();
                 while (!dbcursor.isAfterLast()) {
                     sb.setPresent_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PRESENT_EXIST)));
+                    if (sb.getPresent_name().equalsIgnoreCase("1")){
+                        sb.setPresent_name("1");
+                    }else {
+                        sb.setPresent_name("0");
+                    }
                     sb.setImage_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
                     sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGSHOT)));
                     sb.setStore_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STORE_ID)));
@@ -5415,7 +5434,6 @@ public class MondelezDatabase extends SQLiteOpenHelper {
                     psd.setCheklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHEKLIST)));
                     psd.setAnswer_cd(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ANSWER_CD)));
                     psd.setAnswer(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_ANSWER)));
-
                     list.add(psd);
                     dbcursor.moveToNext();
 

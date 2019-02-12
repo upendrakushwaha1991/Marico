@@ -119,8 +119,14 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
 
         //expend list
         prepareListData();
-      /*  listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
-        lvExp_audit.setAdapter(listAdapter);*/
+        listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
+        lvExp_audit.setAdapter(listAdapter);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++){
+            lvExp_audit.expandGroup(i);
+        }
+
+        setExpendablelistData();
+
         lvExp_audit.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
@@ -232,35 +238,19 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
 
             case R.id.image_closeup:
 
-                _pathforcheck = "_CLOSEUPIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
+                _pathforcheck = "_BACK_OF_STORE_CLOSEUPIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
                 CommonFunctions.startAnncaCameraActivity(BackOfStoreActivity.this, _path, null, false);
-                //startCameraActivity();
+
                 break;
             case R.id.image_long_shot:
-                _pathforcheck2 = "_LONGSHOTIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
+                _pathforcheck2 = "_BACK_OF_STORE_LONGSHOTIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck2;
                 CommonFunctions.startAnncaCameraActivity(BackOfStoreActivity.this, _path, null, false);
-                //startCameraActivity();
 
                 break;
         }
 
-    }
-
-    protected void startCameraActivity() {
-
-        try {
-            Log.i("MakeMachine", "startCameraActivity()");
-            File file = new File(_path);
-            Uri outputFileUri = Uri.fromFile(file);
-            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            startActivityForResult(intent, 0);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     @SuppressWarnings("deprecation")
@@ -319,18 +309,16 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                         lay_image.setVisibility(View.VISIBLE);
                         lay_image_name.setVisibility(View.VISIBLE);
                         lvExp_audit.setVisibility(View.VISIBLE);
-                        //set expend list
-                        prepareListData();
-                        setExpendablelistData();
 
                     } else {
-
                         clearValidateData();
                         lay_image.setVisibility(View.GONE);
                         lay_image_name.setVisibility(View.GONE);
                         lvExp_audit.setVisibility(View.GONE);
                         backofstoregs.setImage_close_up("");
                         backofstoregs.setImage_long_shot("");
+                        image_closeup.setImageResource(R.drawable.camera_orange);
+                        image_long_shot.setImageResource(R.drawable.camera_orange);
 
                     }
                 } else {
@@ -810,7 +798,6 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                 listDataHeader.get(i).setStock("");
                 listDataChild.get(listDataHeader.get(i)).get(j).setAnswer("");
                 listDataChild.get(listDataHeader.get(i)).get(j).setAnswerId(0);
-
             }
         }
         lvExp_audit.clearFocus();

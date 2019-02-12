@@ -63,8 +63,6 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
     ArrayList<VisiColoersGetterSetter> deploymentData = new ArrayList<>();
     private ArrayList<ChecklistAnswer> reasonData = new ArrayList<>();
     int indexVal = 0;
-    int indexCheckVal = 0;
-    private ArrayList<VisiColoersGetterSetter> posmDeploymentSavedData = new ArrayList<>();
     RecyclerView recyclerView;
     private ArrayList<VisiColoersGetterSetter> posmDeploymentData = new ArrayList<>();
     private ArrayList<NonExecutionReason> reasonDataHeader = new ArrayList<>();
@@ -110,9 +108,6 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
 
         }
 
-
-
-
         //get data reason sppiner
         reasonDataHeader = db.getPOSMReason(menuMaster.getMenuId());
         fab.setOnClickListener(this);
@@ -124,9 +119,9 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         setInsertData();
 
         //RECYCLER
-        posmDeploymentSavedData = db.getVisicoolerSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
-        if (posmDeploymentSavedData.size() > 0) {
-            createView(posmDeploymentSavedData);
+        posmDeploymentData = db.getVisicoolerSavedData(Integer.valueOf(jcpGetset.getStoreId()), visit_date);
+        if (posmDeploymentData.size() > 0) {
+            createView(posmDeploymentData);
         } else {
             //set recyclerview data
             posmDeploymentData = db.getVISICOOLER_Data(jcpGetset, menuMaster.getMenuId());
@@ -175,16 +170,14 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                 break;
             case R.id.image_closeup:
 
-                _pathforcheck = "_CLOSEUPIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
+                _pathforcheck = "_VISI_COOLER_CLOSEUPIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
                 CommonFunctions.startAnncaCameraActivity(NewVisiCoolerActivty.this, _path, null, false);
-                //startCameraActivity();
                 break;
             case R.id.image_long_shot:
-                _pathforcheck2 = "_LONGSHOTIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
+                _pathforcheck2 = "_VISI_COOLER_LONGSHOTIMG_" + "" + username + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck2;
                 CommonFunctions.startAnncaCameraActivity(NewVisiCoolerActivty.this, _path, null, false);
-                //startCameraActivity();
 
                 break;
         }
@@ -196,21 +189,6 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         String cdate = formatter.format(m_cal.getTime());
         return cdate;
-    }
-
-    protected void startCameraActivity() {
-
-        try {
-            Log.i("MakeMachine", "startCameraActivity()");
-            File file = new File(_path);
-            Uri outputFileUri = Uri.fromFile(file);
-            Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-            startActivityForResult(intent, 0);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     @SuppressWarnings("deprecation")
@@ -266,7 +244,6 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
 
                     } else {
                         ClearData();
-
                         lay_image.setVisibility(View.GONE);
                         lay_image_name.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.GONE);
@@ -412,7 +389,6 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                 }
             }
 
-
         }
 
         @Override
@@ -511,32 +487,6 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         }
     }
 
-    /*
-        public boolean validation() {
-
-            boolean value = true;
-            if (sp_present.getSelectedItemPosition() == 0) {
-                value = false;
-                showMessage("Please Select Present");
-            } else if (string_present_cd.equalsIgnoreCase("1")) {
-                if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
-                    value = false;
-                    showMessage("Please Capture Photo Close Up");
-                } else if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
-                    value = false;
-                    showMessage("Please Capture Photo Long Shot");
-
-                }
-            } else if (sp_reason.getSelectedItemPosition() == 0) {
-                value = false;
-                showMessage("Please Select Reason");
-            } else {
-                value = true;
-
-            }
-            return value;
-        }
-    */
     public boolean validation() {
 
         boolean value = true;
@@ -616,18 +566,11 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
     }
 
     private void ClearData() {
-        for (int i = 0; i < posmDeploymentSavedData.size(); i++) {
-            posmDeploymentSavedData.get(i).setAnswer("");
-            posmDeploymentSavedData.get(i).setAnswer_cd("0");
+        for (int i = 0; i < posmDeploymentData.size(); i++) {
+            posmDeploymentData.get(i).setAnswer("");
+            posmDeploymentData.get(i).setAnswer_cd("0");
 
         }
-//
-        /*for (int i = 0; i < reasonDataHeader.size(); i++) {
-            reasonDataHeader.get(i).setReason("");
-            reasonDataHeader.get(i).setReasonId(0);
-
-        }*/
-
         adapter.notifyDataSetChanged();
 
     }
