@@ -63,4 +63,10 @@ public interface PostApi {
 
     @POST("CoverageNonworking")
     Call<ResponseBody> setCoverageNonWorkingData(@Body RequestBody request);
+
+    @POST("Update_Password")
+    Call<ResponseBody> setNewPassword(@Body RequestBody request);
+
+    @retrofit2.http.POST("DownloadAll")
+    Call<ResponseBody> getDownloadAllUSINGLOGIN(@Body RequestBody request);
 }

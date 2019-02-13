@@ -256,9 +256,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
         } else if (id == R.id.nav_exit) {
-            ActivityCompat.finishAffinity(this);
+           /* ActivityCompat.finishAffinity(this);
             Intent intent = new Intent(context, LoginActivity.class);
-            startActivity(intent);
+            startActivity(intent);*/
             overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
             finish();
         } else if (id == R.id.nav_services) {

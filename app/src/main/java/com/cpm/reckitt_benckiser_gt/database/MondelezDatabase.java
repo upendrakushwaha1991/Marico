@@ -4491,7 +4491,7 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         Cursor dbcursor = null;
         try {
 
-            dbcursor = db.rawQuery("SELECT DISTINCT WM.Window_Id, WM.Window FROM Mapping_Window M INNER JOIN Window_Master WM ON M.Window_Id = WM.Window_Id " +
+            dbcursor = db.rawQuery("SELECT DISTINCT WM.Window_Id, WM.Window,WM.Window_Image FROM Mapping_Window M INNER JOIN Window_Master WM ON M.Window_Id = WM.Window_Id " +
                     "WHERE M.Store_Type_Id=" + Store_Type_Id + " AND M.Store_Category_Id=" + Store_Category_Id + " AND M.State_Id='" + State_Id + "'", null);
 
 
@@ -5569,7 +5569,7 @@ public BackofStoreGetterSetter getBackofStoreUploadImgData(String storeId,String
     BackofStoreGetterSetter sb = new BackofStoreGetterSetter();
     Cursor dbcursor = null;
     try {
-      //  dbcursor = db.rawQuery("SELECT * FROM " + CommonString.TABLE_BACKOF_STORE_HEADER_DATA + " WHERE " + CommonString.KEY_STORE_ID + " = " + jcp.getStoreId(), null);
+
         dbcursor = db.rawQuery("SELECT  * from "
                 + CommonString.TABLE_BACKOF_STORE_HEADER_DATA + " where "
                 + CommonString.KEY_STORE_ID + " = '" + storeId + "' and " + CommonString.KEY_VISIT_DATE + " =  '" + visit_date + "' ", null);
@@ -5629,7 +5629,7 @@ public ArrayList<BackofStoreGetterSetter> getHeaderBackOfStoreUploadData(String 
 }
 
 
-public ArrayList<BackofStoreGetterSetter> getBackOfStoreChildUploadData(String storeId,String common_id,String visit_date ) {
+public ArrayList<BackofStoreGetterSetter> getBackOfStoreChildUploadData(String storeId,String visit_date,String  common_id) {
     Log.d("Fetching", "Storedata--------------->Start<------------");
     ArrayList<BackofStoreGetterSetter> list = new ArrayList<BackofStoreGetterSetter>();
     Cursor dbcursor = null;
@@ -5638,7 +5638,7 @@ public ArrayList<BackofStoreGetterSetter> getBackOfStoreChildUploadData(String s
 
         dbcursor = db.rawQuery("SELECT  * from "
                 + CommonString.TABLE_CHILD_BACK_OF_STORE_DATA + " where "
-                + CommonString.KEY_STORE_ID + " = '" + storeId + "' and " + CommonString.KEY_VISIT_DATE + " =  '" + visit_date + "' ", null);
+                + CommonString.KEY_STORE_ID + " = '" + storeId + "' and " + CommonString.KEY_VISIT_DATE + " =  '" + visit_date + "' and " + CommonString.KEY_COMMON_ID + " =  '" + common_id + "'", null);
 
         if (dbcursor != null) {
             dbcursor.moveToFirst();
@@ -5649,6 +5649,7 @@ public ArrayList<BackofStoreGetterSetter> getBackOfStoreChildUploadData(String s
                 sb.setChecklist_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHECKLIST_ID)));
                 sb.setChecklist(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CHEKLIST)));
                 sb.setStore_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STORE_ID)));
+                sb.setCommon_id(dbcursor.getInt(dbcursor.getColumnIndexOrThrow(CommonString.KEY_COMMON_ID)));
                 list.add(sb);
                 dbcursor.moveToNext();
             }

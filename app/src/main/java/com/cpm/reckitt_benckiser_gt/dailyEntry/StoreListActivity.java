@@ -47,6 +47,7 @@ import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.download.DownloadActivity;
 import com.cpm.reckitt_benckiser_gt.geotag.GeoTagStoreList;
+import com.cpm.reckitt_benckiser_gt.geotag.GeoTaggingActivity;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
@@ -118,6 +119,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
     private int downloadIndex;
     SharedPreferences preferences;
     private LocationManager locationManager = null;
+    private SharedPreferences.Editor editor = null;
 
 
     @Override
@@ -555,7 +557,16 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                                             public void onClick(DialogInterface dialog1,
                                                                 int id) {
                                                 dialog1.cancel();
-                                                startActivity(geotagIntent);
+                                                //startActivity(geotagIntent);
+
+                                                editor = preferences.edit();
+                                                editor.putString(CommonString.KEY_STORE_ID, String.valueOf(current.getStoreId()));
+                                                editor.putString(CommonString.KEY_STORE_NAME, current.getStoreName());
+                                                editor.putString(CommonString.KEY_VISIT_DATE, current.getVisitDate());
+                                                editor.commit();
+                                                Intent in = new Intent(context, GeoTaggingActivity.class);
+                                                in.putExtra(CommonString.KEY_STORE_ID, String.valueOf(current.getStoreId()));
+                                                startActivity(in);
                                             }
                                         });
 
@@ -911,6 +922,7 @@ distance > distanceGeoPhence) {
         getSupportActionBar().setTitle("");
         txt_label.setText("Store List - " + date);
         geotagIntent = new Intent(context, GeoTagStoreList.class);
+        //geotagIntent = new Intent(context, GeoTaggingActivity.class);
         categortDbsrIntent = new Intent(context, DBSRCategoryActivity.class);
 
         if (rightname.equalsIgnoreCase("DBSR")) {

@@ -33,6 +33,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
+import com.cpm.reckitt_benckiser_gt.dailyEntry.StoreimageActivity;
 import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GeotaggingBeans;
@@ -103,6 +104,7 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
     private LocationManager locmanager = null;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
+    private SharedPreferences.Editor editor = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -554,7 +556,17 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
                 if (db.updateInsertedGeoTagStatus(storeid, status) > 0) {
                     img_str = "";
                     AlertandMessages.showToastMsg(context, "Geotag Saved Successfully");
+                    Intent in = new Intent(context, StoreimageActivity.class);
+
+                    editor = preferences.edit();
+                    editor.putString(CommonString.KEY_STORE_ID, storeid);
+                    editor.putString(CommonString.KEY_STORE_NAME, storename);
+                    editor.putString(CommonString.KEY_VISIT_DATE, visitData);
+                    editor.commit();
+                    in.putExtra(CommonString.KEY_STORE_ID, storeid);
+                    startActivity(in);
                     activity.finish();
+
                 } else {
                     AlertandMessages.showAlert((Activity) context, "Error in updating Geotag status", true);
                 }
