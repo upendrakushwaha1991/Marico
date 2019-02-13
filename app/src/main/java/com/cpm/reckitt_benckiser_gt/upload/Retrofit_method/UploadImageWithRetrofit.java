@@ -549,7 +549,8 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
             final String[] data_global = {""};
             String jsonString = "";
             int type = 0;
-            JSONObject jsonObject, jsonObject1, jsonObject2, jsonObject3;
+
+            JSONObject jsonObject, jsonObject1, jsonObject2,jsonObject3,jsonObject4;
 
             //region Creating json data
             switch (keyList.get(keyIndex)) {
@@ -605,7 +606,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     //region Coverage Data
                     db.open();
                     ArrayList<ChecklistMaster> checklistQuestions = db.getSavedFeedBackData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
-                    if(checklistQuestions.size() > 0) {
+                    if (checklistQuestions.size() > 0) {
                         JSONArray feedBackArray = new JSONArray();
                         for (int i = 0; i < checklistQuestions.size(); i++) {
                             jsonObject = new JSONObject();
@@ -646,6 +647,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             ArrayList<BrandMaster> brandList = windowMasterList.get(j).getBrandList();
                             JSONArray brandArray = new JSONArray();
                             JSONArray brandCheckListArray = new JSONArray();
+
                             if (windowMasterList.get(j).getAnswered_id() == 1) {
                                 ArrayList<ChecklistMaster> windowCheckListData = db.getWindowCheckListInsertedData(windowMasterList.get(j).getKey_Id());
                                 if (windowCheckListData.size() > 0) {
@@ -670,7 +672,9 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                     brandObj.put("Brand_Common_Id", brandList.get(b).getKey_Id());
 
                                     ArrayList<ChecklistMaster> brandCheckList = windowMasterList.get(j).getHashMapListChildData().get(brandList.get(b));
+
                                     //JSONArray brandCheckListArray = new JSONArray();
+
                                     for (int ch = 0; ch < brandCheckList.size(); ch++) {
                                         JSONObject brandChecklistObj = new JSONObject();
                                         brandObj.put("Window_Cd", windowMasterList.get(j).getWindowId());
@@ -727,7 +731,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
 
                     List<CategoryMaster> listDataHeader = db.getSavedSOSHeaderData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
 
-                    if(listDataHeader.size() > 0) {
+                    if (listDataHeader.size() > 0) {
                         JSONArray headerArray = new JSONArray();
                         JSONArray childArray = new JSONArray();
                         JSONArray questionArray = new JSONArray();
@@ -740,9 +744,11 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             jsonObject.put(CommonString.KEY_CATEGORY_ID, listDataHeader.get(i).getCategoryId());
                             jsonObject.put(CommonString.KEY_CATEGORY_FACING, listDataHeader.get(i).getCategory_Facing());
                             jsonObject.put(CommonString.KEY_CATEGORY_IMAGE, listDataHeader.get(i).getCategory_Image());
+
                             ArrayList<CategoryMaster> brandData = db.getSavedSOSInsertedChildData(listDataHeader.get(i).getCategoryId(), coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
 
                             if(brandData.size() >0) {
+
                                 for (int j = 0; j < brandData.size(); j++) {
                                     jsonObject1 = new JSONObject();
                                     jsonObject1.put("MID", coverageList.get(coverageIndex).getMID());
@@ -751,7 +757,9 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                     jsonObject1.put(CommonString.KEY_BRAND_ID, brandData.get(j).getBrand_Id());
                                     jsonObject1.put(CommonString.KEY_BRAND_FACING, brandData.get(j).getBrand_Facing());
 
+
                                     if(brandData.get(j).getChecklistQuestions().size() >0){
+
                                         for (int k = 0; k < brandData.get(j).getChecklistQuestions().size(); k++) {
                                             jsonObject2 = new JSONObject();
                                             jsonObject2.put("MID", coverageList.get(coverageIndex).getMID());
@@ -763,9 +771,11 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                             questionArray.put(jsonObject2);
                                         }
                                     }
+
                                     childArray.put(jsonObject1);
                                 }
                             }
+
                             headerArray.put(jsonObject);
                         }
                         jsonObject3.put(CommonString.KEY_CATEGORY_DATA, headerArray);
@@ -1108,62 +1118,64 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     break;
                 case "BACK_OF_STORE_DATA":
 
+                    db.open();
                     BackofStoreGetterSetter backof_office = db.getBackofStoreUploadImgData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+                    JSONArray topheaderArray = new JSONArray();
+                    JSONArray headerArray = new JSONArray();
+                    JSONArray childArray = new JSONArray();
                     if (backof_office.getPresent_name() != null && !backof_office.getPresent_name().equals("")) {
-                        JSONArray storeDetail = new JSONArray();
-
                         if (backof_office.getPresent_name().equalsIgnoreCase("1")) {
-                            db.open();
-                            ArrayList<BackofStoreGetterSetter> semip_visibilityHeaderList = db.getHeaderBackOfStoreUploadData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
-                            if (semip_visibilityHeaderList.size() > 0) {
-                                JSONArray soft_child_array = null;
-                                JSONArray softheaderArray = new JSONArray();
-                                for (int k = 0; k < semip_visibilityHeaderList.size(); k++) {
-                                    db.open();
-                                    ArrayList<BackofStoreGetterSetter> semipmerchChildList = db.getBackOfStoreChildUploadData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate(), semip_visibilityHeaderList.get(k).getKey_id());
-                                    if (semipmerchChildList.size() > 0) {
-                                        soft_child_array = new JSONArray();
-                                        for (int j = 0; j < semipmerchChildList.size(); j++) {
-                                            JSONObject obj = new JSONObject();
-                                            obj.put("MID", coverageList.get(coverageIndex).getMID());
-                                            obj.put("UserId", _UserId);
-                                            obj.put("ANSWER_ID", semipmerchChildList.get(j).getAnswerId().toString());
-                                            obj.put("CHEKLIST_ID", semipmerchChildList.get(j).getChecklist_id());
-                                            obj.put("KEY_Id", semip_visibilityHeaderList.get(k).getKey_id());
-                                            soft_child_array.put(obj);
+                            ArrayList<BackofStoreGetterSetter> listDataHeader1 = db.getHeaderBackOfStoreUploadData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
+                            if (listDataHeader1.size() > 0) {
+                                for (int i = 0; i < listDataHeader1.size(); i++) {
+                                    jsonObject = new JSONObject();
+                                    jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
+                                    jsonObject.put("UserId", _UserId);
+                                    jsonObject.put("BRAND_ID", listDataHeader1.get(i).getBrand_id());
+                                    jsonObject.put("STOCK", listDataHeader1.get(i).getStock());
+                                    jsonObject.put("KEY_Id", listDataHeader1.get(i).getKey_id());
+//                                    jsonObject.put("CHEKLIST_DATA", childArray);
 
+                                    ArrayList<BackofStoreGetterSetter> brandData = db.getBackOfStoreChildUploadData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate(), listDataHeader1.get(i).getKey_id());
+                                        for (int j = 0; j < brandData.size(); j++) {
+                                            jsonObject1 = new JSONObject();
+                                            jsonObject1.put("MID", coverageList.get(coverageIndex).getMID());
+                                            jsonObject1.put("UserId", _UserId);
+                                            jsonObject1.put("REASON_ID", listDataHeader1.get(j).getReasonId());
+                                            jsonObject1.put("CHEKLIST_ID", listDataHeader1.get(j).getChecklist_id());
+                                            jsonObject1.put("COMMON_ID", listDataHeader1.get(j).getCommon_id());
+                                            jsonObject1.put("BRAND_ID", listDataHeader1.get(j).getBrand_id());
+                                            jsonObject1.put("KEY_Id", listDataHeader1.get(i).getKey_id());
+
+                                            childArray.put(jsonObject1);
                                         }
-                                    }
 
-                                    JSONObject obj = new JSONObject();
-                                    obj.put("MID", coverageList.get(coverageIndex).getMID());
-                                    obj.put("UserId", _UserId);
-                                    obj.put("BRAND_ID", semip_visibilityHeaderList.get(k).getBrand_id());
-                                    obj.put("STOCK", semip_visibilityHeaderList.get(k).getStock());
-                                    obj.put("KEY_Id", semip_visibilityHeaderList.get(k).getKey_id());
-
-                                    softheaderArray.put(obj);
+                                        headerArray.put(jsonObject);
                                 }
-                                jsonObject = new JSONObject();
-                                jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
-                                jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
-                                jsonObject.put("present", backof_office.getPresent_name());
-                                jsonObject.put("long_shot_image", backof_office.getImage_long_shot());
-                                jsonObject.put("close_ip_image", backof_office.getImage_close_up());
-                                jsonObject.put("STORE_ID", backof_office.getStore_id());
-                                jsonObject.put("BRAND_DATA", softheaderArray);
-                                jsonObject.put("CHECKLIST_DATA", soft_child_array);
-                                storeDetail.put(jsonObject);
+
+                                jsonObject3 = new JSONObject();
+                                jsonObject3.put("MID", coverageList.get(coverageIndex).getMID());
+                                jsonObject3.put("UserId", coverageList.get(coverageIndex).getUserId());
+                                jsonObject3.put("present", backof_office.getPresent_name());
+                                jsonObject3.put("long_shot_image", backof_office.getImage_long_shot());
+                                jsonObject3.put("close_ip_image", backof_office.getImage_close_up());
+                                jsonObject3.put("STORE_ID", backof_office.getStore_id());
+
+                                jsonObject4 = new JSONObject();
+                                jsonObject4.put("BACK_OF_STORE_DETAILS",jsonObject3);
+                                jsonObject4.put("BRAND_DATA", headerArray);
+                                jsonObject4.put("CHEKLIST_DATA",childArray);
 
                                 jsonObject = new JSONObject();
                                 jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
                                 jsonObject.put("Keys", "BACK_OF_STORE_DATA");
-                                jsonObject.put("JsonData", storeDetail.toString());
-                                jsonObject.put("UserId", _UserId);
+                                jsonObject.put("JsonData", jsonObject4.toString());
+                                jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
 
                                 jsonString = jsonObject.toString();
                                 type = CommonString.UPLOADJsonDetail;
                             }
+
                         } else {
                             jsonObject = new JSONObject();
                             jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
@@ -1172,13 +1184,15 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             jsonObject.put("long_shot_image", backof_office.getImage_long_shot());
                             jsonObject.put("close_ip_image", backof_office.getImage_close_up());
                             jsonObject.put("STORE_ID", backof_office.getStore_id());
-                            jsonObject.put("CHILD_DATA", "");
-                            storeDetail.put(jsonObject);
+                            jsonObject.put("BRAND_DATA", "");
+                            jsonObject.put("CHEKLIST_DATA", "");
 
+                            jsonObject4 = new JSONObject();
+                            jsonObject4.put("BACK_OF_STORE_DETAILS",jsonObject);
                             jsonObject = new JSONObject();
                             jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
                             jsonObject.put("Keys", "BACK_OF_STORE_DATA");
-                            jsonObject.put("JsonData", storeDetail.toString());
+                            jsonObject.put("JsonData", jsonObject4.toString());
                             jsonObject.put("UserId", _UserId);
 
                             jsonString = jsonObject.toString();
@@ -1414,6 +1428,8 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                 }
             }
         } catch (Exception ex) {
+            pd.dismiss();
+            AlertandMessages.showAlert((Activity) context, "Error in Uploading status at coverage :" + coverageIndex, true);
 
         }
 

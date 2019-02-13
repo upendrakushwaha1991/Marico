@@ -60,7 +60,7 @@
     <string name="title_store_list_checkout_current">Please checkout from current store</string>
     <string name="wantcheckout">Are you sure you want to Checkout</string>
     <string name="closed">Close</string>
-    <string name="first_geotag_the_store">First geotag the store</string>
+    <string name="first_geotag_the_store">You need to geotag store.</string>
     <string name="DELETE_ALERT_MESSAGE">Saved data will be lost - Do you want to continue?</string>
     <string name="title_activity_non_working">NonWorkingActivity</string>
     <string name="title_activity_category_dressing">Category Execution</string>

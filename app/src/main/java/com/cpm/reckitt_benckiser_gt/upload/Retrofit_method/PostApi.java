@@ -66,4 +66,8 @@ public interface PostApi {
 
     @POST("Update_Password")
     Call<ResponseBody> setNewPassword(@Body RequestBody request);
+
+    @retrofit2.http.POST("DownloadAll")
+    Call<ResponseBody> getDownloadAllUSINGLOGIN(@Body RequestBody request);
+
 }

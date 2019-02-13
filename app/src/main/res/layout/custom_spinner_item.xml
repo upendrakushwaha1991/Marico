@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+
     android:orientation="horizontal">
+   <!-- android:background="@drawable/rouded_corner"-->
 
     <!--<ImageView
         android:id="@+id/imageView"
@@ -21,6 +22,6 @@
         android:paddingBottom="5dp"
         android:paddingLeft="5dp"
         android:text="Demo"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="16sp"/>
 </LinearLayout>

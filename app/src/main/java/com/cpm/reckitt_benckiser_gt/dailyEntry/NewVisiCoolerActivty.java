@@ -262,6 +262,9 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                     visiColoersGetterSetter.setImage_long_shot("");
                     image_closeup.setImageResource(R.drawable.camera_orange);
                     image_long_shot.setImageResource(R.drawable.camera_orange);
+                    recyclerView.setVisibility(View.GONE);
+                    lay_image.setVisibility(View.GONE);
+                    lay_image_name.setVisibility(View.GONE);
                 }
             }
 

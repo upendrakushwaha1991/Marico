@@ -127,73 +127,6 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
 
         setExpendablelistData();
 
-        lvExp_audit.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            }
-
-            @Override
-            public void onScrollStateChanged(AbsListView arg0, int arg1) {
-
-                InputMethodManager inputManager = (InputMethodManager) getApplicationContext()
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (getCurrentFocus() != null) {
-                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                    getCurrentFocus().clearFocus();
-                }
-                lvExp_audit.invalidateViews();
-            }
-        });
-
-        // Listview Group click listener
-        lvExp_audit.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-
-            @Override
-            public boolean onGroupClick(ExpandableListView parent, View v, int groupPosition, long id) {
-
-                return false;
-            }
-        });
-
-        // Listview Group expanded listener
-        lvExp_audit.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
-            @Override
-            public void onGroupExpand(int groupPosition) {
-                InputMethodManager inputManager = (InputMethodManager) getApplicationContext()
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (getWindow().getCurrentFocus() != null) {
-                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                    getCurrentFocus().clearFocus();
-                }
-            }
-        });
-
-        // Listview Group collasped listener
-        lvExp_audit.setOnGroupCollapseListener(new ExpandableListView.OnGroupCollapseListener() {
-
-            @Override
-            public void onGroupCollapse(int groupPosition) {
-
-                InputMethodManager inputManager = (InputMethodManager) getApplicationContext()
-                        .getSystemService(Context.INPUT_METHOD_SERVICE);
-                if (getWindow().getCurrentFocus() != null) {
-                    inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                    getCurrentFocus().clearFocus();
-                }
-            }
-        });
-
-        // Listview on child click listener
-        lvExp_audit.setOnChildClickListener(new ExpandableListView.OnChildClickListener() {
-
-            @Override
-            public boolean onChildClick(ExpandableListView parent, View v,
-                                        int groupPosition, int childPosition, long id) {
-
-                return false;
-            }
-        });
-
     }
 
 
@@ -329,6 +262,9 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                     backofstoregs.setImage_long_shot("");
                     image_closeup.setImageResource(R.drawable.camera_orange);
                     image_long_shot.setImageResource(R.drawable.camera_orange);
+                    lvExp_audit.setVisibility(View.GONE);
+                    lay_image.setVisibility(View.GONE);
+                    lay_image_name.setVisibility(View.GONE);
                 }
             }
 
@@ -571,11 +507,11 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                 if (checkHeaderArray.contains(groupPosition)) {
                     lblListHeader.setBackgroundColor(getResources().getColor(R.color.red));
                 } else {
-                    lblListHeader.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    lblListHeader.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
                 }
 
             } else {
-                lblListHeader.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                lblListHeader.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
             }
             return convertView;
         }
@@ -649,9 +585,23 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
         lvExp_audit.setAdapter(listAdapter);
         for (int i = 0; i < listAdapter.getGroupCount(); i++)
             lvExp_audit.expandGroup(i);
+
         lvExp_audit.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
+                lvExp_audit.invalidate();
+
+                int lastItem = firstVisibleItem + visibleItemCount;
+
+                if (firstVisibleItem == 0) {
+                    fab.show();//.setVisibility(View.VISIBLE);
+                } else if (lastItem == totalItemCount) {
+                    fab.hide();//setVisibility(View.INVISIBLE);
+                } else {
+                    fab.show();//setVisibility(View.VISIBLE);
+                }
+
             }
 
             @Override
@@ -663,6 +613,7 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                     if (currentFocus != null) {
                         currentFocus.clearFocus();
                     }
+
                 }
             }
         });
