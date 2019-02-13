@@ -245,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Snackbar.make(webView, getResources().getString(R.string.nonetwork), Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
             }
-        } else if (id == R.id.nav_geotag) {
+        } /*else if (id == R.id.nav_geotag) {
             db.open();
             if (downloadIndex == 0) {
                 Intent startDownload = new Intent(context, GeoTagStoreList.class);
@@ -255,10 +255,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 AlertandMessages.showToastMsg(context, "Please Download Data First");
             }
 
-        } else if (id == R.id.nav_exit) {
-            ActivityCompat.finishAffinity(this);
+        }*/ else if (id == R.id.nav_exit) {
+           /* ActivityCompat.finishAffinity(this);
             Intent intent = new Intent(context, LoginActivity.class);
-            startActivity(intent);
+            startActivity(intent);*/
             overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
             finish();
         } else if (id == R.id.nav_services) {

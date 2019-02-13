@@ -255,6 +255,8 @@ public class CTUActivity extends AppCompatActivity {
             final Spinner spin_present = (Spinner) convertView.findViewById(R.id.spin_present);
             final Spinner spin_reason = (Spinner) convertView.findViewById(R.id.spin_reason);
             Button btn_brand_visibility = (Button) convertView.findViewById(R.id.btn_brand_visibility);
+            ImageView ref_image = (ImageView) convertView.findViewById(R.id.ref_image);
+            ref_image.setVisibility(View.GONE);
             btn_brand_visibility.setVisibility(View.GONE);
 
             tv_window.setText(current.getBrand());
@@ -311,13 +313,18 @@ public class CTUActivity extends AppCompatActivity {
                         userSelect[0] = false;
 
                         if (pos != -1) {
-                            PosmMaster ans = reason_list.get(pos);
-                            current.setAnswered_id(ans.getAnswerId());
-                            current.setAnswered(ans.getAnswer());
+                            final PosmMaster ans = reason_list.get(pos);
 
-                            if (ans.getAnswerId() == 1) {
+                            if (pos == 2) {
+
+                                current.setAnswered_id(ans.getAnswerId());
+                                current.setAnswered(ans.getAnswer());
+
                                 lay_present_yes.setVisibility(View.VISIBLE);
                                 lay_reason.setVisibility(View.GONE);
+                                //refresh to show hide views according to Present
+                                expandableListView.clearFocus();
+                                expandableListAdapter.notifyDataSetChanged();
 
                             } else {
 
@@ -336,6 +343,12 @@ public class CTUActivity extends AppCompatActivity {
                                                             lay_present_yes.setVisibility(View.GONE);
                                                             lay_reason.setVisibility(View.VISIBLE);
 
+                                                            current.setAnswered_id(ans.getAnswerId());
+                                                            current.setAnswered(ans.getAnswer());
+
+                                                            //refresh to show hide views according to Present
+                                                            expandableListView.clearFocus();
+                                                            expandableListAdapter.notifyDataSetChanged();
                                                         }
                                                     })
                                             .setNegativeButton(getResources().getString(R.string.no),
@@ -352,15 +365,15 @@ public class CTUActivity extends AppCompatActivity {
                                     alert.show();
                                 }
                                 else {
-                                    lay_present_yes.setVisibility(View.GONE);
-                                    lay_reason.setVisibility(View.VISIBLE);
+
+                                    current.setAnswered_id(ans.getAnswerId());
+                                    current.setAnswered(ans.getAnswer());
+                                    //refresh to show hide views according to Present
+                                    expandableListView.clearFocus();
+                                    expandableListAdapter.notifyDataSetChanged();
                                 }
 
                             }
-
-                            //refresh to show hide views according to Present
-                            expandableListView.clearFocus();
-                            expandableListAdapter.notifyDataSetChanged();
                         }
                         else {
                             lay_present_yes.setVisibility(View.GONE);
@@ -404,6 +417,10 @@ public class CTUActivity extends AppCompatActivity {
                     }
                 });
 
+            }
+            else {
+                lay_present_yes.setVisibility(View.GONE);
+                lay_reason.setVisibility(View.GONE);
             }
 
             if (current.getImg_close_up().equals("")) {

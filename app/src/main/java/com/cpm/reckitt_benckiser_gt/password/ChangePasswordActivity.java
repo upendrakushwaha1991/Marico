@@ -23,8 +23,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.cpm.reckitt_benckiser_gt.LoginActivity;
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GsonGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.ResponseResult;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
@@ -148,15 +150,13 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
 
             case R.id.btn_submit:
 
-                if(isValid()){
-
-                }
+                submit();
 
                 break;
         }
     }
 
-    boolean isValid(){
+    void submit(){
         boolean flag = true;
 
         boolean cancel = false;
@@ -240,8 +240,6 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
 
         }
 
-
-        return !cancel;
     }
 
     private class AuthenticateTask extends AsyncTask<Void, Void, String> {
@@ -271,9 +269,10 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
 
                 String jsonString2 = jsonObject.toString();
                 UploadImageWithRetrofit upload = new UploadImageWithRetrofit(getApplicationContext());
-                String result_str = upload.downloadDataUniversal(jsonString2, CommonString.LOGIN_SERVICE);
+                String result_str = upload.downloadDataUniversal(jsonString2, CommonString.CHANGE_PASSWORD_SERVICE);
 
-                if(result_str.equals(CommonString.KEY_SUCCESS)){
+                //ResponseResult result = new Gson().fromJson(result_str, ResponseResult.class);
+                if(result_str.contains(CommonString.KEY_SUCCESS)){
                     return CommonString.KEY_SUCCESS;
                 } else if (result_str.equalsIgnoreCase(CommonString.MESSAGE_SOCKETEXCEPTION)) {
                     throw new IOException();
@@ -502,7 +501,12 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
                     public void onClick(DialogInterface dialog, int id) {
 
                         if(flag_finish){
-                            finish();
+                            //finish();
+
+                            Intent i = new Intent(ChangePasswordActivity.this, LoginActivity.class);
+                            // set the new task and clear flags
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(i);
                         }
 
                        /* Intent i = new Intent(activity, StorelistActivity.class);

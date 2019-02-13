@@ -17,6 +17,12 @@
         android:background="@drawable/dark_chocolate"
         android:padding="@dimen/activity_horizontal_margin">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@mipmap/parinaam_tag_line"
+            android:layout_marginBottom="20dp"
+            />
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

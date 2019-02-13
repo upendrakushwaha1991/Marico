@@ -60,12 +60,14 @@
 
             <Button
                 android:id="@+id/chkout"
-                android:layout_width="70dip"
-                android:layout_height="40dp"
+                android:layout_width="110dp"
+                android:layout_height="33dp"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="5dp"
                 android:focusable="false"
-                android:visibility="gone" />
+                android:visibility="gone"
+                android:background="@mipmap/checkout_button"/>
 
             <ImageView
                 android:id="@+id/imageView2"

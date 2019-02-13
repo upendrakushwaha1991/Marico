@@ -28,7 +28,7 @@
                     <TextView
                         android:id="@+id/brand_txt"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text=""
                         android:gravity="center"
                         android:layout_weight="1"
@@ -38,7 +38,7 @@
                     <EditText
                         android:id="@+id/brand_facing_txt"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
                         android:layout_marginRight="10dp"
                         android:background="@drawable/edit_text_border"
@@ -56,7 +56,7 @@
                     <Button
                         android:id="@+id/checklist_btn"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:text="CheckList"
                         android:background="@color/ColorPrimaryLight"
                         android:paddingTop="5dp"

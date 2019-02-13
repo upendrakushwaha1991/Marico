@@ -386,13 +386,18 @@ public class SecondaryVisibilityActivity extends AppCompatActivity {
                     if (userSelect[0]) {
                         userSelect[0] = false;
 
-                        if (pos != -1) {
-                            PosmMaster ans = reason_list.get(pos);
-                            current.setAnswered_id(ans.getAnswerId());
 
-                            if (ans.getAnswerId() == 1) {
+                            final PosmMaster ans = reason_list.get(pos);
+
+                            if (pos == 2) {
                                 lin_camera.setVisibility(View.VISIBLE);
                                 lin_stock.setVisibility(View.VISIBLE);
+
+                                current.setAnswered_id(ans.getAnswerId());
+
+                                //refresh to show hide views according to Present
+                                expandableListView.clearFocus();
+                                expandableListAdapter.notifyDataSetChanged();
 
                             } else {
 
@@ -409,8 +414,14 @@ public class SecondaryVisibilityActivity extends AppCompatActivity {
                                                             current.setImg_close_up("");
                                                             current.setQuantity("");
 
+                                                            current.setAnswered_id(ans.getAnswerId());
+
                                                             lin_camera.setVisibility(View.GONE);
                                                             lin_stock.setVisibility(View.GONE);
+
+                                                            //refresh to show hide views according to Present
+                                                            expandableListView.clearFocus();
+                                                            expandableListAdapter.notifyDataSetChanged();
 
                                                         }
                                                     })
@@ -430,14 +441,16 @@ public class SecondaryVisibilityActivity extends AppCompatActivity {
                                 else {
                                     lin_camera.setVisibility(View.GONE);
                                     lin_stock.setVisibility(View.GONE);
+                                    current.setAnswered_id(ans.getAnswerId());
+
+                                    //refresh to show hide views according to Present
+                                    expandableListView.clearFocus();
+                                    expandableListAdapter.notifyDataSetChanged();
                                 }
 
                             }
 
-                            //refresh to show hide views according to Present
-                            expandableListView.clearFocus();
-                            expandableListAdapter.notifyDataSetChanged();
-                        }
+
                     }
                 }
 

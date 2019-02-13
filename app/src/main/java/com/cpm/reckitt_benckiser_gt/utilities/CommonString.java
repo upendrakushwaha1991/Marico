@@ -159,6 +159,7 @@ public class CommonString {
     public static final int COVERAGE_NONWORKING = 9;
     public static final int COVERAGE_DETAIL_CLIENT = 10;
     public static final int CHECKOUTDetail_CLIENT = 11;
+    public static final int CHANGE_PASSWORD_SERVICE = 12;
     public static final String KEY_CHCECKLIST_DATA = "CheckList_Data";
     public static final String KEY_BRAND_DATA = "Brand_Data";
 
@@ -792,4 +793,7 @@ public class CommonString {
 
     public static String IS_PASSWORD_CHECK = "IS_PASSWORD_CHECK";
     public static String MPIN = "MPIN";
+
+    public static final String KEY_ANSWER_ID = "Answer_Id";
+    public static final String KEY_CATEGORY_DATA = "Category_Data";
 }
