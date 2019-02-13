@@ -169,6 +169,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+
+        checkAppPermission(Manifest.permission.CAMERA, MY_PERMISSIONS_REQUEST_CAMERA);
+
         if (requestCode == PERMISSIONS_REQUEST_READ_PHONE_STATE
                 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             imeiNumbers = imei.getDeviceImei();
@@ -466,9 +469,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             public void onClick(View view) {
                 if (checkNetIsAvailable()) {
 
-                    checkAppPermission(Manifest.permission.CAMERA, MY_PERMISSIONS_REQUEST_CAMERA);
+                    //checkAppPermission(Manifest.permission.CAMERA, MY_PERMISSIONS_REQUEST_CAMERA);
 
-                    //attemptLogin();
+                    attemptLogin();
                 } else {
                     AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, false);
                 }
@@ -709,7 +712,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                     file_planogram.mkdir();
                 }
 
-                attemptLogin();
+                //attemptLogin();
             }
 
         }

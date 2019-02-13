@@ -4176,6 +4176,18 @@ public class MondelezDatabase extends SQLiteOpenHelper {
 
         db.delete(CommonString.TABLE_WINDOW_HEADER, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
                 + "='" + jcp.getVisitDate() + "'", null);
+        //Window Check List
+        db.delete(CommonString.TABLE_WINDOW_CHECK_LIST, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
+                + "='" + jcp.getVisitDate() + "'", null);
+
+        //Brand List
+        db.delete(CommonString.TABLE_WINDOW_BRAND_LIST, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
+                + "='" + jcp.getVisitDate() + "'", null);
+
+        //Window Check List
+        db.delete(CommonString.TABLE_BRAND_CHECK_LIST, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
+                + "='" + jcp.getVisitDate() + "'", null);
+
         ContentValues values = new ContentValues();
         ContentValues values_window_checklist = new ContentValues();
         ContentValues values_brand = new ContentValues();
@@ -4196,9 +4208,7 @@ public class MondelezDatabase extends SQLiteOpenHelper {
 
                 id = db.insert(CommonString.TABLE_WINDOW_HEADER, null, values);
 
-                //Window Check List
-                db.delete(CommonString.TABLE_WINDOW_CHECK_LIST, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
-                        + "='" + jcp.getVisitDate() + "'", null);
+
                 ArrayList<ChecklistMaster> windowCheckList = hashMapListChildData.get(windowList.get(i));
 
                 for (int j = 0; j < windowCheckList.size(); j++) {
@@ -4212,14 +4222,6 @@ public class MondelezDatabase extends SQLiteOpenHelper {
 
                     db.insert(CommonString.TABLE_WINDOW_CHECK_LIST, null, values_window_checklist);
                 }
-
-                //Brand List
-                db.delete(CommonString.TABLE_WINDOW_BRAND_LIST, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
-                        + "='" + jcp.getVisitDate() + "'", null);
-
-                //Window Check List
-                db.delete(CommonString.TABLE_BRAND_CHECK_LIST, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
-                        + "='" + jcp.getVisitDate() + "'", null);
 
                 ArrayList<BrandMaster> brandList = windowList.get(i).getBrandList();
                 HashMap<BrandMaster, ArrayList<ChecklistMaster>> brandCheckList = windowList.get(i).getHashMapListChildData();
@@ -4384,6 +4386,9 @@ public class MondelezDatabase extends SQLiteOpenHelper {
 
         db.delete(CommonString.TABLE_CTU_BRAND_HEADER, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
                 + "='" + jcp.getVisitDate() + "'", null);
+        //Window Check List
+        db.delete(CommonString.TABLE_CTU_BRAND_CHECK_LIST, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
+                + "='" + jcp.getVisitDate() + "'", null);
         ContentValues values = new ContentValues();
         ContentValues values_brand_checklist = new ContentValues();
 
@@ -4403,9 +4408,6 @@ public class MondelezDatabase extends SQLiteOpenHelper {
 
                 id = db.insert(CommonString.TABLE_CTU_BRAND_HEADER, null, values);
 
-                //Window Check List
-                db.delete(CommonString.TABLE_CTU_BRAND_CHECK_LIST, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
-                        + "='" + jcp.getVisitDate() + "'", null);
                 ArrayList<ChecklistMaster> windowCheckList = hashMapListChildData.get(brandList.get(i));
 
                 for (int j = 0; j < windowCheckList.size(); j++) {
@@ -4437,6 +4439,9 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         try {
             db.delete(CommonString.TABLE_SECONDARY_VISIBILITY_HEADER, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
                     + "='" + jcp.getVisitDate() + "'", null);
+            //Window Check List
+            db.delete(CommonString.TABLE_SECONDARY_VISIBILITY_CHECK_LIST, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
+                    + "='" + jcp.getVisitDate() + "'", null);
             ContentValues values = new ContentValues();
             ContentValues values_brand_checklist = new ContentValues();
 
@@ -4455,9 +4460,6 @@ public class MondelezDatabase extends SQLiteOpenHelper {
 
                 id = db.insert(CommonString.TABLE_SECONDARY_VISIBILITY_HEADER, null, values);
 
-                //Window Check List
-                db.delete(CommonString.TABLE_SECONDARY_VISIBILITY_CHECK_LIST, CommonString.KEY_STORE_ID + "=" + jcp.getStoreId() + " AND " + CommonString.KEY_VISIT_DATE
-                        + "='" + jcp.getVisitDate() + "'", null);
                 ArrayList<ChecklistMaster> windowCheckList = hashMapListChildData.get(displayList.get(i));
 
                 for (int j = 0; j < windowCheckList.size(); j++) {
@@ -4491,7 +4493,8 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         Cursor dbcursor = null;
         try {
 
-            dbcursor = db.rawQuery("SELECT DISTINCT WM.Window_Id, WM.Window,WM.Window_Image FROM Mapping_Window M INNER JOIN Window_Master WM ON M.Window_Id = WM.Window_Id " +
+
+            dbcursor = db.rawQuery("SELECT DISTINCT WM.Window_Id, WM.Window, WM.Window_Image FROM Mapping_Window M INNER JOIN Window_Master WM ON M.Window_Id = WM.Window_Id " +
                     "WHERE M.Store_Type_Id=" + Store_Type_Id + " AND M.Store_Category_Id=" + Store_Category_Id + " AND M.State_Id='" + State_Id + "'", null);
 
 
@@ -5577,6 +5580,11 @@ public BackofStoreGetterSetter getBackofStoreUploadImgData(String storeId,String
             dbcursor.moveToFirst();
             while (!dbcursor.isAfterLast()) {
                 sb.setPresent_name(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_PRESENT_EXIST)));
+                if (sb.getPresent_name().equalsIgnoreCase("1")){
+                    sb.setPresent_name("1");
+                }else {
+                    sb.setPresent_name("0");
+                }
                 sb.setImage_close_up(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_IMAGE_CLOSEUP)));
                 sb.setImage_long_shot(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_LONGSHOT)));
                 sb.setStore_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STORE_ID)));

@@ -91,6 +91,7 @@ public class SOSActivity extends AppCompatActivity {
     ArrayList<CategoryMaster> brandData;
     static int grp_position = -1;
     String Error_Message;
+    float sum = 0;
     QuesutionAdapter quesutionAdapter;
     ChecklistMaster checklistQuestionObj;
     ArrayList<MappingMenuChecklist>  menuChecklist = new ArrayList<>();
@@ -365,7 +366,8 @@ public class SOSActivity extends AppCompatActivity {
         public View getChildView(final int groupPosition, final int childPosition, boolean isLastChild,
                                  View convertView, ViewGroup parent) {
 
-            final CategoryMaster childText = (CategoryMaster) getChild(groupPosition, childPosition);
+            final CategoryMaster childText    = (CategoryMaster) getChild(groupPosition, childPosition);
+            final  CategoryMaster headerTitle = (CategoryMaster) getGroup(groupPosition);
 
             ViewHolder holder = null;
             if (convertView == null) {
@@ -389,13 +391,25 @@ public class SOSActivity extends AppCompatActivity {
             holder.brand_facing.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
+                    final EditText Caption = (EditText) view;
+                    String value1 = Caption.getText().toString().replaceAll("[&^<>{}'$]", "").replaceFirst("^0+(?!$)", "");
                     if(!hasFocus){
-                        final EditText Caption = (EditText) view;
-                        String value1 = Caption.getText().toString().replaceAll("[&^<>{}'$]", "").replaceFirst("^0+(?!$)", "");
                         if (value1.equals("")) {
                             childText.setBrand_Facing("");
                         } else {
                             childText.setBrand_Facing(value1);
+                        }
+                        if(!headerTitle.getCategory_Facing().equalsIgnoreCase("")) {
+                            float cat_facing = Float.parseFloat(headerTitle.getCategory_Facing());
+                            if(!value1.equalsIgnoreCase("")) {
+                                if(grp_position == groupPosition) {
+                                    float brand_facing = Float.parseFloat(value1);
+                                    float percentage = (brand_facing / cat_facing) * 100;
+                                    sum = sum + percentage;
+                                    headerTitle.setPercentage(String.valueOf(sum));
+                                    expListView.invalidateViews();
+                                }
+                            }
                         }
                     }
                 }
@@ -407,16 +421,16 @@ public class SOSActivity extends AppCompatActivity {
                 for(int i=0;i<childText.getChecklistQuestions().size();i++){
                     if(!childText.getChecklistQuestions().get(i).getCorrectAnswer_Id().equalsIgnoreCase("0")) {
                         if (childText.getChecklistQuestions().get(i).getBrand_Id().equalsIgnoreCase(childText.getBrand_Id())) {
-                            holder.chceklist_btn.setTextColor(getApplication().getResources().getColor(R.color.green));
+                            holder.chceklist_btn.setBackgroundColor(getApplication().getResources().getColor(R.color.green));
                         } else {
-                            holder.chceklist_btn.setTextColor(getApplication().getResources().getColor(R.color.white));
+                            holder.chceklist_btn.setBackgroundColor(getApplication().getResources().getColor(R.color.ColorPrimaryLight));
                         }
                     }else{
-                        holder.chceklist_btn.setTextColor(getApplication().getResources().getColor(R.color.white));
+                        holder.chceklist_btn.setBackgroundColor(getApplication().getResources().getColor(R.color.ColorPrimaryLight));
                     }
                 }
             }else{
-                holder.chceklist_btn.setTextColor(getApplication().getResources().getColor(R.color.white));
+                holder.chceklist_btn.setBackgroundColor(getApplication().getResources().getColor(R.color.ColorPrimaryLight));
             }
 
 
@@ -475,6 +489,7 @@ public class SOSActivity extends AppCompatActivity {
                             if (checkDataFiled(checklistQuestions)) {
                                 childText.setChecklistQuestions(checklistQuestions);
                                 dialog.dismiss();
+                                expListView.clearFocus();
                                 expListView.invalidateViews();
                                 listAdapter.notifyDataSetChanged();
                             }else{
@@ -538,6 +553,8 @@ public class SOSActivity extends AppCompatActivity {
             EditText facingTxt      = (EditText)convertView.findViewById(R.id.header_facing_txt);
             LinearLayout groupView  = (LinearLayout)convertView.findViewById(R.id.group_ll_view);
 
+            TextView SOSPer         = (TextView) convertView.findViewById(R.id.sos_per);
+
             lblListHeader.setTypeface(null, Typeface.BOLD);
             lblListHeader.setText(headerTitle.getCategory());
 
@@ -551,6 +568,8 @@ public class SOSActivity extends AppCompatActivity {
                     }
                 }
             });
+
+            SOSPer.setText(headerTitle.getPercentage());
 
             facingTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -580,7 +599,7 @@ public class SOSActivity extends AppCompatActivity {
             if (headerTitle.getCategory_Image() != null && !headerTitle.getCategory_Image().equals("")) {
                 cam_img.setBackgroundResource(R.mipmap.camera_green);
             } else {
-                cam_img.setBackgroundResource(R.mipmap.camera_orange);
+                cam_img.setBackgroundResource(R.mipmap.camera_pink);
             }
 
             if (!checkflag) {
@@ -644,13 +663,13 @@ public class SOSActivity extends AppCompatActivity {
 
         @NonNull
         @Override
-        public QuesutionAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.question_list, parent, false);
-            return new QuesutionAdapter.ViewHolder(view);
+            return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final QuesutionAdapter.ViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
             final ChecklistMaster object = data.get(position);
 
             holder.question.setText(object.getChecklist());
@@ -774,8 +793,6 @@ public class SOSActivity extends AppCompatActivity {
     }
 
 
-
-
     private boolean checkDataFiled(ArrayList<ChecklistMaster> checklistQuestions) {
         flag = true;
         for (int i = 0; i < checklistQuestions.size(); i++) {
@@ -816,10 +833,14 @@ public class SOSActivity extends AppCompatActivity {
                 Error_Message = getResources().getString(R.string.cat_img_error);
             }else {
                 for (int j = 0; j < listDataChild2.get(listDataHeader2.get(i)).size(); j++) {
-                    if (listDataChild2.get(listDataHeader2.get(i)).get(j).getBrand_Facing().equalsIgnoreCase("")) {
+                    if(listDataChild2.get(listDataHeader2.get(i)).get(j).getBrand_Facing().equalsIgnoreCase("")) {
                         checkflag = false;
                         Error_Message = getResources().getString(R.string.brand_facing_error);
-                    } else if (listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() == 0 || listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
+                    }else if(Integer.parseInt(listDataChild2.get(listDataHeader2.get(i)).get(j).getBrand_Facing()) > Integer.parseInt(listDataHeader2.get(i).getCategory_Facing())){
+                        listDataChild2.get(listDataHeader2.get(i)).get(j).setBrand_Facing("");
+                        checkflag = false;
+                        Error_Message = getResources().getString(R.string.brand_facing_category_error);
+                    }else if (listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() == 0 || listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
                         if(listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
                             for (int k = 0; k < listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size(); k++) {
                                 String correct_answer_cd = listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().get(k).getCorrectAnswer_Id();

@@ -199,4 +199,13 @@ public class CategoryMaster {
         Checklist_Correct_Answer_Id = checklist_Correct_Answer_Id;
     }
 
+    public String getPercentage() {
+        return percentage;
+    }
+
+    public void setPercentage(String percentage) {
+        this.percentage = percentage;
+    }
+
+    String percentage="";
 }

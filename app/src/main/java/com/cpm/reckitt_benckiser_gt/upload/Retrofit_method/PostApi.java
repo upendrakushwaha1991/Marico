@@ -69,4 +69,5 @@ public interface PostApi {
 
     @retrofit2.http.POST("DownloadAll")
     Call<ResponseBody> getDownloadAllUSINGLOGIN(@Body RequestBody request);
+
 }

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -184,7 +185,7 @@ public class FeedBackActivity extends AppCompatActivity {
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.question_list, parent, false);
-            return new QuesutionAdapter.ViewHolder(view);
+            return new ViewHolder(view);
         }
 
         @Override
@@ -244,12 +245,12 @@ public class FeedBackActivity extends AppCompatActivity {
                     checkFlag = false;
                 }
                 if (!checkFlag) {
-                    holder. question_view.setCardBackgroundColor(getResources().getColor(R.color.red));
+                    holder. ll_view.setBackgroundColor(getResources().getColor(R.color.red));
                 } else {
-                    holder.question_view.setCardBackgroundColor(getResources().getColor(R.color.white));
+                    holder.ll_view.setBackgroundColor(getResources().getColor(R.color.white));
                 }
             } else {
-                holder.question_view.setCardBackgroundColor(getResources().getColor(R.color.white));
+                holder.ll_view.setBackgroundColor(getResources().getColor(R.color.white));
             }
         }
 
@@ -262,12 +263,14 @@ public class FeedBackActivity extends AppCompatActivity {
             TextView question;
             Spinner answer;
             CardView question_view;
+            LinearLayout ll_view;
 
             public ViewHolder(View itemView) {
                 super(itemView);
                 question = itemView.findViewById(R.id.question);
                 answer = itemView.findViewById(R.id.spinner_ans);
                 question_view = itemView.findViewById(R.id.question_view);
+                ll_view = itemView.findViewById(R.id.ll_view);
             }
         }
     }

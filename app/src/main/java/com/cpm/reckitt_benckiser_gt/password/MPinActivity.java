@@ -229,6 +229,26 @@ public class MPinActivity extends AppCompatActivity implements
 
         if(IS_PASSWORD_CHECK){
 
+            Snackbar snackbar = Snackbar.make(blurLockView,"Need to reset MPin",Snackbar.LENGTH_INDEFINITE);
+            View view = snackbar.getView();
+                /*TextView tv = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
+                tv.setTextColor(Color.RED);*/
+            snackbar.setAction("Reset", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    editor.putString(CommonString.MPIN, null);
+
+                    editor.commit();
+
+                    finish();
+                    Intent in  = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(in);
+
+                }
+            });
+            snackbar.setActionTextColor(Color.GREEN);
+            snackbar.show();
         }
         else {
             if (pin.length() == 4) {

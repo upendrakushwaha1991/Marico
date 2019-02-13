@@ -1,10 +1,12 @@
 package com.cpm.reckitt_benckiser_gt.dailyEntry;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,6 +27,10 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.AdapterView;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
@@ -329,6 +335,7 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
             final Spinner spin_present = (Spinner) convertView.findViewById(R.id.spin_present);
             final Spinner spin_reason = (Spinner) convertView.findViewById(R.id.spin_reason);
             Button btn_brand_visibility = (Button) convertView.findViewById(R.id.btn_brand_visibility);
+            ImageView ref_image = (ImageView) convertView.findViewById(R.id.ref_image);
 
             tv_window.setText(current.getWindow());
 
@@ -365,6 +372,60 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
                 }
             });
 
+            ref_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final Dialog dialog = new Dialog(WindowWithBrandActivity.this);
+                    dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                    //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                    dialog.setContentView(R.layout.planogram_dialog_layout);
+                    dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+                    dialog.setCancelable(false);
+
+                    WebView webView = (WebView) dialog.findViewById(R.id.webview);
+                    webView.setWebViewClient(new MyWebViewClient());
+
+                    webView.getSettings().setAllowFileAccess(true);
+                    webView.getSettings().setJavaScriptEnabled(true);
+                    webView.getSettings().setBuiltInZoomControls(true);
+
+                    String planogram_image = "";
+                    if (current.getWindow_Image_refrance()!=null && !current.getWindow_Image_refrance().equalsIgnoreCase("NA")) {
+                        planogram_image =current.getWindow_Image_refrance();
+                    }
+                    if (!planogram_image.equals("")) {
+                        webView.loadUrl(planogram_image);
+                        dialog.show();
+                     /*   if (new File(str_planogram + planogram_image).exists()) {
+                            Bitmap bmp = BitmapFactory.decodeFile(str_planogram + planogram_image);
+                            // img_planogram.setRotation(90);
+                            //img_planogram.setImageBitmap(bmp);
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
+                            String imagePath = "file://" + CommonString.FILE_PATH_PLANOGRAM + "/" + planogram_image;
+                            String html = "<html><head></head><body><img src=\"" + imagePath + "\"></body></html>";
+                            webView.loadDataWithBaseURL("", html, "text/html", "utf-8", "");
+
+                            dialog.show();
+                        } *//*else {
+                //webView.loadUrl(String.valueOf(R.drawable.sad_cloud));
+
+                //img_planogram.setBackgroundResource(R.drawable.sad_cloud);
+            }*/
+                    }
+
+
+                    ImageView cancel = (ImageView) dialog.findViewById(R.id.img_cancel);
+                    cancel.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                            dialog.dismiss();
+                        }
+                    });
+                }
+            });
+
             final ArrayList<PosmMaster> reason_list = database.getastockAnswerData();
 
             spin_present.setAdapter(new ReasonSpinnerAdapter(WindowWithBrandActivity.this, R.layout.spinner_text_view, reason_list));
@@ -393,77 +454,64 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
                     if (userSelect[0]) {
                         userSelect[0] = false;
 
-                        if (pos != -1) {
-                            PosmMaster ans = reason_list.get(pos);
-                            current.setAnswered_id(ans.getAnswerId());
-                            current.setAnswered(ans.getAnswer());
+                            final PosmMaster ans = reason_list.get(pos);
 
-                            if (ans.getAnswerId() == 1) {
+                            if (pos == 2) {
                                 lay_present_yes.setVisibility(View.VISIBLE);
                                 lay_reason.setVisibility(View.GONE);
-
+                                current.setNonExecutionReasonId(0);
+                                current.setAnswered_id(ans.getAnswerId());
+                                current.setAnswered(ans.getAnswer());
+                                //refresh to show hide views according to Present
+                                expandableListView.clearFocus();
+                                expandableListAdapter.notifyDataSetChanged();
                             } else {
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(WindowWithBrandActivity.this);
-                                builder.setMessage(R.string.DELETE_ALERT_MESSAGE)
-                                        .setCancelable(false)
-                                        .setPositiveButton(getResources().getString(R.string.yes),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog,
-                                                                        int id) {
+                                if(current.getAnswered_id()==1 && (!current.getImg_long_shot().equals("") || !current.getImg_close_up().equals("")|| current.getBrandList().size()>0)){
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(WindowWithBrandActivity.this);
+                                    builder.setMessage(R.string.DELETE_ALERT_MESSAGE)
+                                            .setCancelable(false)
+                                            .setPositiveButton(getResources().getString(R.string.yes),
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog,
+                                                                            int id) {
 
-                                                        current.getBrandList().clear();
-                                                        current.getHashMapListChildData().clear();
-                                                        current.setImg_long_shot("");
-                                                        current.setImg_close_up("");
+                                                            current.getBrandList().clear();
+                                                            current.getHashMapListChildData().clear();
+                                                            current.setImg_long_shot("");
+                                                            current.setImg_close_up("");
 
-                                                        lay_present_yes.setVisibility(View.GONE);
-                                                        lay_reason.setVisibility(View.VISIBLE);
+                                                            current.setAnswered_id(ans.getAnswerId());
+                                                            current.setAnswered(ans.getAnswer());
+                                                            //refresh to show hide views according to Present
+                                                            expandableListView.clearFocus();
+                                                            expandableListAdapter.notifyDataSetChanged();
 
-                                                        spin_reason.setAdapter(new NonExecutionAdapter(WindowWithBrandActivity.this, R.layout.spinner_text_view, nonExecutionReason));
-
-                                                        for (int i = 0; i < nonExecutionReason.size(); i++) {
-                                                            if (nonExecutionReason.get(i).getReasonId() == current.getNonExecutionReasonId()) {
-                                                                spin_reason.setSelection(i);
-                                                                break;
-                                                            }
                                                         }
+                                                    })
+                                            .setNegativeButton(getResources().getString(R.string.no),
+                                                    new DialogInterface.OnClickListener() {
+                                                        public void onClick(DialogInterface dialog,
+                                                                            int id) {
 
-                                                        spin_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                                            @Override
-                                                            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                                                                if (pos != -1) {
-                                                                    NonExecutionReason ans = nonExecutionReason.get(pos);
-                                                                    current.setNonExecutionReasonId(ans.getReasonId());
-                                                                }
-                                                            }
+                                                            spin_present.setSelection(2);
+                                                            dialog.cancel();
+                                                        }
+                                                    });
+                                    AlertDialog alert = builder.create();
 
-                                                            @Override
-                                                            public void onNothingSelected(AdapterView<?> parent) {
-                                                            }
-                                                        });
-
-                                                    }
-                                                })
-                                        .setNegativeButton(getResources().getString(R.string.no),
-                                                new DialogInterface.OnClickListener() {
-                                                    public void onClick(DialogInterface dialog,
-                                                                        int id) {
-
-                                                        spin_present.setSelection(2);
-                                                        dialog.cancel();
-                                                    }
-                                                });
-                                AlertDialog alert = builder.create();
-
-                                alert.show();
+                                    alert.show();
+                                }
+                                else {
+                                    current.setAnswered_id(ans.getAnswerId());
+                                    current.setAnswered(ans.getAnswer());
+                                    //refresh to show hide views according to Present
+                                    expandableListView.clearFocus();
+                                    expandableListAdapter.notifyDataSetChanged();
+                                }
 
                             }
 
-                            //refresh to show hide views according to Present
-                            expandableListView.clearFocus();
-                            expandableListAdapter.notifyDataSetChanged();
-                        }
                     }
                 }
 
@@ -472,6 +520,42 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
                 }
             });
 
+            if(current.getAnswered_id()==1){
+                lay_present_yes.setVisibility(View.VISIBLE);
+                lay_reason.setVisibility(View.GONE);
+
+            }
+            else if(current.getAnswered_id()==0){
+                lay_present_yes.setVisibility(View.GONE);
+                lay_reason.setVisibility(View.VISIBLE);
+
+                spin_reason.setAdapter(new NonExecutionAdapter(WindowWithBrandActivity.this, R.layout.spinner_text_view, nonExecutionReason));
+
+                for (int i = 0; i < nonExecutionReason.size(); i++) {
+                    if (nonExecutionReason.get(i).getReasonId() == current.getNonExecutionReasonId()) {
+                        spin_reason.setSelection(i);
+                        break;
+                    }
+                }
+
+                spin_reason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                        if (pos != -1) {
+                            NonExecutionReason ans = nonExecutionReason.get(pos);
+                            current.setNonExecutionReasonId(ans.getReasonId());
+                        }
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+                    }
+                });
+            }
+            else {
+                lay_present_yes.setVisibility(View.GONE);
+                lay_reason.setVisibility(View.GONE);
+            }
 
             if (current.getImg_close_up().equals("")) {
 
@@ -623,7 +707,7 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
                     }
                 }
             } else {
-                if (window.getNonExecutionReasonId() == -1) {
+                if (window.getNonExecutionReasonId() == 0) {
                     error_msg = getResources().getString(R.string.pl_select_reason);
                     flag = false;
                     break;
@@ -632,5 +716,25 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
         }
 
         return flag;
+    }
+
+    private class MyWebViewClient extends WebViewClient {
+
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            view.loadUrl(url);
+            return true;
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            view.clearCache(true);
+        }
+
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+        }
     }
 }

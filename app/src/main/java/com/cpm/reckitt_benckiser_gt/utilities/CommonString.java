@@ -793,6 +793,10 @@ public class CommonString {
 
     public static String IS_PASSWORD_CHECK = "IS_PASSWORD_CHECK";
     public static String MPIN = "MPIN";
+
+    public static final String KEY_ANSWER_ID = "Answer_Id";
+    public static final String KEY_CATEGORY_DATA = "Category_Data";
+
     public static final String KEY_IS_QUIZ_DONE = "is_quiz_done";
     public static final String KEY_QUESTION_CD = "question_cd";
 

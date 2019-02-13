@@ -248,7 +248,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
         public void onBindViewHolder(final ValueAdapter.MyViewHolder viewHolder, final int position) {
 
             final JourneyPlan current = data.get(position);
-            viewHolder.chkbtn.setBackgroundResource(R.mipmap.checkout);
+            viewHolder.chkbtn.setBackgroundResource(R.mipmap.checkout_button);
             viewHolder.txt.setText(current.getStoreName() + " - " + current.getStoreType() + " - " + current.getStoreCategory() + "," + current.getClassification());
             viewHolder.address.setText(current.getAddress1() + "\n" + "Store Id - " + current.getStoreId() + "\n" + "Store Code - " + current.getStore_Code());
 
