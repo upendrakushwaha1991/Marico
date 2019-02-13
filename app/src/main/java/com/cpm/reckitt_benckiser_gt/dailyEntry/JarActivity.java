@@ -246,6 +246,7 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
                     visiColoersGetterSetter.setImage_long_shot("");
                     image_closeup.setImageResource(R.drawable.camera_orange);
                     image_long_shot.setImageResource(R.drawable.camera_orange);
+                    recyclerView.setVisibility(View.INVISIBLE);
 
                 }
             }

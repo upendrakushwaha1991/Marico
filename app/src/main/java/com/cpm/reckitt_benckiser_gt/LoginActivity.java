@@ -3,6 +3,7 @@ package com.cpm.reckitt_benckiser_gt;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,6 +18,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
@@ -33,14 +35,18 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.Get_IMEI_number.ImeiNumberClass;
 import com.cpm.reckitt_benckiser_gt.autoupdate.AutoUpdateActivity;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GsonGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.LoginGsonGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.NoticeBoardGetterSetter;
 import com.cpm.reckitt_benckiser_gt.password.MPinActivity;
+import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.PostApi;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
@@ -61,17 +67,31 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.fabric.sdk.android.Fabric;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 
 public class LoginActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
@@ -115,7 +135,9 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private static final int MY_PERMISSIONS_REQUEST_LOCATION = 11;
     private static final int MY_PERMISSIONS_REQUEST_STORAGE_READ = 12;
     private static final int MY_PERMISSIONS_REQUEST_STORAGE_WRITE = 14;
-
+    private Retrofit adapter;
+    ProgressDialog loading;
+    String right_answer, rigth_answer_cd = "", qns_cd, ans_cd;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -394,17 +416,16 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             dialog.dismiss();
             if (result.equals(CommonString.KEY_SUCCESS)) {
                 if (preferences.getString(CommonString.KEY_VERSION, "").equals(Integer.toString(versionCode))) {
-                  /*  Intent intent = new Intent(context, MainActivity.class);
-                    startActivity(intent);
-                    finish();*/
 
-                    Intent in = new Intent(getApplicationContext(), MPinActivity.class);
+                    /*Intent in = new Intent(getApplicationContext(), MPinActivity.class);
                     in.putExtra(CommonString.IS_PASSWORD_CHECK, false);
                     //Intent in = new Intent(getApplicationContext(), OneQADActivity.class);
 
+
                     startActivity(in);
 
-                    finish();
+                    finish();*/
+                    getOneqad();
 
                 } else {
                     // if app version code does not match with live apk version code then update will be called.
@@ -437,8 +458,8 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         editor = preferences.edit();
         museridView = (AutoCompleteTextView) findViewById(R.id.userid);
         mPasswordView = (EditText) findViewById(R.id.password);
-        museridView.setText("test");
-        mPasswordView.setText("rb@123%");
+      /*  museridView.setText("test");
+        mPasswordView.setText("rb@123%");*/
         museridSignInButton = (Button) findViewById(R.id.user_login_button);
         museridSignInButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -590,7 +611,7 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
     private boolean checkgpsEnableDevice() {
         boolean flag = true;
         if (!hasGPSDevice(context)) {
-            Toast.makeText(context, "Gps not Supported",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Gps not Supported", Toast.LENGTH_SHORT).show();
         }
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER) && hasGPSDevice(context)) {
@@ -721,5 +742,433 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
         });*/
         builder.show();
     }
+
+    private void getOneqad() {
+        try {
+            loading = ProgressDialog.show(LoginActivity.this, "Processing", "Please wait...", false, false);
+            final String[] data_global = {""};
+            final OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                    .readTimeout(20, TimeUnit.SECONDS)
+                    .writeTimeout(20, TimeUnit.SECONDS)
+                    .connectTimeout(20, TimeUnit.SECONDS)
+                    .build();
+
+            //Download Todays Questions
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("Username", userid);
+            jsonObject.put("Downloadtype", "Today_Question");
+            String jsonString = jsonObject.toString();
+            final String[] question_data_global = {""};
+            RequestBody questionjsonData = RequestBody.create(MediaType.parse("application/json"),
+                    jsonString);
+            adapter = new Retrofit.Builder().baseUrl(CommonString.URL).client(okHttpClient)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            PostApi api1 = adapter.create(PostApi.class);
+            Call<ResponseBody> callquest = api1.getDownloadAllUSINGLOGIN(questionjsonData);
+            callquest.enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    ResponseBody responseBody = response.body();
+                    String data = null;
+                    if (responseBody != null && response.isSuccessful()) {
+                        try {
+                            data = response.body().string();
+                            data = data.substring(1, data.length() - 1).replace("\\", "");
+                            if (data.equalsIgnoreCase(CommonString.MESSAGE_SOCKETEXCEPTION)) {
+                                loading.dismiss();
+                                AlertandMessages.showAlertlogin(LoginActivity.this, "Check Your Internet Connection");
+                            } else if (data.contains("No Data")) {
+                                loading.dismiss();
+                                Intent intent = new Intent(getBaseContext(), MPinActivity.class);
+                                startActivity(intent);
+                                LoginActivity.this.finish();
+                            } else {
+                                Gson gs = new Gson();
+                                final LoginGsonGetterSetter userques = gs.fromJson(data.toString().trim(), LoginGsonGetterSetter.class);
+                                if (preferences.getString(CommonString.KEY_VERSION, "").equals(Integer.toString(versionCode))) {
+                                    loading.dismiss();
+                                    final String visit_date = preferences.getString(CommonString.KEY_DATE, "");
+                                    if (userques.getTodayQuestion().size() > 0 && userques.getTodayQuestion().get(0).getStatus().equals("N") &&
+                                            !preferences.getBoolean(CommonString.KEY_IS_QUIZ_DONE + visit_date, false)) {
+                                        for (int i = 0; i < userques.getTodayQuestion().size(); i++) {
+                                            if (userques.getTodayQuestion().get(i).getRightAnswer().toString().equalsIgnoreCase("true")) {
+                                                right_answer = userques.getTodayQuestion().get(i).getAnswer();
+                                                rigth_answer_cd = userques.getTodayQuestion().get(i).getAnswerId().toString();
+                                                break;
+                                            }
+                                        }
+                                        final AnswerData answerData = new AnswerData();
+                                        final Dialog customD = new Dialog(LoginActivity.this);
+                                        customD.setTitle("Todays Question");
+                                        customD.setCancelable(false);
+                                        customD.setContentView(R.layout.show_answer_layout);
+                                        customD.setContentView(R.layout.todays_question_layout);
+                                        ((TextView) customD.findViewById(R.id.tv_qns)).setText(userques.getTodayQuestion().get(0).getQuestion());
+                                        Button btnsubmit = (Button) customD.findViewById(R.id.btnsubmit);
+                                        final TextView txt_timer = (TextView) customD.findViewById(R.id.txt_timer);
+                                        RadioGroup radioGroup = (RadioGroup) customD.findViewById(R.id.radiogrp);
+                                        new CountDownTimer(30000, 1000) {
+                                            public void onTick(long millisUntilFinished) {
+                                                txt_timer.setText("seconds remaining: " + millisUntilFinished / 1000);
+                                                //here you can have your logic to set text to edittext
+                                            }
+
+                                            public void onFinish() {
+                                                if (answerData.getAnswer_id() == null || answerData.getAnswer_id().equals("")) {
+                                                    txt_timer.setText("done!");
+                                                    customD.cancel();
+                                                    String ansisright = "";
+                                                    ansisright = "Your Time is over";
+                                                    final Dialog ans_dialog = new Dialog(LoginActivity.this);
+                                                    ans_dialog.setTitle("Answer");
+                                                    ans_dialog.setCancelable(false);
+                                                    //dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                                                    ans_dialog.setContentView(R.layout.show_answer_layout);
+                                                    ((TextView) ans_dialog.findViewById(R.id.tv_ans)).setText(ansisright);
+                                                    Button btnok = (Button) ans_dialog.findViewById(R.id.btnsubmit);
+                                                    btnok.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            answerData.setQuestion_id(userques.getTodayQuestion().get(0).getQuestionId().toString());
+                                                            answerData.setUsername(userid);
+                                                            answerData.setVisit_date(visit_date);
+                                                            if ((checkNetIsAvailable())) {
+                                                                ans_dialog.cancel();
+                                                                try {
+                                                                    JSONArray answerDetaills = new JSONArray();
+                                                                    JSONObject object = new JSONObject();
+
+                                                                    //region Deviation_journeyplan Data
+                                                                    object.put("ANSWER_ID", "0");
+                                                                    object.put("QUESTION_ID", answerData.getQuestion_id());
+                                                                    object.put("VISIT_DATE", answerData.getVisit_date());
+                                                                    object.put("USER_NAME", answerData.getUsername());
+                                                                    answerDetaills.put(object);
+
+                                                                    object = new JSONObject();
+                                                                    object.put("MID", "0");
+                                                                    object.put("Keys", "TODAY_ANSWER");
+                                                                    object.put("JsonData", answerDetaills.toString());
+                                                                    object.put("UserId", userid);
+
+                                                                    String jsonString = object.toString();
+                                                                    if (jsonString != null && !jsonString.equalsIgnoreCase("")) {
+
+                                                                        loading.setMessage("Uploading answer data..");
+                                                                        RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
+                                                                        adapter = new Retrofit.Builder().baseUrl(CommonString.URL).client(okHttpClient).
+                                                                                addConverterFactory(GsonConverterFactory.create()).build();
+                                                                        PostApi api = adapter.create(PostApi.class);
+                                                                        Call<ResponseBody> call = api.getUploadJsonDetail(jsonData);
+                                                                        call.enqueue(new Callback<ResponseBody>() {
+                                                                            @Override
+                                                                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                                                                ResponseBody responseBody = response.body();
+                                                                                String data = null;
+                                                                                if (responseBody != null && response.isSuccessful()) {
+                                                                                    try {
+                                                                                        data = response.body().string();
+                                                                                        if (data.equalsIgnoreCase("")) {
+                                                                                        } else {
+                                                                                            data = data.substring(1, data.length() - 1).replace("\\", "");
+                                                                                            data_global[0] = data;
+                                                                                            if (data.contains("Success")) {
+                                                                                                String visit_date = preferences.getString(CommonString.KEY_DATE, null);
+                                                                                                editor = preferences.edit();
+                                                                                                editor.putBoolean(CommonString.KEY_IS_QUIZ_DONE + visit_date, true);
+                                                                                                editor.commit();
+                                                                                                Intent intent = new Intent(getBaseContext(), MPinActivity.class);
+                                                                                                startActivity(intent);
+                                                                                                finish();
+                                                                                            } else {
+                                                                                                editor = preferences.edit();
+                                                                                                editor.putString(CommonString.KEY_QUESTION_CD + visit_date, qns_cd);
+                                                                                                editor.putString(CommonString.KEY_ANSWER_CD + visit_date, ans_cd);
+                                                                                                editor.commit();
+                                                                                                Intent intent = new Intent(getBaseContext(), MPinActivity.class);
+                                                                                                startActivity(intent);
+                                                                                                finish();
+                                                                                            }
+                                                                                        }
+
+                                                                                    } catch (Exception e) {
+                                                                                        loading.dismiss();
+                                                                                        AlertandMessages.showAlertlogin(LoginActivity.this,
+                                                                                                CommonString.MESSAGE_SOCKETEXCEPTION);
+                                                                                    }
+                                                                                } else {
+                                                                                    loading.dismiss();
+                                                                                    AlertandMessages.showAlertlogin(
+                                                                                            LoginActivity.this, "Check Your Internet Connection");
+
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+                                                                                if (t instanceof SocketTimeoutException) {
+                                                                                    AlertandMessages.showAlert((Activity) context,
+                                                                                            CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
+                                                                                } else {
+                                                                                    AlertandMessages.showAlert((Activity) context,
+                                                                                            CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
+                                                                                }
+
+                                                                            }
+                                                                        });
+
+                                                                    }
+                                                                    ans_dialog.cancel();
+                                                                } catch (JSONException e) {
+                                                                    e.printStackTrace();
+                                                                }
+                                                            } else {
+                                                                showToast("No internet connection");
+                                                            }
+                                                        }
+                                                    });
+                                                    ans_dialog.show();
+                                                }
+                                            }
+                                        }.start();
+
+                                        for (int i = 0; i < userques.getTodayQuestion().size(); i++) {
+                                            RadioButton rdbtn = new RadioButton(LoginActivity.this);
+                                            rdbtn.setId(i);
+                                            rdbtn.setText(userques.getTodayQuestion().get(i).getAnswer());
+                                            radioGroup.addView(rdbtn);
+                                        }
+
+                                        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                            @Override
+                                            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                                                answerData.setAnswer_id(userques.getTodayQuestion().get(checkedId).getAnswerId().toString());
+                                                answerData.setRight_answer(userques.getTodayQuestion().get(checkedId).getRightAnswer().toString());
+                                            }
+                                        });
+
+                                        btnsubmit.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View v) {
+                                                if (answerData.getAnswer_id() == null || answerData.getAnswer_id().equals("")) {
+                                                    Snackbar.make(museridSignInButton, "First select an answer", Snackbar.LENGTH_SHORT).show();
+                                                } else {
+                                                    customD.cancel();
+                                                    String ansisright = "";
+                                                    if (answerData.getRight_answer().equalsIgnoreCase("true")) {
+                                                        ansisright = "Your Answer Is Right!";
+                                                    } else {
+                                                        ansisright = "Your Answer is Wrong! Right Answer Is :- " + right_answer;
+                                                    }
+                                                    final Dialog ans_dialog = new Dialog(LoginActivity.this);
+                                                    ans_dialog.setTitle("Answer");
+                                                    ans_dialog.setCancelable(false);
+                                                    ans_dialog.setContentView(R.layout.show_answer_layout);
+                                                    ((TextView) ans_dialog.findViewById(R.id.tv_ans)).setText(ansisright);
+                                                    Button btnok = (Button) ans_dialog.findViewById(R.id.btnsubmit);
+                                                    btnok.setOnClickListener(new View.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(View v) {
+                                                            answerData.setQuestion_id(userques.getTodayQuestion().get(0).getQuestionId().toString());
+                                                            answerData.setUsername(userid);
+                                                            answerData.setVisit_date(visit_date);
+                                                            if (checkNetIsAvailable()) {
+                                                                try {
+                                                                    JSONArray answerDetaills = new JSONArray();
+                                                                    JSONObject object = new JSONObject();
+
+                                                                    //region Deviation_journeyplan Data
+                                                                    object.put("ANSWER_ID", answerData.getAnswer_id());
+                                                                    object.put("QUESTION_ID", answerData.getQuestion_id());
+                                                                    object.put("VISIT_DATE", answerData.getVisit_date());
+                                                                    object.put("USER_NAME", answerData.getUsername());
+                                                                    answerDetaills.put(object);
+
+                                                                    object = new JSONObject();
+                                                                    object.put("MID", "0");
+                                                                    object.put("Keys", "TODAY_ANSWER");
+                                                                    object.put("JsonData", answerDetaills.toString());
+                                                                    object.put("UserId", userid);
+
+                                                                    String jsonString = object.toString();
+                                                                    if (jsonString != null && !jsonString.equalsIgnoreCase("")) {
+
+                                                                        loading.setMessage("Uploading answer data..");
+                                                                        RequestBody jsonData = RequestBody.create(MediaType.parse("application/json"), jsonString);
+                                                                        adapter = new Retrofit.Builder().baseUrl(CommonString.URL).client(okHttpClient).
+                                                                                addConverterFactory(GsonConverterFactory.create()).build();
+                                                                        PostApi api = adapter.create(PostApi.class);
+                                                                        Call<ResponseBody> call = api.getUploadJsonDetail(jsonData);
+                                                                        call.enqueue(new Callback<ResponseBody>() {
+                                                                            @Override
+                                                                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                                                                ResponseBody responseBody = response.body();
+                                                                                String data = null;
+                                                                                if (responseBody != null && response.isSuccessful()) {
+                                                                                    try {
+                                                                                        data = response.body().string();
+                                                                                        // if (data.equalsIgnoreCase("")) {
+                                                                                        // data = data.substring(1, data.length() - 1).replace("\\", "");
+                                                                                        //  data_global[0] = data;
+                                                                                        if (data.contains("Success")) {
+                                                                                            loading.dismiss();
+                                                                                            String visit_date = preferences.getString(CommonString.KEY_DATE, null);
+                                                                                            editor = preferences.edit();
+                                                                                            editor.putBoolean(CommonString.KEY_IS_QUIZ_DONE + visit_date, true);
+                                                                                            editor.commit();
+                                                                                            Intent intent = new Intent(getBaseContext(), MPinActivity.class);
+                                                                                            startActivity(intent);
+                                                                                            finish();
+                                                                                        } else {
+                                                                                            loading.dismiss();
+                                                                                            editor = preferences.edit();
+                                                                                            editor.putString(CommonString.KEY_QUESTION_CD + visit_date, qns_cd);
+                                                                                            editor.putString(CommonString.KEY_ANSWER_CD + visit_date, ans_cd);
+                                                                                            editor.commit();
+                                                                                            Intent intent = new Intent(getBaseContext(), MPinActivity.class);
+                                                                                            startActivity(intent);
+                                                                                            finish();
+                                                                                        }
+
+
+                                                                                    } catch (Exception e) {
+                                                                                        loading.dismiss();
+                                                                                        AlertandMessages.showAlertlogin(LoginActivity.this,
+                                                                                                CommonString.MESSAGE_INTERNET_NOT_AVALABLE + "(" + e.toString() + ")");
+                                                                                    }
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                                                                loading.dismiss();
+                                                                                if (t instanceof SocketTimeoutException) {
+                                                                                    AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
+                                                                                } else if (t instanceof IOException) {
+                                                                                    AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
+                                                                                } else if (t instanceof SocketException) {
+                                                                                    AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
+                                                                                } else {
+                                                                                    AlertandMessages.showAlert((Activity) context, CommonString.MESSAGE_INTERNET_NOT_AVALABLE, true);
+                                                                                }
+
+                                                                            }
+                                                                        });
+
+                                                                    }
+                                                                    ans_dialog.cancel();
+                                                                } catch (JSONException e) {
+                                                                    loading.dismiss();
+                                                                    e.printStackTrace();
+                                                                }
+                                                            } else {
+                                                                showToast("No internet connection");
+                                                            }
+                                                        }
+                                                    });
+                                                    ans_dialog.show();
+                                                }
+                                            }
+                                        });
+                                        customD.show();
+                                    } else {
+                                        Intent intent = new Intent(getBaseContext(), MPinActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                } else {
+                                    Intent intent = new Intent(getBaseContext(), AutoUpdateActivity.class);
+                                    intent.putExtra(CommonString.KEY_PATH, preferences.getString(CommonString.KEY_PATH, ""));
+                                    startActivity(intent);
+                                    finish();
+                                }
+
+
+                            }
+                        } catch (Exception e) {
+                            loading.dismiss();
+                            AlertandMessages.showAlertlogin(LoginActivity.this, CommonString.MESSAGE_NO_RESPONSE_SERVER + "(" + e.toString() + ")");
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    loading.dismiss();
+                    if (t instanceof SocketTimeoutException || t instanceof IOException || t instanceof Exception) {
+                        AlertandMessages.showAlertlogin(LoginActivity.this,
+                                CommonString.MESSAGE_INTERNET_NOT_AVALABLE + "(" + t.getMessage().toString() + ")");
+                    } else {
+                        AlertandMessages.showAlertlogin(LoginActivity.this,
+                                CommonString.MESSAGE_INTERNET_NOT_AVALABLE + "(" + t.getMessage().toString() + ")");
+                    }
+                }
+            });
+
+
+        } catch (Exception e) {
+            loading.dismiss();
+            e.printStackTrace();
+            AlertandMessages.showAlertlogin(LoginActivity.this, CommonString.MESSAGE_SOCKETEXCEPTION + "(" + e.toString() + ")");
+        } /*catch (PackageManager.NameNotFoundException e) {
+            loading.dismiss();
+            AlertandMessages.showAlertlogin(LoginActivity.this, CommonString.MESSAGE_SOCKETEXCEPTION + "(" + e.toString() + ")");
+
+        } catch (JSONException e) {
+            loading.dismiss();
+            AlertandMessages.showAlertlogin(LoginActivity.this, CommonString.MESSAGE_SOCKETEXCEPTION + "(" + e.toString() + ")");
+        }*/
+    }
+    class AnswerData {
+        public String question_id, answer_id, username, visit_date, right_answer;
+
+        public String getQuestion_id() {
+            return question_id;
+        }
+
+        public void setQuestion_id(String question_id) {
+            this.question_id = question_id;
+        }
+
+        public String getAnswer_id() {
+            return answer_id;
+        }
+
+        public void setAnswer_id(String answer_id) {
+            this.answer_id = answer_id;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getVisit_date() {
+            return visit_date;
+        }
+
+        public void setVisit_date(String visit_date) {
+            this.visit_date = visit_date;
+        }
+
+        public String getRight_answer() {
+            return right_answer;
+        }
+
+        public void setRight_answer(String right_answer) {
+            this.right_answer = right_answer;
+        }
+    }
+    private void showToast(String message) {
+        Snackbar.make(museridSignInButton, message, Snackbar.LENGTH_LONG).show();
+    }
+
 }
+
+
 

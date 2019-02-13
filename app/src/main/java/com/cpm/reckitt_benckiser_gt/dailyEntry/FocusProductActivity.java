@@ -122,10 +122,25 @@ public class FocusProductActivity extends AppCompatActivity {
 
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
         lvExp_audit.setAdapter(listAdapter);
+        for (int i = 0; i < listAdapter.getGroupCount(); i++){
+            lvExp_audit.expandGroup(i);
+        }
 
         lvExp_audit.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                lvExp_audit.invalidate();
+
+                int lastItem = firstVisibleItem + visibleItemCount;
+
+                if (firstVisibleItem == 0) {
+                    storeAudit_fab.show();//.setVisibility(View.VISIBLE);
+                } else if (lastItem == totalItemCount) {
+                    storeAudit_fab.hide();//setVisibility(View.INVISIBLE);
+                } else {
+                    storeAudit_fab.show();//setVisibility(View.VISIBLE);
+                }
+
             }
 
             @Override
@@ -323,10 +338,10 @@ public class FocusProductActivity extends AppCompatActivity {
                 if (checkHeaderArray.contains(groupPosition)) {
                     lblListHeader.setBackgroundColor(getResources().getColor(R.color.red));
                 } else {
-                    lblListHeader.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    lblListHeader.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
                 }
             } else {
-                lblListHeader.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                lblListHeader.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
             }
             return convertView;
         }

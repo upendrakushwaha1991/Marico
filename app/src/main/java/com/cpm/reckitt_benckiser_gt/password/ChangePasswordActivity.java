@@ -271,7 +271,7 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
 
                 String jsonString2 = jsonObject.toString();
                 UploadImageWithRetrofit upload = new UploadImageWithRetrofit(getApplicationContext());
-                String result_str = upload.downloadDataUniversal(jsonString2, CommonString.LOGIN_SERVICE);
+                String result_str = upload.downloadDataUniversal(jsonString2, CommonString.CHANGE_PASSWORD_SERVICE);
 
                 if(result_str.equals(CommonString.KEY_SUCCESS)){
                     return CommonString.KEY_SUCCESS;
