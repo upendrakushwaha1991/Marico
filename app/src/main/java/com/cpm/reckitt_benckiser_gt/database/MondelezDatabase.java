@@ -94,7 +94,7 @@ import java.util.List;
 
 public class MondelezDatabase extends SQLiteOpenHelper {
 
-    public static final String DATABASE_NAME = "Modelez_GT_DB6";
+    public static final String DATABASE_NAME = "Modelez_GT_DB7";
     public static final int DATABASE_VERSION = 1;
     private SQLiteDatabase db;
     Context context;
@@ -4995,6 +4995,7 @@ public class MondelezDatabase extends SQLiteOpenHelper {
                 values.put(CommonString.KEY_CATEGORY, listDataHeader.get(i).getCategory());
                 values.put(CommonString.KEY_CATEGORY_FACING, listDataHeader.get(i).getCategory_Facing());
                 values.put(CommonString.KEY_CATEGORY_IMAGE, listDataHeader.get(i).getCategory_Image());
+                values.put(CommonString.KEY_SOS_PERCENTAGE, listDataHeader.get(i).getPercentage());
 
 
                 common_id = db.insert(CommonString.TABLE_SOS_HEADER_DATA, null, values);
@@ -5122,6 +5123,7 @@ public class MondelezDatabase extends SQLiteOpenHelper {
                     sb1.setCategory_Image(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_CATEGORY_IMAGE)));
                     sb1.setStore_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_STORE_ID)));
                     sb1.setMenu_id(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_MENU_ID)));
+                    sb1.setPercentage(dbcursor.getString(dbcursor.getColumnIndexOrThrow(CommonString.KEY_SOS_PERCENTAGE)));
                     list.add(sb1);
                     dbcursor.moveToNext();
                 }

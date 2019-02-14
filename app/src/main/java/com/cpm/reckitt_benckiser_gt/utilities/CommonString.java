@@ -747,7 +747,7 @@ public class CommonString {
             + KEY_QUESTION + " VARCHAR,"
             + KEY_CORRECT_ANSWER_ID + " VARCHAR)";
 
-
+    public static final String KEY_SOS_PERCENTAGE = "SOS_Percentage";
     public static final String CREATE_TABLE_SOS_HEADER_DATA = "CREATE TABLE  IF NOT EXISTS "
             + TABLE_SOS_HEADER_DATA
             + " (" + KEY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT ,"
@@ -757,6 +757,7 @@ public class CommonString {
             + KEY_CATEGORY + " VARCHAR,"
             + KEY_CATEGORY_FACING + " VARCHAR,"
             + KEY_CATEGORY_IMAGE + " VARCHAR,"
+            + KEY_SOS_PERCENTAGE + " VARCHAR,"
             + KEY_CATEGORY_ID + " VARCHAR)";
 
 

@@ -70,6 +70,7 @@ import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.upload.ToStringConver
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
 import org.json.JSONArray;
@@ -637,22 +638,26 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     //region Window_Data
                     db.open();
                     String presentValue = "";
+
                     ArrayList<WindowMaster> windowMasterList = db.getWindowInsertedData(Integer.parseInt(coverageList.get(coverageIndex).getStoreId()), coverageList.get(coverageIndex).getVisitDate());
                     if (windowMasterList.size() > 0) {
-                        JSONArray windowArray = new JSONArray();
+
+                        JSONObject parentObj = new JSONObject();//paret object contain all json arrays
+                        JSONArray windowArray = new JSONArray();//Window array
+                        JSONArray brandArray = new JSONArray(); //Brand array
+                        JSONArray checklistArray = new JSONArray(); //Window Checklist array
+                        JSONArray brandCheckListArray = new JSONArray(); //Brand Checklist array
+
                         for (int j = 0; j < windowMasterList.size(); j++) {
 
-                            //Window Checklist
-                            JSONArray checklistArray = new JSONArray();
                             ArrayList<BrandMaster> brandList = windowMasterList.get(j).getBrandList();
-                            JSONArray brandArray = new JSONArray();
-                            JSONArray brandCheckListArray = new JSONArray();
 
                             if (windowMasterList.get(j).getAnswered_id() == 1) {
                                 ArrayList<ChecklistMaster> windowCheckListData = db.getWindowCheckListInsertedData(windowMasterList.get(j).getKey_Id());
                                 if (windowCheckListData.size() > 0) {
                                     for (int k = 0; k < windowCheckListData.size(); k++) {
                                         JSONObject obj = new JSONObject();
+                                        obj.put("MID", coverageList.get(coverageIndex).getMID());
                                         obj.put(CommonString.KEY_COMMON_ID, windowMasterList.get(j).getKey_Id());
                                         obj.put("Window_Cd", windowMasterList.get(j).getWindowId());
                                         obj.put("Checklist_Id", windowCheckListData.get(k).getChecklistId());
@@ -665,6 +670,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                 //Brand List
                                 for (int b = 0; b < brandList.size(); b++) {
                                     JSONObject brandObj = new JSONObject();
+                                    brandObj.put("MID", coverageList.get(coverageIndex).getMID());
                                     brandObj.put(CommonString.KEY_COMMON_ID, windowMasterList.get(j).getKey_Id());
                                     brandObj.put("Window_Cd", windowMasterList.get(j).getWindowId());
                                     brandObj.put(CommonString.KEY_BRAND_ID, brandList.get(b).getBrandId());
@@ -677,7 +683,8 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
 
                                     for (int ch = 0; ch < brandCheckList.size(); ch++) {
                                         JSONObject brandChecklistObj = new JSONObject();
-                                        brandObj.put("Window_Cd", windowMasterList.get(j).getWindowId());
+                                        brandChecklistObj.put("MID", coverageList.get(coverageIndex).getMID());
+                                        brandChecklistObj.put("Window_Cd", windowMasterList.get(j).getWindowId());
                                         brandChecklistObj.put("Brand_Common_Id", brandList.get(b).getKey_Id());
                                         brandChecklistObj.put(CommonString.KEY_BRAND_ID, brandList.get(b).getBrandId());
                                         brandChecklistObj.put("Checklist_Id", brandCheckList.get(ch).getChecklistId());
@@ -699,7 +706,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             obj.put("Window_Img_CloseUp", windowMasterList.get(j).getImg_close_up());
                             obj.put("Window_Img_LongShot", windowMasterList.get(j).getImg_long_shot());
                             obj.put("Reason_Cd", windowMasterList.get(j).getNonExecutionReasonId());
-                            if (windowMasterList.get(j).getAnswered_id() == 1) {
+                           /* if (windowMasterList.get(j).getAnswered_id() == 1) {
                                 obj.put("Window_CheckList", checklistArray);
                                 obj.put("Brand_Data", brandArray);
                                 obj.put("Brand_Data", brandCheckListArray);
@@ -707,15 +714,21 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                 obj.put("Window_CheckList", "");
                                 obj.put("Brand_Data", "");
                                 obj.put("Brand_Data", "");
-                            }
+                            }*/
                             windowArray.put(obj);
 
                         }
 
+
+                        parentObj.put("Window_List", windowArray);
+                        parentObj.put("Window_CheckList", checklistArray);
+                        parentObj.put("Brand_List", brandArray);
+                        parentObj.put("Brand_CheckList", brandCheckListArray);
+
                         jsonObject = new JSONObject();
                         jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
                         jsonObject.put("Keys", "Window_Data");
-                        jsonObject.put("JsonData", windowArray.toString());
+                        jsonObject.put("JsonData", parentObj.toString());
                         jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
 
                         jsonString = jsonObject.toString();
@@ -1208,11 +1221,12 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
 
                     ArrayList<BrandMaster> brandList = db.getCTUInsertedData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
                     if (brandList.size() > 0) {
+                        JSONObject parentObj = new JSONObject();
+                        //Brand Array
                         JSONArray compArray = new JSONArray();
+                        //Brand Checklist Array
+                        JSONArray checklistArray = new JSONArray();
                         for (int j = 0; j < brandList.size(); j++) {
-
-                            //Brand Checklist
-                            JSONArray checklistArray = new JSONArray();
 
                             if (brandList.get(j).getAnswered_id() == 1) {
 
@@ -1220,6 +1234,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                 if (brandListCheckListData.size() > 0) {
                                     for (int k = 0; k < brandListCheckListData.size(); k++) {
                                         JSONObject obj = new JSONObject();
+                                        obj.put("MID", coverageList.get(coverageIndex).getMID());
                                         obj.put(CommonString.KEY_COMMON_ID, brandList.get(j).getKey_Id());
                                         obj.put(CommonString.KEY_BRAND_ID, brandList.get(j).getBrandId());
                                         obj.put("Checklist_Id", brandListCheckListData.get(k).getChecklistId());
@@ -1239,19 +1254,22 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             obj.put("Brand_Img_CloseUp", brandList.get(j).getImg_close_up());
                             obj.put("Brand_Img_LongShot", brandList.get(j).getImg_long_shot());
                             obj.put("Reason_Cd", brandList.get(j).getNonExecutionReasonId());
-                            if (brandList.get(j).getAnswered_id() == 1) {
+                           /* if (brandList.get(j).getAnswered_id() == 1) {
                                 obj.put("Brand_CheckList", checklistArray);
                             } else {
                                 obj.put("Brand_CheckList", "");
-                            }
+                            }*/
                             compArray.put(obj);
 
                         }
 
+                        parentObj.put("CTU_List", compArray);
+                        parentObj.put("Brand_CheckList", checklistArray);
+
                         jsonObject = new JSONObject();
                         jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
                         jsonObject.put("Keys", "CTU_Data");
-                        jsonObject.put("JsonData", compArray.toString());
+                        jsonObject.put("JsonData", parentObj.toString());
                         jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
 
                         jsonString = jsonObject.toString();
@@ -1261,16 +1279,18 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                     break;
 
                 case "Secondary_Visibility_Data":
-                    //region Display_Data
+                    //region Secondary_Visibility_Data
                     db.open();
 
                     ArrayList<DisplayMaster> displayList = db.getSecondaryVisibilityInsertedData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate());
                     if (displayList.size() > 0) {
-                        JSONArray compArray = new JSONArray();
-                        for (int j = 0; j < displayList.size(); j++) {
 
-                            //Display Checklist
-                            JSONArray checklistArray = new JSONArray();
+                        JSONObject parentObj = new JSONObject();
+                        JSONArray compArray = new JSONArray();
+                        //Display Checklist
+                        JSONArray checklistArray = new JSONArray();
+
+                        for (int j = 0; j < displayList.size(); j++) {
 
                             if (displayList.get(j).getAnswered_id() == 1) {
 
@@ -1278,6 +1298,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                 if (displayListCheckListData.size() > 0) {
                                     for (int k = 0; k < displayListCheckListData.size(); k++) {
                                         JSONObject obj = new JSONObject();
+                                        obj.put("MID", coverageList.get(coverageIndex).getMID());
                                         obj.put(CommonString.KEY_COMMON_ID, displayList.get(j).getKey_Id());
                                         obj.put(CommonString.KEY_DISPLAY_ID, displayList.get(j).getDisplayId());
                                         obj.put("Checklist_Id", displayListCheckListData.get(k).getChecklistId());
@@ -1298,19 +1319,22 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             obj.put("Display_Img_Two", displayList.get(j).getImg_long_shot());
                             obj.put("Display_Stock", displayList.get(j).getQuantity());
 
-                            if (displayList.get(j).getAnswered_id() == 1) {
+                           /* if (displayList.get(j).getAnswered_id() == 1) {
                                 obj.put("Display_CheckList", checklistArray);
                             } else {
                                 obj.put("Display_CheckList", "");
-                            }
+                            }*/
                             compArray.put(obj);
 
                         }
 
+                        parentObj.put("Secondary_Visbility_List",compArray);
+                        parentObj.put("Display_CheckList",checklistArray);
+
                         jsonObject = new JSONObject();
                         jsonObject.put("MID", coverageList.get(coverageIndex).getMID());
                         jsonObject.put("Keys", "Secondary_Visibility_Data");
-                        jsonObject.put("JsonData", compArray.toString());
+                        jsonObject.put("JsonData", parentObj.toString());
                         jsonObject.put("UserId", coverageList.get(coverageIndex).getUserId());
 
                         jsonString = jsonObject.toString();
@@ -2323,9 +2347,9 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             } else {
                                 editor.putInt(CommonString.KEY_DOWNLOAD_INDEX, 0);
                                 editor.apply();
-                                pd.dismiss();
+                                //pd.dismiss();
                                 //AlertandMessages.showAlert((Activity) context, "All data downloaded Successfully", true);
-                                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                               /* android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
                                 builder.setCancelable(false);
                                 builder.setMessage("All data downloaded Successfully").setCancelable(false)
                                         .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -2336,7 +2360,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                         });
 
                                 android.support.v7.app.AlertDialog alert = builder.create();
-                                alert.show();
+                                alert.show();*/
                                 //downloadImages();
                                 pd.setMessage("Downloading Images");
                                 new DownloadImageTask().execute();

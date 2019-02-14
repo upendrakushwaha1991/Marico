@@ -208,4 +208,14 @@ public class CategoryMaster {
     }
 
     String percentage="";
+
+    private int brand_facing_sum= 0 ;
+
+    public int getBrand_facing_sum() {
+        return brand_facing_sum;
+    }
+
+    public void setBrand_facing_sum(int brand_facing_sum) {
+        this.brand_facing_sum = brand_facing_sum;
+    }
 }

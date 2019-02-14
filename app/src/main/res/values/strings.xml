@@ -122,7 +122,7 @@
     <string name="cat_img_error">Please capture category image</string>
     <string name="brand_facing_error"> Please enter brand facing </string>
     <string name="checklist_error">Please fill checklist data</string>
-    <string name="answer_error">All answers are madetory to fill</string>
+    <string name="answer_error">All answers are mandatory to fill</string>
     <string name="title_activity_change_password">Change Password</string>
 
     <!-- Change Password-->
@@ -144,5 +144,8 @@
 
     <string name="reference_image">Reference Image</string>
     <string name="brand_facing_category_error">Brand facing cannot be greater than category facing.</string>
+    <string name="title_activity_auto_login">AutoLoginActivity</string>
+    <string name="title_activity_one_qad">One QAD</string>
+    <string name="oneqad_comment">oops your answer is wrong. Correct answer is highlighted in green.</string>
 
 </resources>

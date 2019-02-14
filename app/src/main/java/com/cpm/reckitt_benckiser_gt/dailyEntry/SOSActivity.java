@@ -22,6 +22,9 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.SpannableString;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -41,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
@@ -92,6 +96,7 @@ public class SOSActivity extends AppCompatActivity {
     static int grp_position = -1;
     String Error_Message;
     float sum = 0;
+    int brand_facing_sum = 0;
     QuesutionAdapter quesutionAdapter;
     ChecklistMaster checklistQuestionObj;
     ArrayList<MappingMenuChecklist>  menuChecklist = new ArrayList<>();
@@ -108,14 +113,26 @@ public class SOSActivity extends AppCompatActivity {
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
         // setting list adapter
         expListView.setAdapter(listAdapter);
+
+        for (int i = 0; i < listAdapter.getGroupCount(); i++)
+            expListView.expandGroup(i);
+
         expListView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int lastItem = firstVisibleItem + visibleItemCount;
+
+                if (firstVisibleItem == 0) {
+                    fab.show();//.setVisibility(View.VISIBLE);
+                } else if (lastItem == totalItemCount) {
+                    fab.hide();//setVisibility(View.INVISIBLE);
+                } else {
+                    fab.show();//setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onScrollStateChanged(AbsListView arg0, int arg1) {
-
                 InputMethodManager inputManager = (InputMethodManager) getApplicationContext()
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
                 if (getCurrentFocus() != null) {
@@ -123,7 +140,7 @@ public class SOSActivity extends AppCompatActivity {
                     getCurrentFocus().clearFocus();
                 }
                 expListView.clearFocus();
-                //expListView.invalidateViews();
+                expListView.invalidateViews();
             }
         });
 
@@ -227,7 +244,6 @@ public class SOSActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 expListView.clearFocus();
-
                 if (validateData(listDataChild, listDataHeader)) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(SOSActivity.this);
                     builder.setMessage("Are you sure you want to save ?")
@@ -388,6 +404,7 @@ public class SOSActivity extends AppCompatActivity {
             holder.brand_txt.setTypeface(null, Typeface.BOLD);
             holder.brand_txt.setText(childText.getBrand());
 
+            final ViewHolder finalHolder = holder;
             holder.brand_facing.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
@@ -397,23 +414,30 @@ public class SOSActivity extends AppCompatActivity {
                         if (value1.equals("")) {
                             childText.setBrand_Facing("");
                         } else {
-                            childText.setBrand_Facing(value1);
-                        }
-                        if(!headerTitle.getCategory_Facing().equalsIgnoreCase("")) {
-                            float cat_facing = Float.parseFloat(headerTitle.getCategory_Facing());
-                            if(!value1.equalsIgnoreCase("")) {
-                                if(grp_position == groupPosition) {
-                                    float brand_facing = Float.parseFloat(value1);
-                                    float percentage = (brand_facing / cat_facing) * 100;
-                                    sum = sum + percentage;
-                                    headerTitle.setPercentage(String.valueOf(sum));
-                                    expListView.invalidateViews();
+                            if (!headerTitle.getCategory_Facing().equalsIgnoreCase("")) {
+                                float cat_facing = Float.parseFloat(headerTitle.getCategory_Facing());
+                                int brand_facing_sum1 = headerTitle.getBrand_facing_sum() + Integer.parseInt(value1);
+                                if (brand_facing_sum1 < cat_facing) {
+                                    float percentage = (brand_facing_sum1 / cat_facing) * 100;
+                                    headerTitle.setPercentage(String.valueOf(percentage));
+                                    childText.setBrand_Facing(value1);
+                                    headerTitle.setBrand_facing_sum(brand_facing_sum1);
+                                    //  expListView.invalidateViews();
+                                }else{
+                                    finalHolder.brand_facing.setText("");
+                                    AlertandMessages.showSnackbarMsg(view, getResources().getString(R.string.brand_facing_category_error));
                                 }
+                            }else{
+                                childText.setBrand_Facing(value1);
                             }
                         }
                     }
+                    else{
+                        headerTitle.setBrand_facing_sum(0);
+                    }
                 }
             });
+
 
             holder.brand_facing.setText(childText.getBrand_Facing());
 
@@ -541,7 +565,6 @@ public class SOSActivity extends AppCompatActivity {
         public View getGroupView(final int groupPosition, boolean isExpanded, View convertView, ViewGroup parent) {
 
             final  CategoryMaster headerTitle = (CategoryMaster) getGroup(groupPosition);
-
             if (convertView == null) {
                 LayoutInflater infalInflater = (LayoutInflater) this._context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 convertView = infalInflater.inflate(R.layout.list_group_sos, null);
@@ -569,7 +592,7 @@ public class SOSActivity extends AppCompatActivity {
                 }
             });
 
-            SOSPer.setText(headerTitle.getPercentage());
+            SOSPer.setText("SOS % : " +headerTitle.getPercentage());
 
             facingTxt.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
@@ -606,10 +629,10 @@ public class SOSActivity extends AppCompatActivity {
                 if (checkHeaderArray.contains(groupPosition)) {
                     groupView.setBackgroundColor(getResources().getColor(R.color.red));
                 } else {
-                    groupView.setBackgroundColor(getResources().getColor(R.color.white));
+                    groupView.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
                 }
             } else {
-                groupView.setBackgroundColor(getResources().getColor(R.color.white));
+                groupView.setBackgroundColor(getResources().getColor(R.color.ColorPrimaryLight));
             }
 
             cam_img.setOnClickListener(new View.OnClickListener() {
@@ -663,13 +686,13 @@ public class SOSActivity extends AppCompatActivity {
 
         @NonNull
         @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public QuesutionAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.question_list, parent, false);
-            return new ViewHolder(view);
+            return new QuesutionAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+        public void onBindViewHolder(@NonNull final QuesutionAdapter.ViewHolder holder, final int position) {
             final ChecklistMaster object = data.get(position);
 
             holder.question.setText(object.getChecklist());
@@ -836,10 +859,38 @@ public class SOSActivity extends AppCompatActivity {
                     if(listDataChild2.get(listDataHeader2.get(i)).get(j).getBrand_Facing().equalsIgnoreCase("")) {
                         checkflag = false;
                         Error_Message = getResources().getString(R.string.brand_facing_error);
-                    }else if(Integer.parseInt(listDataChild2.get(listDataHeader2.get(i)).get(j).getBrand_Facing()) > Integer.parseInt(listDataHeader2.get(i).getCategory_Facing())){
-                        listDataChild2.get(listDataHeader2.get(i)).get(j).setBrand_Facing("");
-                        checkflag = false;
-                        Error_Message = getResources().getString(R.string.brand_facing_category_error);
+                    }else if(Integer.parseInt(listDataChild2.get(listDataHeader2.get(i)).get(j).getBrand_Facing()) > 0){
+
+                        brand_facing_sum = brand_facing_sum + Integer.parseInt(listDataChild2.get(listDataHeader2.get(i)).get(j).getBrand_Facing());
+
+                        if(brand_facing_sum >  Integer.parseInt(listDataHeader2.get(i).getCategory_Facing())) {
+                            listDataChild2.get(listDataHeader2.get(i)).get(j).setBrand_Facing("");
+                            checkflag = false;
+                            Error_Message = getResources().getString(R.string.brand_facing_category_error);
+                        }
+                        else if (listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() == 0 || listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
+                            if(listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
+                                float percentage = (brand_facing_sum /  Float.parseFloat(listDataHeader2.get(i).getCategory_Facing())) * 100;
+                                listDataHeader2.get(i).setPercentage(String.valueOf(percentage));
+                                for (int k = 0; k < listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size(); k++) {
+                                    String correct_answer_cd = listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().get(k).getCorrectAnswer_Id();
+                                    if (correct_answer_cd.equalsIgnoreCase("0")) {
+                                        checkflag = false;
+                                        Error_Message = getResources().getString(R.string.checklist_error);
+                                        break;
+                                    }
+                                }
+                            }else{
+                                float percentage = (brand_facing_sum /  Float.parseFloat(listDataHeader2.get(i).getCategory_Facing())) * 100;
+                                listDataHeader2.get(i).setPercentage(String.valueOf(percentage));
+                                checkflag = false;
+                                Error_Message = getResources().getString(R.string.checklist_error);
+                            }
+                        }  else {
+                            float percentage = (brand_facing_sum /  Float.parseFloat(listDataHeader2.get(i).getCategory_Facing())) * 100;
+                            listDataHeader2.get(i).setPercentage(String.valueOf(percentage));
+                            checkflag = true;
+                        }
                     }else if (listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() == 0 || listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
                         if(listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
                             for (int k = 0; k < listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size(); k++) {
@@ -858,6 +909,7 @@ public class SOSActivity extends AppCompatActivity {
                         checkflag = true;
                     }
                 }
+                brand_facing_sum = 0;
             }
 
             if (checkflag == false) {
