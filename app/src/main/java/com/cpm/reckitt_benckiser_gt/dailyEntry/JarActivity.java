@@ -1,4 +1,5 @@
 package com.cpm.reckitt_benckiser_gt.dailyEntry;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,7 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class JarActivity extends AppCompatActivity implements View.OnClickListener{
+public class JarActivity extends AppCompatActivity implements View.OnClickListener {
     private Spinner sp_present;
     private ImageView image_closeup, image_long_shot;
     FloatingActionButton fab;
@@ -126,7 +127,17 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.fab:
                 if (validation()) {
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+
+                    db.open();
+                    long val = db.insertJarData(jcpGetset, visiColoersGetterSetter, deploymentData);
+                    if (val > 0) {
+                        AlertandMessages.showToastMsg(context, "Data Saved");
+                        finish();
+                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                    } else {
+                        AlertandMessages.showToastMsg(context, "Error in Data Saving");
+                    }
+                   /* android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
                     builder.setCancelable(false);
                     builder.setMessage("Do you want to save Data?").setCancelable(false)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -151,7 +162,7 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
                                 }
                             });
                     android.support.v7.app.AlertDialog alert = builder.create();
-                    alert.show();
+                    alert.show();*/
 
                 }
 
@@ -229,14 +240,43 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
                         recyclerView.setVisibility(View.VISIBLE);
 
                     } else {
-                        ClearData();
-                        lay_image.setVisibility(View.GONE);
-                        lay_image_name.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.GONE);
-                        visiColoersGetterSetter.setImage_close_up("");
-                        visiColoersGetterSetter.setImage_long_shot("");
-                        image_closeup.setImageResource(R.drawable.camera_orange);
-                        image_long_shot.setImageResource(R.drawable.camera_orange);
+                        if (visiColoersGetterSetter.getImage_close_up().equalsIgnoreCase("")) {
+
+                            ClearData();
+                            lay_image.setVisibility(View.GONE);
+                            lay_image_name.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.GONE);
+                            visiColoersGetterSetter.setImage_close_up("");
+                            visiColoersGetterSetter.setImage_long_shot("");
+                            image_closeup.setImageResource(R.drawable.camera_orange);
+                            image_long_shot.setImageResource(R.drawable.camera_orange);
+                        } else {
+                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                            builder.setCancelable(false);
+                            builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE).setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+
+                                            ClearData();
+                                            lay_image.setVisibility(View.GONE);
+                                            lay_image_name.setVisibility(View.GONE);
+                                            recyclerView.setVisibility(View.GONE);
+                                            visiColoersGetterSetter.setImage_close_up("");
+                                            visiColoersGetterSetter.setImage_long_shot("");
+                                            image_closeup.setImageResource(R.drawable.camera_orange);
+                                            image_long_shot.setImageResource(R.drawable.camera_orange);
+                                        }
+
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                            android.support.v7.app.AlertDialog alert = builder.create();
+                            alert.show();
+                        }
+
 
                     }
                 } else {
@@ -247,6 +287,8 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
                     image_closeup.setImageResource(R.drawable.camera_orange);
                     image_long_shot.setImageResource(R.drawable.camera_orange);
                     recyclerView.setVisibility(View.INVISIBLE);
+                    lay_image.setVisibility(View.GONE);
+                    lay_image_name.setVisibility(View.GONE);
 
                 }
             }
@@ -412,17 +454,17 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
         } else if (string_present_cd.equalsIgnoreCase("1")) {
             if (visiColoersGetterSetter.getImage_close_up().equalsIgnoreCase("")) {
                 value = false;
-                showMessage("Please Capture Photo Close Up");
+                showMessage("Please Capture Close Up photo ");
             } else if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
                 value = false;
-                showMessage("Please Capture Photo Long Shot");
+                showMessage("Please Capture Long shot photo ");
             } else if (checkValidation(deploymentData)) {
                 value = true;
             } else {
                 value = false;
                 AlertandMessages.showToastMsg(JarActivity.this, Error_Message);
             }
-        }else {
+        } else {
             value = true;
 
         }
@@ -479,7 +521,7 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
     }
 
 
-    private  void ClearData(){
+    private void ClearData() {
         for (int i = 0; i < deploymentData.size(); i++) {
             deploymentData.get(i).setAnswer("");
             deploymentData.get(i).setAnswer_cd("0");
@@ -487,6 +529,7 @@ public class JarActivity extends AppCompatActivity implements View.OnClickListen
         }
         adapter.notifyDataSetChanged();
     }
+
     @Override
     public void onBackPressed() {
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(JarActivity.this);

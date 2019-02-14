@@ -1575,6 +1575,7 @@ distance > distanceGeoPhence) {
 
             }
         }*/
+
         if (rightname.equalsIgnoreCase("DBSR")) {
             searchList = db.getStoreData_DBSR(date);
             storelist = db.getStoreData_DBSR_Saved(date);

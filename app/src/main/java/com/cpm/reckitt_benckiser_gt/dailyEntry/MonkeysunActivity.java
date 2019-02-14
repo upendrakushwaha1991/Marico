@@ -128,7 +128,17 @@ public class MonkeysunActivity extends AppCompatActivity implements View.OnClick
         switch (v.getId()) {
             case R.id.fab:
                 if (validation()) {
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                    db.open();
+                    long val = db.insertMonkysunData(jcpGetset, visiColoersGetterSetter, deploymentData);
+
+                    if (val > 0) {
+                        AlertandMessages.showToastMsg(context, "Data Saved");
+                        finish();
+                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                    } else {
+                        AlertandMessages.showToastMsg(context, "Error in Data Saving");
+                    }
+                   /* android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
                     builder.setCancelable(false);
                     builder.setMessage("Do you want to save Data?").setCancelable(false)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -153,7 +163,7 @@ public class MonkeysunActivity extends AppCompatActivity implements View.OnClick
                                 }
                             });
                     android.support.v7.app.AlertDialog alert = builder.create();
-                    alert.show();
+                    alert.show();*/
 
                 }
 
@@ -255,16 +265,46 @@ public class MonkeysunActivity extends AppCompatActivity implements View.OnClick
                             recyclerView.setVisibility(View.VISIBLE);
 
                         }
-                    } else {
-                        ClearData();
-                        lay_image.setVisibility(View.GONE);
-                        lay_image_name.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.GONE);
-                        lay_reason.setVisibility(View.GONE);
-                        visiColoersGetterSetter.setImage_close_up("");
-                        visiColoersGetterSetter.setImage_long_shot("");
-                        image_closeup.setImageResource(R.drawable.camera_orange);
-                        image_long_shot.setImageResource(R.drawable.camera_orange);
+                    }
+                    else {
+                        if (visiColoersGetterSetter.getImage_close_up().equalsIgnoreCase("")){
+                            ClearData();
+                            lay_image.setVisibility(View.GONE);
+                            lay_image_name.setVisibility(View.GONE);
+                            recyclerView.setVisibility(View.GONE);
+                            lay_reason.setVisibility(View.GONE);
+                            visiColoersGetterSetter.setImage_close_up("");
+                            visiColoersGetterSetter.setImage_long_shot("");
+                            image_closeup.setImageResource(R.drawable.camera_orange);
+                            image_long_shot.setImageResource(R.drawable.camera_orange);
+                        }else {
+                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                            builder.setCancelable(false);
+                            builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE).setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            ClearData();
+                                            lay_image.setVisibility(View.GONE);
+                                            lay_image_name.setVisibility(View.GONE);
+                                            recyclerView.setVisibility(View.GONE);
+                                            lay_reason.setVisibility(View.GONE);
+                                            visiColoersGetterSetter.setImage_close_up("");
+                                            visiColoersGetterSetter.setImage_long_shot("");
+                                            image_closeup.setImageResource(R.drawable.camera_orange);
+                                            image_long_shot.setImageResource(R.drawable.camera_orange);
+                                        }
+
+                                    })
+                             .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int id) {
+                                    dialog.cancel();
+                                }
+                            });
+                            android.support.v7.app.AlertDialog alert = builder.create();
+                            alert.show();
+
+                        }
+
 
                     }
                 } else {
@@ -274,6 +314,8 @@ public class MonkeysunActivity extends AppCompatActivity implements View.OnClick
                     visiColoersGetterSetter.setImage_long_shot("");
                     image_closeup.setImageResource(R.drawable.camera_orange);
                     image_long_shot.setImageResource(R.drawable.camera_orange);
+                    lay_image.setVisibility(View.GONE);
+                    lay_image_name.setVisibility(View.GONE);
                 }
             }
 

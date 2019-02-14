@@ -121,7 +121,7 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
         prepareListData();
         listAdapter = new ExpandableListAdapter(this, listDataHeader, listDataChild);
         lvExp_audit.setAdapter(listAdapter);
-        for (int i = 0; i < listAdapter.getGroupCount(); i++){
+        for (int i = 0; i < listAdapter.getGroupCount(); i++) {
             lvExp_audit.expandGroup(i);
         }
 
@@ -138,7 +138,17 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                 lvExp_audit.clearFocus();
                 lvExp_audit.invalidateViews();
                 if (validation()) {
-                    android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                    db.open();
+                    long val = db.insertBackofStoreData(jcpGetset, backofstoregs);
+                    if (val > 0) {
+                        db.InsertBackofStoreData(jcpGetset, listDataChild, listDataHeader);
+                        AlertandMessages.showToastMsg(context, "Data Saved");
+                        finish();
+                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                    } else {
+                        AlertandMessages.showToastMsg(context, "Error in Data Saving");
+                    }
+                    /*android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
                     builder.setCancelable(false);
                     builder.setMessage("Do you want to save Data?").setCancelable(false)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -163,7 +173,7 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                                 }
                             });
                     android.support.v7.app.AlertDialog alert = builder.create();
-                    alert.show();
+                    alert.show();*/
 
                 }
 
@@ -244,14 +254,41 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                         lvExp_audit.setVisibility(View.VISIBLE);
 
                     } else {
-                        clearValidateData();
-                        lay_image.setVisibility(View.GONE);
-                        lay_image_name.setVisibility(View.GONE);
-                        lvExp_audit.setVisibility(View.GONE);
-                        backofstoregs.setImage_close_up("");
-                        backofstoregs.setImage_long_shot("");
-                        image_closeup.setImageResource(R.drawable.camera_orange);
-                        image_long_shot.setImageResource(R.drawable.camera_orange);
+                        if (backofstoregs.getImage_close_up().equalsIgnoreCase("")) {
+                            clearValidateData();
+                            lay_image.setVisibility(View.GONE);
+                            lay_image_name.setVisibility(View.GONE);
+                            lvExp_audit.setVisibility(View.GONE);
+                            backofstoregs.setImage_close_up("");
+                            backofstoregs.setImage_long_shot("");
+                            image_closeup.setImageResource(R.drawable.camera_orange);
+                            image_long_shot.setImageResource(R.drawable.camera_orange);
+
+                        } else {
+                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                            builder.setCancelable(false);
+                            builder.setMessage(CommonString.ONBACK_ALERT_MESSAGE).setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            clearValidateData();
+                                            lay_image.setVisibility(View.GONE);
+                                            lay_image_name.setVisibility(View.GONE);
+                                            lvExp_audit.setVisibility(View.GONE);
+                                            backofstoregs.setImage_close_up("");
+                                            backofstoregs.setImage_long_shot("");
+                                            image_closeup.setImageResource(R.drawable.camera_orange);
+                                            image_long_shot.setImageResource(R.drawable.camera_orange);
+                                        }
+
+                                    })
+                                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                            android.support.v7.app.AlertDialog alert = builder.create();
+                            alert.show();
+                        }
 
                     }
                 } else {
@@ -314,10 +351,10 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
         } else if (string_present_cd.equalsIgnoreCase("1")) {
             if (backofstoregs.getImage_close_up().equalsIgnoreCase("")) {
                 value = false;
-                showMessage("Please Capture Photo Close Up");
+                showMessage("Please Capture Close Up photo ");
             } else if (backofstoregs.getImage_long_shot().equalsIgnoreCase("")) {
                 value = false;
-                showMessage("Please Capture Photo Long Shot");
+                showMessage("Please Capture Long shot photo ");
             } else if (validateData(listDataChild, listDataHeader)) {
 
                 value = true;
