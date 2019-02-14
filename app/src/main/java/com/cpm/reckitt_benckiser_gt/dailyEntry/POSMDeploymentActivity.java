@@ -344,7 +344,8 @@ public class POSMDeploymentActivity extends AppCompatActivity {
                 recyclerView.clearFocus();
 
                 if (checkValidation(deploymentData)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                    savePOSMDeploymentData(deploymentData);
+                   /* AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setCancelable(false);
                     builder.setMessage("Do you want to save Data?").setCancelable(false)
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -360,7 +361,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
                                 }
                             });
                     AlertDialog alert = builder.create();
-                    alert.show();
+                    alert.show();*/
 
                 } else {
                     AlertandMessages.showToastMsg(POSMDeploymentActivity.this, Error_Message);

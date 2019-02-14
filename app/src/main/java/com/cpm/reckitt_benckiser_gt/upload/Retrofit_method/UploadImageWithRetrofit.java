@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.cpm.reckitt_benckiser_gt.dailyEntry.StoreListActivity;
 import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.BrandMaster;
@@ -1706,7 +1708,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
             pd.dismiss();
             if (s.equalsIgnoreCase(CommonString.KEY_SUCCESS)) {
                 if (totalFiles == uploadedFiles && statusUpdated) {
-                    AlertandMessages.showAlert((Activity) context, "All images uploaded Successfully", true);
+                    AlertandMessages.showAlert((Activity) context, "All Data and Images Uploaded", true);
                 } else if (totalFiles == uploadedFiles && !statusUpdated) {
                     AlertandMessages.showAlert((Activity) context, "All images uploaded Successfully, but status not updated", true);
                 } else {
@@ -1739,7 +1741,24 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
             super.onPostExecute(s);
             if (s.equalsIgnoreCase(CommonString.KEY_SUCCESS)) {
                 pd.dismiss();
-                AlertandMessages.showAlert((Activity) context, "All data downloaded Successfully", true);
+              //  AlertandMessages.showAlert((Activity) context, "All data downloaded Successfully", true);
+                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
+                builder.setCancelable(false);
+                builder.setMessage("All data downloaded Successfully").setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent in = new Intent(context, StoreListActivity.class);
+                                in.putExtra(CommonString.TAG_FROM, CommonString.TAG_FROM_JCP);
+                                context.startActivity(in);
+                                ((Activity) context).finish();
+                                dialog.dismiss();
+                            }
+
+                        });
+
+                android.support.v7.app.AlertDialog alert = builder.create();
+                alert.show();
+
             } else {
                 pd.dismiss();
                 AlertandMessages.showAlert((Activity) context, "Error in downloading", true);

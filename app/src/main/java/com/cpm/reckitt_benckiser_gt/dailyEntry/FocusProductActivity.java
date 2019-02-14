@@ -64,7 +64,11 @@ public class FocusProductActivity extends AppCompatActivity {
                 lvExp_audit.invalidateViews();
                 listAdapter.notifyDataSetChanged();
                 if (validateData(listDataChild, listDataHeader)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(FocusProductActivity.this);
+                    db.open();
+                    db.insertSalesStockData(jcpGetset, listDataChild, listDataHeader);
+                    finish();
+                    overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                   /* AlertDialog.Builder builder = new AlertDialog.Builder(FocusProductActivity.this);
                     builder.setTitle("Parinaam").setMessage(R.string.alertsaveData);
                     builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
@@ -81,10 +85,9 @@ public class FocusProductActivity extends AppCompatActivity {
                             dialogInterface.cancel();
                         }
                     });
-                    builder.show();
+                    builder.show();*/
                 } else {
 
-                   // Snackbar.make(lvExp_audit, "Please fill At Least one data and value greater then zero", Snackbar.LENGTH_SHORT).show();
                     Snackbar.make(lvExp_audit, "Please fill Sku Stock", Snackbar.LENGTH_SHORT).show();
                 }
 
