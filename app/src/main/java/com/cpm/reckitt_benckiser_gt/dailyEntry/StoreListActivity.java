@@ -48,7 +48,10 @@ import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.download.DownloadActivity;
 import com.cpm.reckitt_benckiser_gt.geotag.GeoTagStoreList;
 import com.cpm.reckitt_benckiser_gt.geotag.GeoTaggingActivity;
+import com.cpm.reckitt_benckiser_gt.getterSetter.BackofStoreGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
+import com.cpm.reckitt_benckiser_gt.getterSetter.CommonChillerDataGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.StoreProfileGetterSetter;
@@ -120,6 +123,9 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
     SharedPreferences preferences;
     private LocationManager locationManager = null;
     private SharedPreferences.Editor editor = null;
+    List<BackofStoreGetterSetter> listDataHeaderBackofStore;
+    List<FocusProductGetterSetter> listDataHeader;
+    private ArrayList<CommonChillerDataGetterSetter> posmDeploymentData = new ArrayList<>();
 
 
     @Override
@@ -565,7 +571,7 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                                                 editor.putString(CommonString.KEY_VISIT_DATE, current.getVisitDate());
                                                 editor.commit();
                                                 Intent in = new Intent(context, GeoTaggingActivity.class);
-                                                in.putExtra(CommonString.KEY_STORE_ID, String.valueOf(current.getStoreId()));
+                                                in.putExtra(CommonString.TAG_OBJECT, current);
                                                 startActivity(in);
                                             }
                                         });
@@ -1712,67 +1718,100 @@ distance > distanceGeoPhence) {
         }
         dialog.cancel();
     }
+
     private boolean chekDataforCheckout(JourneyPlan journeyPlan) {
         boolean status = true;
         db.open();
         ArrayList<MenuMaster> menu_list = db.getMenuData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId());
-        for(int i=0; i<menu_list.size();i++){
+        for (int i = 0; i < menu_list.size(); i++) {
             switch (menu_list.get(i).getMenuId()) {
 
                 case 3:
-                    if (db.isBackofStoreFilled(journeyPlan.getStoreId())) {
 
-                    } else {
-                        status=false;
+                    listDataHeaderBackofStore = db.getHeaderBackofStoreData(journeyPlan);
+                    if (listDataHeaderBackofStore.size() > 0) {
+                        if (db.isBackofStoreFilled(journeyPlan.getStoreId())) {
+
+                        } else {
+                            status = false;
+                            break;
+                        }
+                    }else {
+                        status = true;
                         break;
                     }
+
                     break;
                 case 4:
-                    if (db.isVisiCoolerFilledData(journeyPlan.getStoreId())) {
-
+                    if (db.isVisicoolerSunGrayIcone(journeyPlan.getStoreId())) {
+                        if (db.isVisiCoolerFilledData(journeyPlan.getStoreId())) {
+                        } else {
+                            status = false;
+                            break;
+                        }
                     } else {
-                        status=false;
+                        status = true;
                         break;
                     }
                     break;
                 case 5:
-                    if (db.isPosmFilledData(journeyPlan.getStoreId())) {
+                    posmDeploymentData = db.getPOSMDeploymentData(journeyPlan);
+                    if (posmDeploymentData.size()>0) {
+                        if (db.isPosmFilledData(journeyPlan.getStoreId())) {
 
-                    } else {
-                        status=false;
+                        } else {
+                            status = false;
+                            break;
+                        }
+                    }else {
+                        status = true;
                         break;
                     }
+
                     break;
                 case 6:
-                    if (db.isFocusproductFilled(journeyPlan.getStoreId())) {
+                    listDataHeader = db.getHeaderSalesData(journeyPlan);
+                    if (listDataHeader.size() > 0) {
+                        if (db.isFocusproductFilled(journeyPlan.getStoreId())) {
 
-                    } else {
-                        status=false;
+                        } else {
+                            status = false;
+                            break;
+                        }
+                    }else {
+                        status = true;
                         break;
                     }
+
                     break;
                 case 8:
                     if (db.isJarFilledData(journeyPlan.getStoreId())) {
 
                     } else {
-                        status=false;
+                        status = false;
                         break;
                     }
                     break;
                 case 10:
-                    if (db.isMonkeySunFilledData(journeyPlan.getStoreId())) {
+                    if (db.isMonkeySunGrayIcone(journeyPlan.getStoreId())) {
+                        if (db.isMonkeySunFilledData(journeyPlan.getStoreId())) {
 
+                        } else {
+                            status = false;
+                            break;
+                        }
                     } else {
-                        status=false;
+                        status = true;
                         break;
                     }
+
                     break;
 
                 case 1:
                     if (db.isWindowFilledData(journeyPlan.getStoreId())) {
 
                     } else {
-                        status=false;
+                        status = false;
                         break;
                     }
                     break;
@@ -1781,7 +1820,7 @@ distance > distanceGeoPhence) {
                     if (db.isSecondaryFilledData(journeyPlan.getStoreId())) {
 
                     } else {
-                        status=false;
+                        status = false;
                         break;
                     }
                     break;
@@ -1790,7 +1829,7 @@ distance > distanceGeoPhence) {
                     if (db.isCTUFilledData(journeyPlan.getStoreId())) {
 
                     } else {
-                        status=false;
+                        status = false;
                         break;
                     }
                     break;
@@ -1799,7 +1838,7 @@ distance > distanceGeoPhence) {
                     if (db.isFeedBackFilledData(journeyPlan.getStoreId())) {
 
                     } else {
-                        status=false;
+                        status = false;
                         break;
                     }
                     break;

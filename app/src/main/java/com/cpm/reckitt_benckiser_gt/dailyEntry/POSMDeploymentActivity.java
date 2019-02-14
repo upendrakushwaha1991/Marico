@@ -82,17 +82,23 @@ public class POSMDeploymentActivity extends AppCompatActivity {
         reasonData = db.getPOSMReason(menuMaster.getMenuId());
         posmDeploymentData = db.getPOSMDeploymentSavedData(Integer.valueOf(store_id), visit_date);
         if (posmDeploymentData.size() > 0) {
-            createView(posmDeploymentData);
+           // createView(posmDeploymentData);
+            adapter = new POSMDeploymentAdapter(this, posmDeploymentData);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            recyclerView.setAdapter(adapter);
         } else {
             posmDeploymentData = db.getPOSMDeploymentData(jcpGetset);
-            createView(posmDeploymentData);
+           // createView(posmDeploymentData);
+            adapter = new POSMDeploymentAdapter(this, posmDeploymentData);
+            recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            recyclerView.setAdapter(adapter);
         }
     }
 
 
     private void createView(ArrayList<CommonChillerDataGetterSetter> posmDeploymentData) {
         adapter = new POSMDeploymentAdapter(this, posmDeploymentData);
-        recyclerView.setHasFixedSize(true);
+       // recyclerView.setHasFixedSize(true);
         // set a GridLayoutManager with default vertical orientation and 2 number of columns
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerView.setAdapter(adapter);
@@ -110,7 +116,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
         @NonNull
         @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.posm_deployment_custom_view, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.posm_deployment_list, parent, false);
             return new ViewHolder(view);
         }
 
@@ -129,6 +135,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
                         holder.deploymentLayout.setVisibility(View.GONE);
                         holder.reasonLayout.setVisibility(View.GONE);
                         deploymentData.get(position).setExist("");
+                        holder.ll_exit_view.setVisibility(View.VISIBLE);
                     } else if (itemPos == 1) {
                         holder.deploymentLayout.setVisibility(View.VISIBLE);
                         holder.reasonLayout.setVisibility(View.GONE);
@@ -138,6 +145,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
                     } else {
                         holder.deploymentLayout.setVisibility(View.GONE);
                         holder.reasonLayout.setVisibility(View.VISIBLE);
+                        holder.ll_exit_view.setVisibility(View.VISIBLE);
                         deploymentData.get(position).setExist("0");
                         deploymentData.get(position).setReason_id("0");
 
@@ -269,24 +277,23 @@ public class POSMDeploymentActivity extends AppCompatActivity {
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
-            TextView posmTxt, old_deployment, new_deployment;
+            TextView posmTxt;
             Spinner existSpinner, reasonSpinner;
-            LinearLayout deploymentLayout, reasonLayout;
+            LinearLayout deploymentLayout, reasonLayout,ll_exit_view;
             CardView card_view;
             ImageView deploymentImage;
 
             public ViewHolder(View itemView) {
                 super(itemView);
 
-                posmTxt = (TextView) itemView.findViewById(R.id.posm_txt);
-                old_deployment = (TextView) itemView.findViewById(R.id.old_deployment_txt);
-                new_deployment = (TextView) itemView.findViewById(R.id.new_deployment_txt);
-                existSpinner = (Spinner) itemView.findViewById(R.id.POSM_exist_spinner);
-                reasonSpinner = (Spinner) itemView.findViewById(R.id.deployment_reason);
-                deploymentLayout = (LinearLayout) itemView.findViewById(R.id.deploymentLayout);
-                reasonLayout = (LinearLayout) itemView.findViewById(R.id.reason_layout);
-                card_view = (CardView) itemView.findViewById(R.id.card_view);
-                deploymentImage = (ImageView) itemView.findViewById(R.id.deploymentImage);
+                posmTxt = (TextView) itemView.findViewById(R.id.posm_text);
+                existSpinner = (Spinner) itemView.findViewById(R.id.POSM_exist_sp);
+                reasonSpinner = (Spinner) itemView.findViewById(R.id.deployment_reason_sp);
+                deploymentLayout = (LinearLayout) itemView.findViewById(R.id.deploymentLay);
+                reasonLayout = (LinearLayout) itemView.findViewById(R.id.reason_lay);
+                ll_exit_view = (LinearLayout) itemView.findViewById(R.id.ll_exit_view);
+                card_view = (CardView) itemView.findViewById(R.id.card);
+                deploymentImage = (ImageView) itemView.findViewById(R.id.deploymentImag);
 
             }
         }
@@ -318,7 +325,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
         context = this;
         toolBar = findViewById(R.id.posm_deployment_toolbar);
         saveBtn = findViewById(R.id.posm_deployment_fab);
-        recyclerView = findViewById(R.id.posm_deployment_view);
+        recyclerView = findViewById(R.id.recyclerview);
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         visit_date = preferences.getString(CommonString.KEY_DATE, null);
@@ -328,7 +335,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
         setSupportActionBar(toolBar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle("POSM Deployment - " + visit_date);
+        getSupportActionBar().setTitle("POSM - " + visit_date);
         str = CommonString.FILE_PATH;
 
         saveBtn.setOnClickListener(new View.OnClickListener() {

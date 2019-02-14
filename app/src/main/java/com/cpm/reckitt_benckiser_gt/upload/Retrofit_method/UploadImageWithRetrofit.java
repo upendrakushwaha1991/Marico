@@ -1134,18 +1134,17 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                                     jsonObject.put("BRAND_ID", listDataHeader1.get(i).getBrand_id());
                                     jsonObject.put("STOCK", listDataHeader1.get(i).getStock());
                                     jsonObject.put("KEY_Id", listDataHeader1.get(i).getKey_id());
-//                                    jsonObject.put("CHEKLIST_DATA", childArray);
+
 
                                     ArrayList<BackofStoreGetterSetter> brandData = db.getBackOfStoreChildUploadData(coverageList.get(coverageIndex).getStoreId(), coverageList.get(coverageIndex).getVisitDate(), listDataHeader1.get(i).getKey_id());
                                         for (int j = 0; j < brandData.size(); j++) {
                                             jsonObject1 = new JSONObject();
                                             jsonObject1.put("MID", coverageList.get(coverageIndex).getMID());
                                             jsonObject1.put("UserId", _UserId);
-                                            jsonObject1.put("REASON_ID", listDataHeader1.get(j).getReasonId());
-                                            jsonObject1.put("CHEKLIST_ID", listDataHeader1.get(j).getChecklist_id());
-                                            jsonObject1.put("COMMON_ID", listDataHeader1.get(j).getCommon_id());
-                                            jsonObject1.put("BRAND_ID", listDataHeader1.get(j).getBrand_id());
-                                            jsonObject1.put("KEY_Id", listDataHeader1.get(i).getKey_id());
+                                            jsonObject1.put("ANSWER_ID", brandData.get(j).getReasonId());
+                                            jsonObject1.put("CHEKLIST_ID", brandData.get(j).getChecklist_id());
+                                            jsonObject1.put("BRAND_ID", listDataHeader1.get(i).getBrand_id());
+                                            jsonObject1.put("KEY_Id", brandData.get(j).getCommon_id());
 
                                             childArray.put(jsonObject1);
                                         }
