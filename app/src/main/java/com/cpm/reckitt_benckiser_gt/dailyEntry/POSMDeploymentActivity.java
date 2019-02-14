@@ -150,7 +150,7 @@ public class POSMDeploymentActivity extends AppCompatActivity {
                         deploymentData.get(position).setReason_id("0");
 
                         if (!deploymentData.get(position).getImg1().equalsIgnoreCase("")) {
-                            holder.deploymentImage.setImageResource(R.drawable.camera_orange);
+                            holder.deploymentImage.setImageResource(R.mipmap.cs_black);
                             image1 = "";
                         }
 
@@ -234,9 +234,9 @@ public class POSMDeploymentActivity extends AppCompatActivity {
             }
 
             if (deploymentData.get(position).getImg1().equalsIgnoreCase("")) {
-                holder.deploymentImage.setImageResource(R.drawable.camera_orange);
+                holder.deploymentImage.setImageResource(R.mipmap.cs_black);
             } else {
-                holder.deploymentImage.setImageResource(R.drawable.camera_green);
+                holder.deploymentImage.setImageResource(R.mipmap.cs_green);
             }
 
 

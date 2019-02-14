@@ -559,16 +559,16 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
 
             if (current.getImg_close_up().equals("")) {
 
-                cam_close_up.setBackgroundResource(R.mipmap.camera_pink);
+                cam_close_up.setBackgroundResource(R.mipmap.cs_black);
             } else {
-                cam_close_up.setBackgroundResource(R.mipmap.camera_green);
+                cam_close_up.setBackgroundResource(R.mipmap.cs_green);
             }
 
             if (current.getImg_long_shot().equals("")) {
 
-                cam_long_shot.setBackgroundResource(R.mipmap.camera_pink);
+                cam_long_shot.setBackgroundResource(R.mipmap.ls_black);
             } else {
-                cam_long_shot.setBackgroundResource(R.mipmap.camera_green);
+                cam_long_shot.setBackgroundResource(R.mipmap.ls_green);
             }
 
             if (current.getBrandList().size() > 0) {

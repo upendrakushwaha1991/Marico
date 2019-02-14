@@ -210,7 +210,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
             case -1:
                 if (_pathforcheck != null && !_pathforcheck.equals("")) {
                     if (new File(CommonString.FILE_PATH + _pathforcheck).exists()) {
-                        image_closeup.setImageResource(R.drawable.camera_green);
+                        image_closeup.setImageResource(R.mipmap.cs_green);
                         image1 = _pathforcheck;
                         visiColoersGetterSetter.setImage_close_up(image1);
 
@@ -218,7 +218,7 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                     _pathforcheck = "";
                 } else if (_pathforcheck2 != null && !_pathforcheck2.equals("")) {
                     if (new File(CommonString.FILE_PATH + _pathforcheck2).exists()) {
-                        image_long_shot.setImageResource(R.drawable.camera_green);
+                        image_long_shot.setImageResource(R.mipmap.ls_green);
                         image2 = _pathforcheck2;
                         visiColoersGetterSetter.setImage_long_shot(image2);
                     }
@@ -259,8 +259,8 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                             lay_reason.setVisibility(View.VISIBLE);
                             visiColoersGetterSetter.setImage_close_up("");
                             visiColoersGetterSetter.setImage_long_shot("");
-                            image_closeup.setImageResource(R.drawable.camera_orange);
-                            image_long_shot.setImageResource(R.drawable.camera_orange);
+                            image_closeup.setImageResource(R.mipmap.cs_black);
+                            image_long_shot.setImageResource(R.mipmap.ls_black);
                         }
                         else {
                             android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
@@ -275,8 +275,8 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                                             lay_reason.setVisibility(View.VISIBLE);
                                             visiColoersGetterSetter.setImage_close_up("");
                                             visiColoersGetterSetter.setImage_long_shot("");
-                                            image_closeup.setImageResource(R.drawable.camera_orange);
-                                            image_long_shot.setImageResource(R.drawable.camera_orange);
+                                            image_closeup.setImageResource(R.mipmap.cs_black);
+                                            image_long_shot.setImageResource(R.mipmap.ls_black);
                                         }
 
                                     })
@@ -298,8 +298,8 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
                     visiColoersGetterSetter.setPresent_name("");
                     visiColoersGetterSetter.setImage_close_up("");
                     visiColoersGetterSetter.setImage_long_shot("");
-                    image_closeup.setImageResource(R.drawable.camera_orange);
-                    image_long_shot.setImageResource(R.drawable.camera_orange);
+                    image_closeup.setImageResource(R.mipmap.cs_black);
+                    image_long_shot.setImageResource(R.mipmap.ls_black);
                     recyclerView.setVisibility(View.GONE);
                     lay_image.setVisibility(View.GONE);
                     lay_image_name.setVisibility(View.GONE);
@@ -347,18 +347,18 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         db.open();
         visiColoersGetterSetter = db.getNewVisicoolerData(jcpGetset);
         if (visiColoersGetterSetter.getImage_close_up().equalsIgnoreCase("")) {
-            image_closeup.setImageResource(R.mipmap.camera_grey);
+            image_closeup.setImageResource(R.mipmap.cs_black);
 
         } else {
-            image_closeup.setImageResource(R.mipmap.camera_green);
+            image_closeup.setImageResource(R.mipmap.cs_green);
             visiColoersGetterSetter.setImage_close_up(visiColoersGetterSetter.getImage_close_up());
         }
 
         if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
-            image_long_shot.setImageResource(R.mipmap.camera_grey);
+            image_long_shot.setImageResource(R.mipmap.ls_black);
 
         } else {
-            image_long_shot.setImageResource(R.mipmap.camera_green);
+            image_long_shot.setImageResource(R.mipmap.ls_green);
             visiColoersGetterSetter.setImage_long_shot(visiColoersGetterSetter.getImage_long_shot());
         }
 

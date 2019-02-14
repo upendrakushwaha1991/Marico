@@ -101,7 +101,7 @@
                                 android:layout_height="45dp"
                                 android:layout_marginRight="10dp"
                                 android:layout_weight=".3"
-                                android:src="@drawable/camera_orange" />
+                                android:src="@mipmap/cs_black" />
 
                             <ImageView
                                 android:id="@+id/image_long_shot"
@@ -109,7 +109,7 @@
                                 android:layout_height="45dp"
                                 android:layout_marginLeft="10dp"
                                 android:layout_weight=".3"
-                                android:src="@drawable/camera_orange" />
+                                android:src="@mipmap/ls_black" />
 
 
                         </LinearLayout>

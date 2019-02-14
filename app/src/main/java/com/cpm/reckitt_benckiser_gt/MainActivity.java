@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_download) {
             if (checkNetIsAvailable()) {
                 if (!db.isCoverageDataFilled(visit_date)) {
+
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle("Parinaam");
                     builder.setMessage(getResources().getString(R.string.want_download_data)).setCancelable(false)

@@ -207,7 +207,7 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
             case -1:
                 if (_pathforcheck != null && !_pathforcheck.equals("")) {
                     if (new File(CommonString.FILE_PATH + _pathforcheck).exists()) {
-                        image_closeup.setImageResource(R.drawable.camera_green);
+                        image_closeup.setImageResource(R.mipmap.cs_green);
                         image1 = _pathforcheck;
                         backofstoregs.setImage_close_up(image1);
 
@@ -215,7 +215,7 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                     _pathforcheck = "";
                 } else if (_pathforcheck2 != null && !_pathforcheck2.equals("")) {
                     if (new File(CommonString.FILE_PATH + _pathforcheck2).exists()) {
-                        image_long_shot.setImageResource(R.drawable.camera_green);
+                        image_long_shot.setImageResource(R.mipmap.ls_green);
                         image2 = _pathforcheck2;
                         backofstoregs.setImage_long_shot(image2);
                     }
@@ -261,8 +261,8 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                             lvExp_audit.setVisibility(View.GONE);
                             backofstoregs.setImage_close_up("");
                             backofstoregs.setImage_long_shot("");
-                            image_closeup.setImageResource(R.drawable.camera_orange);
-                            image_long_shot.setImageResource(R.drawable.camera_orange);
+                            image_closeup.setImageResource(R.mipmap.cs_black);
+                            image_long_shot.setImageResource(R.mipmap.ls_black);
 
                         } else {
                             android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(context);
@@ -276,8 +276,8 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                                             lvExp_audit.setVisibility(View.GONE);
                                             backofstoregs.setImage_close_up("");
                                             backofstoregs.setImage_long_shot("");
-                                            image_closeup.setImageResource(R.drawable.camera_orange);
-                                            image_long_shot.setImageResource(R.drawable.camera_orange);
+                                            image_closeup.setImageResource(R.mipmap.cs_black);
+                                            image_long_shot.setImageResource(R.mipmap.ls_black);
                                         }
 
                                     })

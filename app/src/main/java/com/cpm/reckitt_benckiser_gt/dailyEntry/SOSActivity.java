@@ -64,6 +64,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -419,6 +420,8 @@ public class SOSActivity extends AppCompatActivity {
                                 int brand_facing_sum1 = headerTitle.getBrand_facing_sum() + Integer.parseInt(value1);
                                 if (brand_facing_sum1 < cat_facing) {
                                     float percentage = (brand_facing_sum1 / cat_facing) * 100;
+                                    DecimalFormat df = new DecimalFormat("0.00");
+                                    percentage = Float.parseFloat(df.format(percentage));
                                     headerTitle.setPercentage(String.valueOf(percentage));
                                     childText.setBrand_Facing(value1);
                                     headerTitle.setBrand_facing_sum(brand_facing_sum1);
@@ -871,6 +874,8 @@ public class SOSActivity extends AppCompatActivity {
                         else if (listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() == 0 || listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
                             if(listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size() > 0) {
                                 float percentage = (brand_facing_sum /  Float.parseFloat(listDataHeader2.get(i).getCategory_Facing())) * 100;
+                                DecimalFormat df = new DecimalFormat("0.00");
+                                percentage = Float.parseFloat(df.format(percentage));
                                 listDataHeader2.get(i).setPercentage(String.valueOf(percentage));
                                 for (int k = 0; k < listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().size(); k++) {
                                     String correct_answer_cd = listDataChild2.get(listDataHeader2.get(i)).get(j).getChecklistQuestions().get(k).getCorrectAnswer_Id();

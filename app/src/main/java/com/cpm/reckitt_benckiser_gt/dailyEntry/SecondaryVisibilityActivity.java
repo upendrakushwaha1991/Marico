@@ -470,16 +470,16 @@ public class SecondaryVisibilityActivity extends AppCompatActivity {
 
             if (current.getImg_close_up().equals("")) {
 
-                cam_one.setBackgroundResource(R.mipmap.camera_pink);
+                cam_one.setBackgroundResource(R.mipmap.cs_black);
             } else {
-                cam_one.setBackgroundResource(R.mipmap.camera_green);
+                cam_one.setBackgroundResource(R.mipmap.cs_green);
             }
 
             if (current.getImg_long_shot().equals("")) {
 
-                cam_two.setBackgroundResource(R.mipmap.camera_pink);
+                cam_two.setBackgroundResource(R.mipmap.ls_black);
             } else {
-                cam_two.setBackgroundResource(R.mipmap.camera_green);
+                cam_two.setBackgroundResource(R.mipmap.ls_green);
             }
 
 
