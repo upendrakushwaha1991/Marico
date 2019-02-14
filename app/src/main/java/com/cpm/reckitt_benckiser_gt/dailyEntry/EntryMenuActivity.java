@@ -25,6 +25,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
+import com.cpm.reckitt_benckiser_gt.getterSetter.BackofStoreGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.CommonChillerDataGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
@@ -46,6 +49,9 @@ public class EntryMenuActivity extends AppCompatActivity {
     TextView txt_label;
     SharedPreferences preferences;
     List<MenuMaster> menu_list = new ArrayList<>();
+    List<FocusProductGetterSetter> listDataHeader;
+    List<BackofStoreGetterSetter> listDataHeaderBackofStore;
+    private ArrayList<CommonChillerDataGetterSetter> posmDeploymentData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +90,7 @@ public class EntryMenuActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        menu_list = database.getMenuData(journeyPlan.getStoreTypeId(),journeyPlan.getStoreCategoryId());
+        menu_list = database.getMenuData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId());
 
         adapter = new ValueAdapter(context, menu_list);
         recyclerView.setAdapter(adapter);
@@ -208,52 +214,75 @@ public class EntryMenuActivity extends AppCompatActivity {
 
 
                 case 3:
-                    if (database.isBackofStoreFilled(journeyPlan.getStoreId())) {
-                         icon_path = current.getTickIcon();
-                    }else {
-                         icon_path = current.getNormalIcon();
+                    listDataHeaderBackofStore = database.getHeaderBackofStoreData(journeyPlan);
+                    if (listDataHeaderBackofStore.size() > 0) {
+                        if (database.isBackofStoreFilled(journeyPlan.getStoreId())) {
+                            icon_path = current.getTickIcon();
+                        } else {
+                            icon_path = current.getNormalIcon();
+                        }
+                    } else {
+                        icon_path = current.getGreyIcon();
                     }
                     break;
                 case 4:
-                    if (database.isVisiCoolerFilledData(journeyPlan.getStoreId())) {
-                         icon_path = current.getTickIcon();
-                    }else {
-                         icon_path = current.getNormalIcon();
+                    if (database.isVisicoolerSunGrayIcone(journeyPlan.getStoreId())) {
+                        if (database.isVisiCoolerFilledData(journeyPlan.getStoreId())) {
+                            icon_path = current.getTickIcon();
+                        } else {
+                            icon_path = current.getNormalIcon();
+                        }
+                    } else {
+                        icon_path = current.getGreyIcon();
                     }
                     break;
                 case 5:
-                    if (database.isPosmFilledData(journeyPlan.getStoreId())) {
-                         icon_path = current.getTickIcon();
+                    posmDeploymentData = database.getPOSMDeploymentData(journeyPlan);
+                    if (posmDeploymentData.size()>0) {
+                        if (database.isPosmFilledData(journeyPlan.getStoreId())) {
+                            icon_path = current.getTickIcon();
+                        } else {
+                            icon_path = current.getNormalIcon();
+                        }
                     }else {
-                         icon_path = current.getNormalIcon();
+                        icon_path = current.getGreyIcon();
                     }
                     break;
                 case 6:
-                    if (database.isFocusproductFilled(journeyPlan.getStoreId())) {
-                         icon_path = current.getTickIcon();
-                    }else {
-                         icon_path = current.getNormalIcon();
+                    listDataHeader = database.getHeaderSalesData(journeyPlan);
+                    if (listDataHeader.size() > 0) {
+                        if (database.isFocusproductFilled(journeyPlan.getStoreId())) {
+                            icon_path = current.getTickIcon();
+                        } else {
+                            icon_path = current.getNormalIcon();
+                        }
+                    } else {
+                        icon_path = current.getGreyIcon();
                     }
                     break;
                 case 8:
                     if (database.isJarFilledData(journeyPlan.getStoreId())) {
-                         icon_path = current.getTickIcon();
-                    }else {
-                         icon_path = current.getNormalIcon();
+                        icon_path = current.getTickIcon();
+                    } else {
+                        icon_path = current.getNormalIcon();
                     }
                     break;
                 case 10:
-                    if (database.isMonkeySunFilledData(journeyPlan.getStoreId())) {
-                         icon_path = current.getTickIcon();
-                    }else {
-                         icon_path = current.getNormalIcon();
+                    if (database.isMonkeySunGrayIcone(journeyPlan.getStoreId())) {
+                        if (database.isMonkeySunFilledData(journeyPlan.getStoreId())) {
+                            icon_path = current.getTickIcon();
+                        } else {
+                            icon_path = current.getNormalIcon();
+                        }
+                    } else {
+                        icon_path = current.getGreyIcon();
                     }
                     break;
 
                 case 1:
                     if (database.isWindowFilledData(journeyPlan.getStoreId())) {
                         icon_path = current.getTickIcon();
-                    }else {
+                    } else {
                         icon_path = current.getNormalIcon();
                     }
                     break;
@@ -261,7 +290,7 @@ public class EntryMenuActivity extends AppCompatActivity {
                 case 11:
                     if (database.isSecondaryFilledData(journeyPlan.getStoreId())) {
                         icon_path = current.getTickIcon();
-                    }else {
+                    } else {
                         icon_path = current.getNormalIcon();
                     }
                     break;
@@ -269,7 +298,7 @@ public class EntryMenuActivity extends AppCompatActivity {
                 case 2:
                     if (database.isCTUFilledData(journeyPlan.getStoreId())) {
                         icon_path = current.getTickIcon();
-                    }else {
+                    } else {
                         icon_path = current.getNormalIcon();
                     }
                     break;
@@ -277,7 +306,7 @@ public class EntryMenuActivity extends AppCompatActivity {
                 case 7:
                     if (database.isFeedBackFilledData(journeyPlan.getStoreId())) {
                         icon_path = current.getTickIcon();
-                    }else {
+                    } else {
                         icon_path = current.getNormalIcon();
                     }
                     break;
@@ -285,7 +314,7 @@ public class EntryMenuActivity extends AppCompatActivity {
                 case 9:
                     if (database.isSOSFilledData(journeyPlan.getStoreId())) {
                         icon_path = current.getTickIcon();
-                    }else {
+                    } else {
                         icon_path = current.getNormalIcon();
                     }
                     break;
@@ -301,7 +330,7 @@ public class EntryMenuActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
 
-                    if (current.getMenuId()==1) {
+                    if (current.getMenuId() == 1) {
                        /* if (database.isWindowFilledData(journeyPlan.getStoreId())) {
                             Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
                         }else {
@@ -317,17 +346,23 @@ public class EntryMenuActivity extends AppCompatActivity {
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
                     if (current.getMenuId() == 4) {
-                        startActivity(new Intent(context, NewVisiCoolerActivty.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        if (database.isVisicoolerSunGrayIcone(journeyPlan.getStoreId())){
+                            startActivity(new Intent(context, NewVisiCoolerActivty.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                        }else {
+
+                        }
+
                     }
                     if (current.getMenuId() == 5) {
+
                         startActivity(new Intent(context, POSMDeploymentActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
 
                     }
 
 
-                    if (current.getMenuId()==11) {
+                    if (current.getMenuId() == 11) {
 
                         /*if (database.isSecondaryFilledData(journeyPlan.getStoreId())) {
                             Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
@@ -339,7 +374,7 @@ public class EntryMenuActivity extends AppCompatActivity {
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
 
-                    if (current.getMenuId()==2) {
+                    if (current.getMenuId() == 2) {
 
                         /*if (database.isCTUFilledData(journeyPlan.getStoreId())) {
                             Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
@@ -351,7 +386,7 @@ public class EntryMenuActivity extends AppCompatActivity {
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
 
-                     if (current.getMenuId() == 6) {
+                    if (current.getMenuId() == 6) {
                         startActivity(new Intent(context, FocusProductActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
@@ -365,11 +400,11 @@ public class EntryMenuActivity extends AppCompatActivity {
                     }
 
                     if (current.getMenuId() == 7) {
-                        startActivity(new Intent(context, FeedBackActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID,current));
+                        startActivity(new Intent(context, FeedBackActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
                     if (current.getMenuId() == 9) {
-                        startActivity(new Intent(context, SOSActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID,current));
+                        startActivity(new Intent(context, SOSActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                         overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
                     }
 

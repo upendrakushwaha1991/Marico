@@ -37,6 +37,7 @@ import com.cpm.reckitt_benckiser_gt.dailyEntry.StoreimageActivity;
 import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GeotaggingBeans;
+import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonFunctions;
@@ -82,7 +83,7 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
     double longitude = 0.0;
     FloatingActionButton fab, fabcarmabtn;
     SharedPreferences preferences;
-    String username, str, storename, visitData, storeid;
+    String username, str, storename;
     MondelezDatabase db;
     LocationManager locationManager;
     Marker currLocationMarker;
@@ -105,6 +106,7 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
     private SharedPreferences.Editor editor = null;
+    JourneyPlan jcpGetset;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,8 +138,8 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
                 if (!img_str.equalsIgnoreCase("")) {
                     status = "N";
                     coverageBeanList = new ArrayList<>();
-                    db.updateStatus(storeid, status);
-                    if (db.InsertSTOREgeotag(storeid, latitude, longitude, img_str, status) > 0) {
+                    db.updateStatus(jcpGetset.getStoreId().toString(), status);
+                    if (db.InsertSTOREgeotag(jcpGetset.getStoreId().toString(), latitude, longitude, img_str, status) > 0) {
                         img_str = "";
                         new GeoTagUpload(context, coverageBeanList).execute();
                     } else {
@@ -156,7 +158,7 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
             public void onClick(View view) {
                 if (checkNetIsAvailable()) {
                     if (latitude != 0.0 && longitude != 0.0) {
-                        _pathforcheck = storeid + "_GeoTag-" + visitData.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
+                        _pathforcheck = jcpGetset.getStoreId().toString() + "_GeoTag-" + jcpGetset.getVisitDate().replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                         _path = CommonString.FILE_PATH + _pathforcheck;
                         CommonFunctions.startAnncaCameraActivity(context, _path, null, false);
                     } else {
@@ -423,9 +425,12 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
         mapFragment.getMapAsync(this);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         username = preferences.getString(CommonString.KEY_USERNAME, null);
+       /* preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        username = preferences.getString(CommonString.KEY_USERNAME, null);
         storeid = getIntent().getStringExtra(CommonString.KEY_STORE_ID);
         storename = preferences.getString(CommonString.KEY_STORE_NAME, null);
-        visitData = preferences.getString(CommonString.KEY_DATE, "");
+        visitData = preferences.getString(CommonString.KEY_DATE, "");*/
+
         fab = findViewById(R.id.fab);
         fabcarmabtn = findViewById(R.id.camrabtn);
         db = new MondelezDatabase(context);
@@ -441,6 +446,10 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
         } catch (PackageManager.NameNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
+        }
+        if (getIntent().getSerializableExtra(CommonString.TAG_OBJECT) != null) {
+            jcpGetset = (JourneyPlan) getIntent().getSerializableExtra(CommonString.TAG_OBJECT);
+           // store_id = jcpGetset.getStoreId().toString();
         }
         if (tag_from != null && tag_from.equalsIgnoreCase(CommonString.TAG_FROM_NONWORKING)) {
             coverageBean = (CoverageBean) getIntent().getSerializableExtra(CommonString.TAG_OBJECT);
@@ -477,13 +486,13 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
             try {
                 // uploading Geotag
                 uploadflag = false;
-                geotaglist = db.getinsertGeotaggingData(storeid, "N");
+                geotaglist = db.getinsertGeotaggingData(jcpGetset.getStoreId().toString(), "N");
                 if (geotaglist.size() > 0) {
                     JSONArray topUpArray = new JSONArray();
                     for (int j = 0; j < geotaglist.size(); j++) {
                         JSONObject obj = new JSONObject();
                         obj.put(CommonString.KEY_STORE_ID, geotaglist.get(j).getStoreid());
-                        obj.put(CommonString.KEY_VISIT_DATE, visitData);
+                        obj.put(CommonString.KEY_VISIT_DATE, jcpGetset.getVisitDate());
                         obj.put(CommonString.KEY_LATITUDE, geotaglist.get(j).getLatitude());
                         obj.put(CommonString.KEY_LONGITUDE, geotaglist.get(j).getLongitude());
                         obj.put("FRONT_IMAGE", geotaglist.get(j).getImage());
@@ -552,21 +561,14 @@ public class GeoTaggingActivity extends AppCompatActivity implements OnMapReadyC
             if (result.equals(CommonString.KEY_SUCCESS)) {
                 // new GeoTagImageUpload().execute();
                 status = "Y";
-                db.updateStatus(storeid, status);
-                if (db.updateInsertedGeoTagStatus(storeid, status) > 0) {
+                db.updateStatus(jcpGetset.getStoreId().toString(), status);
+                if (db.updateInsertedGeoTagStatus(jcpGetset.getStoreId().toString(), status) > 0) {
                     img_str = "";
                     AlertandMessages.showToastMsg(context, "Geotag Saved Successfully");
                     Intent in = new Intent(context, StoreimageActivity.class);
-
-                    editor = preferences.edit();
-                    editor.putString(CommonString.KEY_STORE_ID, storeid);
-                    editor.putString(CommonString.KEY_STORE_NAME, storename);
-                    editor.putString(CommonString.KEY_VISIT_DATE, visitData);
-                    editor.commit();
-                    in.putExtra(CommonString.KEY_STORE_ID, storeid);
+                    in.putExtra(CommonString.TAG_OBJECT, jcpGetset);
                     startActivity(in);
-                    activity.finish();
-
+                    finish();
                 } else {
                     AlertandMessages.showAlert((Activity) context, "Error in updating Geotag status", true);
                 }
