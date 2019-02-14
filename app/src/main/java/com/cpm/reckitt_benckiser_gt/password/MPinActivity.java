@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cpm.reckitt_benckiser_gt.AutoLoginActivity;
 import com.cpm.reckitt_benckiser_gt.LoginActivity;
 import com.cpm.reckitt_benckiser_gt.MainActivity;
 import com.cpm.reckitt_benckiser_gt.R;
@@ -28,6 +29,7 @@ import com.cpm.reckitt_benckiser_gt.blurlockview.Directions.HideType;
 import com.cpm.reckitt_benckiser_gt.blurlockview.Directions.ShowType;
 import com.cpm.reckitt_benckiser_gt.blurlockview.Eases.EaseType;
 import com.cpm.reckitt_benckiser_gt.blurlockview.Password;
+import com.cpm.reckitt_benckiser_gt.oneQad.OneQADActivity;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 
 public class MPinActivity extends AppCompatActivity implements
@@ -126,7 +128,7 @@ public class MPinActivity extends AppCompatActivity implements
     public void correct(String inputPassword) {
 
         if (IS_PASSWORD_CHECK) {
-            Intent in = new Intent(getApplicationContext(), MainActivity.class);
+            Intent in = new Intent(getApplicationContext(), AutoLoginActivity.class);
             //Intent in = new Intent(getApplicationContext(), VideoActivity.class);
 
             startActivity(in);
@@ -151,12 +153,12 @@ public class MPinActivity extends AppCompatActivity implements
         if (IS_PASSWORD_CHECK) {
 
             int incorrect_times = blurLockView.getIncorrectInputTimes();
-            if(++incorrect_times>=3){
+            if (++incorrect_times >= 3) {
                 /*Toast.makeText(this,
                         R.string.error_incorrect_password,
                         Toast.LENGTH_SHORT).show();*/
 
-                Snackbar snackbar = Snackbar.make(blurLockView,"Incorrect MPin limit reached",Snackbar.LENGTH_INDEFINITE);
+                Snackbar snackbar = Snackbar.make(blurLockView, "Incorrect MPin limit reached", Snackbar.LENGTH_INDEFINITE);
                 View view = snackbar.getView();
                 /*TextView tv = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
                 tv.setTextColor(Color.RED);*/
@@ -169,22 +171,20 @@ public class MPinActivity extends AppCompatActivity implements
                         editor.commit();
 
                         finish();
-                        Intent in  = new Intent(getApplicationContext(), LoginActivity.class);
+                        Intent in = new Intent(getApplicationContext(), LoginActivity.class);
                         startActivity(in);
 
                     }
                 });
                 snackbar.setActionTextColor(Color.GREEN);
                 snackbar.show();
-            }
-            else {
+            } else {
 
-                int count = 3-incorrect_times;
+                int count = 3 - incorrect_times;
                 String attemt_str;
-                if(count==1){
+                if (count == 1) {
                     attemt_str = ". Attempt left - " + count;
-                }
-                else {
+                } else {
                     attemt_str = ". Attempts left - " + count;
                 }
 
@@ -208,7 +208,7 @@ public class MPinActivity extends AppCompatActivity implements
 
     @Override
     public void clear(String remainingPassword) {
-        pin =  remainingPassword;
+        pin = remainingPassword;
     }
 
     @Override
@@ -227,9 +227,9 @@ public class MPinActivity extends AppCompatActivity implements
     @Override
     public void onClick() {
 
-        if(IS_PASSWORD_CHECK){
+        if (IS_PASSWORD_CHECK) {
 
-            Snackbar snackbar = Snackbar.make(blurLockView,"Need to reset MPin",Snackbar.LENGTH_INDEFINITE);
+            Snackbar snackbar = Snackbar.make(blurLockView, "Need to reset MPin", Snackbar.LENGTH_INDEFINITE);
             View view = snackbar.getView();
                 /*TextView tv = (TextView)view.findViewById(android.support.design.R.id.snackbar_text);
                 tv.setTextColor(Color.RED);*/
@@ -242,15 +242,14 @@ public class MPinActivity extends AppCompatActivity implements
                     editor.commit();
 
                     finish();
-                    Intent in  = new Intent(getApplicationContext(), LoginActivity.class);
+                    Intent in = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(in);
 
                 }
             });
             snackbar.setActionTextColor(Color.GREEN);
             snackbar.show();
-        }
-        else {
+        } else {
             if (pin.length() == 4) {
 
                 editor.putString(CommonString.MPIN, pin);
@@ -437,4 +436,10 @@ public class MPinActivity extends AppCompatActivity implements
         dialog.show();
 
     }*/
+
+    /**
+     * Represents an asynchronous login/registration task used to authenticate
+     * the user.
+     */
+
 }

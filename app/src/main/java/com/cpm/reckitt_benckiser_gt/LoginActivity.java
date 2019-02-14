@@ -45,6 +45,7 @@ import com.cpm.reckitt_benckiser_gt.autoupdate.AutoUpdateActivity;
 import com.cpm.reckitt_benckiser_gt.getterSetter.GsonGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.LoginGsonGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.NoticeBoardGetterSetter;
+import com.cpm.reckitt_benckiser_gt.oneQad.OneQADActivity;
 import com.cpm.reckitt_benckiser_gt.password.MPinActivity;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.PostApi;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
@@ -421,14 +422,14 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
                 if (preferences.getString(CommonString.KEY_VERSION, "").equals(Integer.toString(versionCode))) {
 
                     /*Intent in = new Intent(getApplicationContext(), MPinActivity.class);
-                    in.putExtra(CommonString.IS_PASSWORD_CHECK, false);
-                    //Intent in = new Intent(getApplicationContext(), OneQADActivity.class);
+                    in.putExtra(CommonString.IS_PASSWORD_CHECK, false);*/
+                    //getOneqad();
 
+                    Intent in = new Intent(getApplicationContext(), OneQADActivity.class);
 
                     startActivity(in);
 
-                    finish();*/
-                    getOneqad();
+                    finish();
 
                 } else {
                     // if app version code does not match with live apk version code then update will be called.

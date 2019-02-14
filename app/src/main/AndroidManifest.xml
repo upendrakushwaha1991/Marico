@@ -30,9 +30,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".oneQad.OneQADActivity"
+            android:label="@string/title_activity_one_qad"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+            android:name=".AutoLoginActivity"
+            android:label="@string/title_activity_auto_login"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".password.MPinActivity"
             android:label="@string/title_activity_mpin"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".password.ChangePasswordActivity"
             android:label="@string/title_activity_change_password"
