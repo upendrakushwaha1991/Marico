@@ -11,9 +11,11 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.widget.ProgressBar;
@@ -184,10 +186,28 @@ public class AutoUpdateActivity extends AppCompatActivity {
             super.onPostExecute(result);
             dialog.dismiss();
             if (result.equals(CommonString.KEY_SUCCESS)) {
-                Intent i = new Intent(Intent.ACTION_VIEW);
+             /*   Intent i = new Intent(Intent.ACTION_VIEW);
                 i.setDataAndType(Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/download/" + "app.apk")), "application/vnd.android.package-archive");
                 startActivity(i);
                 AutoUpdateActivity.this.finish();
+*/
+                File toInstall = new File(Environment.getExternalStorageDirectory()
+                        + "/download/"
+                        + "app.apk");
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    Uri apkUri = FileProvider.getUriForFile(getApplicationContext(), "com.cpm.mondelezgt.fileprovider", toInstall);
+                    Intent intent = new Intent(Intent.ACTION_INSTALL_PACKAGE);
+                    intent.setData(apkUri);
+                    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    startActivity(intent);
+                } else {
+                    Uri apkUri = Uri.fromFile(toInstall);
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(apkUri, "application/vnd.android.package-archive");
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                }
             }
         }
     }
