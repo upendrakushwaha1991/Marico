@@ -31,7 +31,7 @@ public class DisplayMaster implements Serializable {
         this.display = display;
     }
 
-    String quantity;
+    String quantity="";
     String img_close_up = "";
     String img_long_shot = "";
     int answered_id = -1;

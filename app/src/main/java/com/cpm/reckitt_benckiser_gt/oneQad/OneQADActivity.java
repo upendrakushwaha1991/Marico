@@ -283,6 +283,7 @@ public class OneQADActivity extends AppCompatActivity{
         WindowManager.LayoutParams wlp = window.getAttributes();
 
         wlp.gravity = Gravity.CENTER;
+        dialog.setCancelable(false);
         //wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
         window.setAttributes(wlp);
 
@@ -427,7 +428,7 @@ public class OneQADActivity extends AppCompatActivity{
                                 AlertandMessages.showAlertlogin(OneQADActivity.this, "Check Your Internet Connection");
                             } else if (data.contains("No Data")) {
                                 dialog.dismiss();
-                                Intent intent = new Intent(getBaseContext(), MPinActivity.class);
+                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
                                 startActivity(intent);
                                 finish();
                             } else {
@@ -603,7 +604,7 @@ public class OneQADActivity extends AppCompatActivity{
                                         });*/
 
                                     } else {
-                                        Intent intent = new Intent(getBaseContext(), MPinActivity.class);
+                                        Intent intent = new Intent(getBaseContext(), MainActivity.class);
                                         startActivity(intent);
                                         finish();
                                     }

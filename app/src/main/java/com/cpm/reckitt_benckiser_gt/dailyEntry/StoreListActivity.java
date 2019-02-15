@@ -287,9 +287,11 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                 viewHolder.chkbtn.setVisibility(View.VISIBLE);
                 viewHolder.Cardbtn.setCardBackgroundColor(getResources().getColor(current.getColourCode()));
             } else if (current.getUploadStatus().equalsIgnoreCase(CommonString.KEY_CHECK_IN) || db.getSpecificCoverageData(String.valueOf(current.getStoreId()), current.getVisitDate()).size() > 0) {
-                viewHolder.imageview.setVisibility(View.INVISIBLE);
+                //viewHolder.imageview.setVisibility(View.INVISIBLE);
                 viewHolder.chkbtn.setVisibility(View.INVISIBLE);
-                viewHolder.Cardbtn.setCardBackgroundColor(getResources().getColor(R.color.green));
+                viewHolder.imageview.setBackgroundResource(R.mipmap.diamond_icon3);
+                //viewHolder.Cardbtn.setCardBackgroundColor(getResources().getColor(R.color.green));
+                viewHolder.Cardbtn.setCardBackgroundColor(getResources().getColor(current.getColourCode()));
             } else if (current.getUploadStatus().equalsIgnoreCase(CommonString.STORE_STATUS_LEAVE)) {
                 viewHolder.imageview.setVisibility(View.VISIBLE);
                 boolean isVisitlater = false;
@@ -518,18 +520,18 @@ public class StoreListActivity extends AppCompatActivity implements View.OnClick
                                 double store_lon = Double.parseDouble(String.valueOf(current.getLongitude()));
                                 distanceGeoPhence = current.getGeoFencing();
                                 if (store_lat != 0.0 && store_lon != 0.0) {
-                                    distance = distFrom(store_lat, store_lon, lat, lon);
+                                    //distance = distFrom(store_lat, store_lon, lat, lon);
 
-                                    if (/*true*/distance > distanceGeoPhence) {
+                                    /*if (*//*true*//*distance > distanceGeoPhence) {
                                         flag_entry = false;
                                     } else {
                                         String msg = getString(R.string.distance_from_the_store) + " " + distance + " meters";
                                         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-                                    }
+                                    }*/
                                 }
                             }
                             if (flag_entry) {
-                                Toast.makeText(context, "Distance - " + distance + " meters", Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(context, "Distance - " + distance + " meters", Toast.LENGTH_SHORT).show();
                                 gotoActivity(flag, isVisitLater, current);
                             } else {
 

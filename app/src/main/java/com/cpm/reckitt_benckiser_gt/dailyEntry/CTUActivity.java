@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -46,6 +47,7 @@ import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.NonExecutionReason;
 import com.cpm.reckitt_benckiser_gt.getterSetter.PosmMaster;
+import com.cpm.reckitt_benckiser_gt.getterSetter.WindowMaster;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonFunctions;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
 import com.crashlytics.android.Crashlytics;
@@ -76,6 +78,7 @@ public class CTUActivity extends AppCompatActivity {
     ArrayList<NonExecutionReason> nonExecutionReason;
     String error_msg;
     boolean error_flag = false;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +94,7 @@ public class CTUActivity extends AppCompatActivity {
         //recyclerView = (RecyclerView) findViewById(R.id.rec_window);
 
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
+        fab = findViewById(R.id.fab);
 
         txt_label = (TextView) findViewById(R.id.txt_label);
         if (getIntent().getSerializableExtra(CommonString.TAG_OBJECT) != null) {
@@ -125,6 +129,8 @@ public class CTUActivity extends AppCompatActivity {
             }
         }
         else {//inserted data
+
+            fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.edit_txt));
             for (int i = 0; i < brandList.size(); i++) {
 
                 ArrayList<ChecklistMaster> checklist = database.getCTUCheckListInsertedData(brandList.get(i));
@@ -148,7 +154,6 @@ public class CTUActivity extends AppCompatActivity {
         for (int i = 0; i < expandableListAdapter.getGroupCount(); i++)
             expandableListView.expandGroup(i);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -267,7 +272,7 @@ public class CTUActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     global_position = groupPosition;
                     String intime = CommonFunctions.getCurrentTime();
-                    pathfor_close_up = journeyPlan.getStoreId() + "_WINDOW_CLOSEUP_IMG-" + current.getBrandId() + "_" + journeyPlan.getVisitDate().replace("/", "") + "_" + intime.replace(":", "") + ".jpg";
+                    pathfor_close_up = journeyPlan.getStoreId() + "_CTU_CLOSEUP_IMG-" + current.getBrandId() + "_" + journeyPlan.getVisitDate().replace("/", "") + "_" + intime.replace(":", "") + ".jpg";
                     path = CommonString.FILE_PATH + pathfor_close_up;
                     CommonFunctions.startAnncaCameraActivity(CTUActivity.this, path, null, false);
                 }
@@ -278,7 +283,7 @@ public class CTUActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     global_position = groupPosition;
                     String intime = CommonFunctions.getCurrentTime();
-                    pathfor_longshot = journeyPlan.getStoreId() + "_WINDOW_LONGSHOT_IMG-" + current.getBrandId() + "_" + journeyPlan.getVisitDate().replace("/", "") + "_" + intime.replace(":", "") + ".jpg";
+                    pathfor_longshot = journeyPlan.getStoreId() + "_CTU_LONGSHOT_IMG-" + current.getBrandId() + "_" + journeyPlan.getVisitDate().replace("/", "") + "_" + intime.replace(":", "") + ".jpg";
                     path = CommonString.FILE_PATH + pathfor_longshot;
                     CommonFunctions.startAnncaCameraActivity(CTUActivity.this, path, null, false);
                 }
@@ -346,6 +351,8 @@ public class CTUActivity extends AppCompatActivity {
                                                             current.setAnswered_id(ans.getAnswerId());
                                                             current.setAnswered(ans.getAnswer());
 
+                                                            clearCheckList(current);
+
                                                             //refresh to show hide views according to Present
                                                             expandableListView.clearFocus();
                                                             expandableListAdapter.notifyDataSetChanged();
@@ -368,6 +375,7 @@ public class CTUActivity extends AppCompatActivity {
 
                                     current.setAnswered_id(ans.getAnswerId());
                                     current.setAnswered(ans.getAnswer());
+                                    clearCheckList(current);
                                     //refresh to show hide views according to Present
                                     expandableListView.clearFocus();
                                     expandableListAdapter.notifyDataSetChanged();
@@ -645,5 +653,14 @@ public class CTUActivity extends AppCompatActivity {
         }
 
         return flag;
+    }
+    void clearCheckList(BrandMaster brand){
+        ArrayList<ChecklistMaster> checklist =  hashMapListChildData.get(brand);
+
+        for(int i=0; i<checklist.size();i++){
+
+            ChecklistMaster ch = checklist.get(i);
+            ch.setAnswered_cd(0);
+        }
     }
 }

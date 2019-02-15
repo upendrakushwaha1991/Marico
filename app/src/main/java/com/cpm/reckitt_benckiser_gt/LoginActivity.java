@@ -421,11 +421,11 @@ public class LoginActivity extends AppCompatActivity implements GoogleApiClient.
             if (result.equals(CommonString.KEY_SUCCESS)) {
                 if (preferences.getString(CommonString.KEY_VERSION, "").equals(Integer.toString(versionCode))) {
 
-                    /*Intent in = new Intent(getApplicationContext(), MPinActivity.class);
-                    in.putExtra(CommonString.IS_PASSWORD_CHECK, false);*/
+                    Intent in = new Intent(getApplicationContext(), MPinActivity.class);
+                    in.putExtra(CommonString.IS_PASSWORD_CHECK, false);
                     //getOneqad();
 
-                    Intent in = new Intent(getApplicationContext(), OneQADActivity.class);
+                    //Intent in = new Intent(getApplicationContext(), OneQADActivity.class);
 
                     startActivity(in);
 

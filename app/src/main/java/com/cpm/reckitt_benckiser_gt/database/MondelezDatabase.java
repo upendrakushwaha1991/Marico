@@ -205,19 +205,76 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         db.delete(CommonString.TABLE_VISICOOLER_CHEKLIST, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_FEEDBACK_QUESTIONS_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_SOS_HEADER_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
-        //db.delete(CommonString.TABLE_Journey_Plan_DBSR_Saved, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_SOS_CHILD_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
         db.delete(CommonString.TABLE_POSM_DEPLOYMENT, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
 
-        // neeraj table
-        db.delete(CommonString.TABLE_FEEDBACK_QUESTIONS_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
-        db.delete(CommonString.TABLE_SOS_HEADER_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
-        //db.delete(CommonString.TABLE_Journey_Plan_DBSR_Saved, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
-        db.delete(CommonString.TABLE_SOS_CHILD_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
-        db.delete(CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
-        //usk
+        //YSY
+        db.delete(CommonString.TABLE_WINDOW_HEADER, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_WINDOW_BRAND_LIST, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_BRAND_CHECK_LIST, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_WINDOW_CHECK_LIST, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_CTU_BRAND_HEADER, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_CTU_BRAND_CHECK_LIST, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_SECONDARY_VISIBILITY_HEADER, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
+        db.delete(CommonString.TABLE_SECONDARY_VISIBILITY_CHECK_LIST, CommonString.KEY_STORE_ID + "='" + storeid + "'", null);
 
+    }
+
+    public void deletePreviousUploadedData(String visit_date) {
+        Cursor dbcursor = null;
+        try {
+            dbcursor = db.rawQuery("SELECT  * from COVERAGE_DATA where VISIT_DATE < '" + visit_date + "'", null);
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                int icount = dbcursor.getCount();
+                dbcursor.close();
+                if (icount > 0) {
+                    db.delete(CommonString.TABLE_COVERAGE_DATA, null, null);
+                    db.delete(CommonString.TABLE_STORE_GEOTAGGING, null, null);
+                    db.delete(CommonString.TABLE_WINDOWS_DATA, null, null);
+                    db.delete(CommonString.TABLE_INSERT_CHECKLIST_DATA, null, null);
+                    db.delete(CommonString.TABLE_CATEGORY_DRESSING_DATA, null, null);
+                    db.delete(CommonString.TABLE_INSERT_CATEGORY_DRESSING_CHECKLIST_DATA, null, null);
+                    db.delete(CommonString.TABLE_STORE_PROFILE_DATA, null, null);
+                    //usk
+                    db.delete(CommonString.TABLE_BACKOF_STORE_HEADER_DATA, null, null);
+                    db.delete(CommonString.TABLE_HEADER_BACK_OF_STORE, null, null);
+                    db.delete(CommonString.TABLE_CHILD_BACK_OF_STORE_DATA, null, null);
+                    db.delete(CommonString.TABLE_JAR_DATA, null, null);
+                    db.delete(CommonString.TABLE_JAR_CHEKLIST, null, null);
+                    db.delete(CommonString.TABLE_INSERT_FOCUS_PRODUCT_STOCK_OPENINGHEADER_DATA, null, null);
+                    db.delete(CommonString.TABLE_STORE_FOCUS_PRODUCT_DATA, null, null);
+                    db.delete(CommonString.TABLE_MONKEUSUN_DATA, null, null);
+                    db.delete(CommonString.TABLE_MONKEUSUN_CHEKLIST, null, null);
+                    db.delete(CommonString.TABLE_VISICOOLER_DATA, null, null);
+                    db.delete(CommonString.TABLE_VISICOOLER_CHEKLIST, null, null);
+
+                    db.delete(CommonString.TABLE_POSM_DEPLOYMENT, null, null);
+
+                    db.delete(CommonString.TABLE_FEEDBACK_QUESTIONS_DATA, null, null);
+                    db.delete(CommonString.TABLE_SOS_HEADER_DATA, null, null);
+                    db.delete(CommonString.TABLE_SOS_CHILD_DATA, null, null);
+                    db.delete(CommonString.TABLE_SOS_CHECKLIST_QUESTIONS_DATA, null, null);
+
+                    //YSY
+                    db.delete(CommonString.TABLE_WINDOW_HEADER, null, null);
+                    db.delete(CommonString.TABLE_WINDOW_BRAND_LIST, null, null);
+                    db.delete(CommonString.TABLE_BRAND_CHECK_LIST, null, null);
+                    db.delete(CommonString.TABLE_WINDOW_CHECK_LIST, null, null);
+                    db.delete(CommonString.TABLE_CTU_BRAND_HEADER, null, null);
+                    db.delete(CommonString.TABLE_CTU_BRAND_CHECK_LIST, null, null);
+                    db.delete(CommonString.TABLE_SECONDARY_VISIBILITY_HEADER, null, null);
+                    db.delete(CommonString.TABLE_SECONDARY_VISIBILITY_CHECK_LIST, null, null);
+
+
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception when fetching Coverage Data!!!!!!!!!!!!!!!!!!!!!", e.toString());
+        }
     }
 
     public void updateStatus(String id, String status) {
@@ -1538,45 +1595,6 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         }
 
         return filled;
-    }
-
-    public void deletePreviousUploadedData(String visit_date) {
-        Cursor dbcursor = null;
-        try {
-            dbcursor = db.rawQuery("SELECT  * from COVERAGE_DATA where VISIT_DATE < '" + visit_date + "'", null);
-            if (dbcursor != null) {
-                dbcursor.moveToFirst();
-                int icount = dbcursor.getCount();
-                dbcursor.close();
-                if (icount > 0) {
-                    db.delete(CommonString.TABLE_COVERAGE_DATA, null, null);
-                    db.delete(CommonString.TABLE_STORE_GEOTAGGING, null, null);
-                    db.delete(CommonString.TABLE_WINDOWS_DATA, null, null);
-                    db.delete(CommonString.TABLE_INSERT_CHECKLIST_DATA, null, null);
-                    db.delete(CommonString.TABLE_CATEGORY_DRESSING_DATA, null, null);
-                    db.delete(CommonString.TABLE_INSERT_CATEGORY_DRESSING_CHECKLIST_DATA, null, null);
-                    db.delete(CommonString.TABLE_STORE_PROFILE_DATA, null, null);
-                    //usk
-                    db.delete(CommonString.TABLE_BACKOF_STORE_HEADER_DATA, null, null);
-                    db.delete(CommonString.TABLE_HEADER_BACK_OF_STORE, null, null);
-                    db.delete(CommonString.TABLE_CHILD_BACK_OF_STORE_DATA, null, null);
-                    db.delete(CommonString.TABLE_JAR_DATA, null, null);
-                    db.delete(CommonString.TABLE_JAR_CHEKLIST, null, null);
-                    db.delete(CommonString.TABLE_INSERT_FOCUS_PRODUCT_STOCK_OPENINGHEADER_DATA, null, null);
-                    db.delete(CommonString.TABLE_STORE_FOCUS_PRODUCT_DATA, null, null);
-                    db.delete(CommonString.TABLE_MONKEUSUN_DATA, null, null);
-                    db.delete(CommonString.TABLE_MONKEUSUN_CHEKLIST, null, null);
-                    db.delete(CommonString.TABLE_VISICOOLER_DATA, null, null);
-                    db.delete(CommonString.TABLE_VISICOOLER_CHEKLIST, null, null);
-
-
-                }
-                dbcursor.close();
-            }
-
-        } catch (Exception e) {
-            Log.d("Exception when fetching Coverage Data!!!!!!!!!!!!!!!!!!!!!", e.toString());
-        }
     }
 
     public void deletePreviousJouneyPlanDBSRData(String visit_date) {
@@ -4079,7 +4097,7 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         try {
 
             reason1.setAnswerId(0);
-            reason1.setAnswer("Select Reason");
+            reason1.setAnswer("Select");
             list.add(reason1);
 
             dbcursor = db.rawQuery("select * from Checklist_Answer where checklist_Id ='" + checkListId + "' ", null);
@@ -5949,4 +5967,32 @@ public class MondelezDatabase extends SQLiteOpenHelper {
         return filled;
     }
 
+    public boolean isWindowMappingHasData(int store_id) {
+        boolean filled = false;
+        Cursor dbcursor = null;
+        try {
+
+            dbcursor = db.rawQuery("SELECT  Store_Id " + "FROM Mapping_Monkeysun WHERE Store_Id= '" + store_id + "'", null);
+
+            if (dbcursor != null) {
+                dbcursor.moveToFirst();
+                while (!dbcursor.isAfterLast()) {
+                    if (dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Id")) == null || dbcursor.getString(dbcursor.getColumnIndexOrThrow("Store_Id")).equals("")) {
+                        filled = false;
+                        break;
+                    } else {
+                        filled = true;
+                    }
+                    dbcursor.moveToNext();
+                }
+                dbcursor.close();
+            }
+
+        } catch (Exception e) {
+            Log.d("Exception ", "when fetching Records!!!!!!!!!!!!!!!!!!!!!" + e.toString());
+            return filled;
+        }
+
+        return filled;
+    }
 }

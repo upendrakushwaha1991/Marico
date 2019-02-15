@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -82,6 +83,7 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
     ArrayList<NonExecutionReason> nonExecutionReason;
     String error_msg;
     boolean error_flag = false;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,6 +100,9 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
 
         expandableListView = (ExpandableListView) findViewById(R.id.expandableListView);
 
+        fab = findViewById(R.id.fab);
+        fab.setOnClickListener(this);
+
         txt_label = (TextView) findViewById(R.id.txt_label);
         if (getIntent().getSerializableExtra(CommonString.TAG_OBJECT) != null) {
             journeyPlan = (JourneyPlan) getIntent().getSerializableExtra(CommonString.TAG_OBJECT);
@@ -113,6 +118,8 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
 
         windowList =  database.getWindowInsertedData(journeyPlan.getStoreId(), journeyPlan.getVisitDate());
         if(windowList.size()>0 ){
+
+            fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.edit_txt));
 
             hashMapListChildData = new HashMap<>();
 
@@ -161,8 +168,6 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));*/
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(this);
     }
 
     @Override
@@ -480,6 +485,7 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
                                                             current.getHashMapListChildData().clear();
                                                             current.setImg_long_shot("");
                                                             current.setImg_close_up("");
+                                                            clearCheckList(current);
 
                                                             current.setAnswered_id(ans.getAnswerId());
                                                             current.setAnswered(ans.getAnswer());
@@ -505,6 +511,7 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
                                 else {
                                     current.setAnswered_id(ans.getAnswerId());
                                     current.setAnswered(ans.getAnswer());
+                                    clearCheckList(current);
                                     //refresh to show hide views according to Present
                                     expandableListView.clearFocus();
                                     expandableListAdapter.notifyDataSetChanged();
@@ -735,6 +742,16 @@ public class WindowWithBrandActivity extends AppCompatActivity implements View.O
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             super.onPageStarted(view, url, favicon);
+        }
+    }
+
+    void clearCheckList(WindowMaster window){
+        ArrayList<ChecklistMaster> checklist =  hashMapListChildData.get(window);
+
+        for(int i=0; i<checklist.size();i++){
+
+            ChecklistMaster ch = checklist.get(i);
+            ch.setAnswered_cd(0);
         }
     }
 }

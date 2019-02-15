@@ -120,6 +120,9 @@ public class AutoLoginActivity extends AppCompatActivity implements GoogleApiCli
         blurLockView = (BlurLockView) findViewById(R.id.blurlockview);
         blurLockView.setType(Password.NUMBER, true);
         blurLockView.setLeftButton("Forgot MPin");
+        blurLockView.setEnabled(false);
+        blurLockView.setCorrectPassword("1234");
+
 
         context = this;
 
@@ -142,6 +145,24 @@ public class AutoLoginActivity extends AppCompatActivity implements GoogleApiCli
 
         imei = new ImeiNumberClass(context);
 
+        dialog = new Dialog(AutoLoginActivity.this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        dialog.setContentView(R.layout.progress_layout);
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        wlp.gravity = Gravity.CENTER;
+        //wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        window.setAttributes(wlp);
+
+        dialog.setCancelable(false);
+
+        if (!dialog.isShowing()) {
+            dialog.show();
+        }
+
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE)
                 != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_PHONE_STATE},
@@ -151,6 +172,7 @@ public class AutoLoginActivity extends AppCompatActivity implements GoogleApiCli
             imeiNumbers = imei.getDeviceImei();
         }
         getDeviceName();
+
     }
 
     @Override
@@ -317,6 +339,7 @@ public class AutoLoginActivity extends AppCompatActivity implements GoogleApiCli
                     file_planogram.mkdir();
                 }
 
+
                 Runnable progressRunnable = new Runnable() {
 
                     @Override
@@ -465,21 +488,7 @@ public class AutoLoginActivity extends AppCompatActivity implements GoogleApiCli
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog = new Dialog(AutoLoginActivity.this);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            dialog.setContentView(R.layout.progress_layout);
 
-            Window window = dialog.getWindow();
-            WindowManager.LayoutParams wlp = window.getAttributes();
-
-            wlp.gravity = Gravity.CENTER;
-            //wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-            window.setAttributes(wlp);
-
-            if (!dialog.isShowing()) {
-                dialog.show();
-            }
         }
 
         @Override

@@ -67,7 +67,7 @@
                 android:layout_marginBottom="5dp"
                 android:focusable="false"
                 android:visibility="gone"
-                android:background="@mipmap/checkout_button"/>
+                android:background="@mipmap/checkout_button1"/>
 
             <ImageView
                 android:id="@+id/imageView2"

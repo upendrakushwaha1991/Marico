@@ -77,27 +77,17 @@
                 <LinearLayout
                     android:id="@+id/deploymentLay"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="6"
+                    android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:weightSum="6">
+                    android:layout_margin="5dp"
+                    >
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="4"
-                        android:gravity="center"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/padding_standard">
-
-                        <ImageView
-                            android:id="@+id/deploymentImag"
-                            android:layout_width="45dp"
-                            android:layout_height="45dp"
-                            android:background="@drawable/camera_orange" />
-
-
-                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/deploymentImag"
+                        android:layout_width="45dp"
+                        android:layout_height="45dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/camera_orange" />
                 </LinearLayout>
 
 

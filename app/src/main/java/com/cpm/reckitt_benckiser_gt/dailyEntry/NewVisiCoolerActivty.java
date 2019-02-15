@@ -537,10 +537,10 @@ public class NewVisiCoolerActivty extends AppCompatActivity implements View.OnCl
         } else if (string_present_cd.equalsIgnoreCase("1")) {
             if (visiColoersGetterSetter.getImage_close_up().equalsIgnoreCase("")) {
                 value = false;
-                showMessage("Please Capture Photo Close Up");
+                showMessage(getString(R.string.pls_click_closeup));
             } else if (visiColoersGetterSetter.getImage_long_shot().equalsIgnoreCase("")) {
                 value = false;
-                showMessage("Please Capture Photo Long Shot");
+                showMessage(getString(R.string.pls_click_longshot));
             } else if (checkValidation(deploymentData)) {
                 value = true;
             } else {

@@ -360,7 +360,7 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             foldername = "PosmImages";
                         } else if (file[i].getName().contains("_VISI_COOLER_CLOSEUPIMG_") || file[i].getName().contains("_VISI_COOLER_LONGSHOTIMG_")) {
                             foldername = "VisicoolerImages";
-                        } else if (file[i].getName().contains("_Window-") || file[i].getName().contains("_WINDOW_withGrid")) {
+                        } else if (file[i].getName().contains("_WINDOW_")) {
                             foldername = "WindowImages";
                         } else if (file[i].getName().contains("_Cat_Dressing-")) {
                             foldername = "DressingImage";
@@ -368,8 +368,11 @@ public class UploadImageWithRetrofit extends ReferenceVariablesForDownloadActivi
                             foldername = "DBSRCategoryImages";
                         } else if (file[i].getName().contains("_SOS_IMAGE-")) {
                             foldername = "SOSImages";
+                        }else if (file[i].getName().contains("_SECONDARY_VISBILITY_")) {
+                            foldername = "SecondaryVisibilityImages";
+                        }else if (file[i].getName().contains("_CTU_")) {
+                            foldername = "CTUImages";
                         } else {
-
                             foldername = "BulkImages";
                         }
                         filename = file[i].getName();

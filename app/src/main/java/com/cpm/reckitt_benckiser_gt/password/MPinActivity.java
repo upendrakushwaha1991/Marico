@@ -75,14 +75,16 @@ public class MPinActivity extends AppCompatActivity implements
             String mpin = preferences.getString(CommonString.MPIN, null);
             blurLockView.setCorrectPassword(mpin);
             blurLockView.setLeftButton("Forgot MPin");
+            blurLockView.setTitle("Please Enter Four Digit MPin");
         } else {
             blurLockView.setCorrectPassword("abcd");
             blurLockView.setLeftButton("Set MPin");
+            blurLockView.setTitle("Please Set Four Digit MPin");
         }
 
         blurLockView.setIs_Password_Check_Mode(IS_PASSWORD_CHECK);
 
-        blurLockView.setTitle("MPIN");
+
 
         blurLockView.setRightButton("Clear");
         blurLockView.setTypeface(getTypeface());
@@ -256,8 +258,8 @@ public class MPinActivity extends AppCompatActivity implements
 
                 editor.commit();
 
-                Intent in = new Intent(getApplicationContext(), MainActivity.class);
-                //Intent in = new Intent(getApplicationContext(), OneQADActivity.class);
+                //Intent in = new Intent(getApplicationContext(), MainActivity.class);
+                Intent in = new Intent(getApplicationContext(), OneQADActivity.class);
 
                 startActivity(in);
 

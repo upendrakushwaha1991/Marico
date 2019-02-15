@@ -154,33 +154,50 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (checkNetIsAvailable()) {
                 if (!db.isCoverageDataFilled(visit_date)) {
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("Parinaam");
-                    builder.setMessage(getResources().getString(R.string.want_download_data)).setCancelable(false)
-                            .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    try {
-                                        db.open();
-                                        db.deletePreviousUploadedData(visit_date);
-                                        db.deletePreviousJouneyPlanDBSRData(visit_date);
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                    storelist = db.getStoreData(visit_date);
+                    if(storelist.size()>0){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setTitle("Parinaam");
+                        builder.setMessage(getResources().getString(R.string.want_download_data)).setCancelable(false)
+                                .setPositiveButton(getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        try {
+                                            db.open();
+                                            db.deletePreviousUploadedData(visit_date);
+                                            db.deletePreviousJouneyPlanDBSRData(visit_date);
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+                                        Intent in = new Intent(context, DownloadActivity.class);
+                                        startActivity(in);
+                                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+
                                     }
-                                    Intent in = new Intent(context, DownloadActivity.class);
-                                    startActivity(in);
-                                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                                })
+                                .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        dialogInterface.dismiss();
+                                    }
+                                });
 
-                                }
-                            })
-                            .setNegativeButton(getResources().getString(R.string.cancel), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    dialogInterface.dismiss();
-                                }
-                            });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                    }
+                    else {
+                        try {
+                            db.open();
+                            db.deletePreviousUploadedData(visit_date);
+                            db.deletePreviousJouneyPlanDBSRData(visit_date);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        Intent in = new Intent(context, DownloadActivity.class);
+                        startActivity(in);
+                        overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+                    }
 
-                    AlertDialog alert = builder.create();
-                    alert.show();
+
                 } else {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setTitle("Parinaam");

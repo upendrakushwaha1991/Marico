@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -74,6 +75,7 @@ public class FeedBackActivity extends AppCompatActivity {
         db.open();
         checklistQuestions = db.getSavedFeedBackData(store_id,menu_id,visit_date);
         if(checklistQuestions.size() > 0) {
+            fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.edit_txt));
             for (int i = 0; i < checklistQuestions.size(); i++) {
                 checklistQuestions.get(i).setChecklistAnswers(db.getCheckListQuestionsAnswer(checklistQuestions.get(i).getChecklistId()));
             }
@@ -119,36 +121,46 @@ public class FeedBackActivity extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("FeedBack" + " - " + visit_date);
-        getSupportActionBar().setSubtitle(journeyPlan.getStoreName() + " - " + store_id);
+        //getSupportActionBar().setSubtitle(journeyPlan.getStoreName() + " - " + store_id);
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (checkDataFiled(checklistQuestions)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setCancelable(false);
-                    builder.setMessage(R.string.title_activity_save_data).setCancelable(false)
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    db.open();
-                                    long i =  db.insertFeedBackQuestionsData(visit_date,checklistQuestions,store_id,menu_id);
-                                    if(i>0){
-                                        AlertandMessages.showToastMsg(context,"Data saved successfully");
-                                        finish();
-                                    }else{
-                                        AlertandMessages.showToastMsg(context, "Data not saved");
-                                    }
-                                    dialog.dismiss();
-                                }
-                            })
-                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+
+                    db.open();
+                    long i =  db.insertFeedBackQuestionsData(visit_date,checklistQuestions,store_id,menu_id);
+                    if(i>0){
+                        AlertandMessages.showToastMsg(context,"Data saved successfully");
+                        finish();
+                    }else{
+                        AlertandMessages.showToastMsg(context, "Data not saved");
+                    }
+
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//                    builder.setCancelable(false);
+//                    builder.setMessage(R.string.title_activity_save_data).setCancelable(false)
+//                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    db.open();
+//                                    long i =  db.insertFeedBackQuestionsData(visit_date,checklistQuestions,store_id,menu_id);
+//                                    if(i>0){
+//                                        AlertandMessages.showToastMsg(context,"Data saved successfully");
+//                                        finish();
+//                                    }else{
+//                                        AlertandMessages.showToastMsg(context, "Data not saved");
+//                                    }
+//                                    dialog.dismiss();
+//                                }
+//                            })
+//                            .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.dismiss();
+//                                }
+//                            });
+//                    AlertDialog alert = builder.create();
+//                    alert.show();
                 } else {
                     AlertandMessages.showToastMsg(context, Error_Message);
                 }

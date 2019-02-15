@@ -234,9 +234,9 @@ public class POSMDeploymentActivity extends AppCompatActivity {
             }
 
             if (deploymentData.get(position).getImg1().equalsIgnoreCase("")) {
-                holder.deploymentImage.setImageResource(R.mipmap.cs_black);
+                holder.deploymentImage.setImageResource(R.mipmap.camera_pink);
             } else {
-                holder.deploymentImage.setImageResource(R.mipmap.cs_green);
+                holder.deploymentImage.setImageResource(R.mipmap.camera_green);
             }
 
 

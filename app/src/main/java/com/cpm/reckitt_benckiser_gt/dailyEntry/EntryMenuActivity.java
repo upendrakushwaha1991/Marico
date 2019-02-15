@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,12 +24,15 @@ import android.widget.TextView;
 import com.bumptech.glide.request.RequestOptions;*/
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.cpm.reckitt_benckiser_gt.AutoLoginActivity;
 import com.cpm.reckitt_benckiser_gt.R;
 import com.cpm.reckitt_benckiser_gt.database.MondelezDatabase;
 import com.cpm.reckitt_benckiser_gt.getterSetter.BackofStoreGetterSetter;
+import com.cpm.reckitt_benckiser_gt.getterSetter.CategoryMaster;
 import com.cpm.reckitt_benckiser_gt.getterSetter.CommonChillerDataGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.FocusProductGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
+import com.cpm.reckitt_benckiser_gt.getterSetter.MappingMenuChecklist;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuGetterSetter;
 import com.cpm.reckitt_benckiser_gt.getterSetter.MenuMaster;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
@@ -66,25 +70,6 @@ public class EntryMenuActivity extends AppCompatActivity {
         }
 
 
-       /* if (journeyPlan.getStoreTypeId() == 3) {
-            MenuGetterSetter recData = new MenuGetterSetter();
-            recData.setIconName("Window/Asset");
-            data.add(recData);
-
-            recData = new MenuGetterSetter();
-            recData.setIconName("Category Dressing");
-            data.add(recData);
-        } else {
-            MenuGetterSetter recData = new MenuGetterSetter();
-            recData.setIconName("Window/Asset");
-            data.add(recData);
-
-            recData = new MenuGetterSetter();
-            recData.setIconName("Category Dressing");
-            data.add(recData);
-        }*/
-
-
     }
 
     @Override
@@ -95,95 +80,23 @@ public class EntryMenuActivity extends AppCompatActivity {
         adapter = new ValueAdapter(context, menu_list);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
+
+        if (chekDataforCheckout(journeyPlan)){
+
+            Runnable progressRunnable = new Runnable() {
+
+                @Override
+                public void run() {
+                    finish();
+                }
+            };
+
+            Handler pdCanceller = new Handler();
+            pdCanceller.postDelayed(progressRunnable, 1000);
+
+        }
     }
 
-    /*private void filldata() {
-
-        database.getMenuData(journeyPlan.getStoreTypeId());
-
-        for (int i = 0; i < 1; i++) {
-
-            if (journeyPlan.getStoreTypeId() == 3) {
-
-                //region For Window/Assets(Category Visibility)
-                ArrayList<WindowMaster> windowlist = database.getWindowListData(journeyPlan);
-                if (windowlist.size() > 0) {
-                    boolean isAllFilled = true;
-                    ArrayList<WindowMaster> windowMasterArrayList = database.getWindowData(String.valueOf(journeyPlan.getStoreId()), journeyPlan.getVisitDate());
-                    for (int j = 0; j < windowlist.size(); j++) {
-                        if (!database.isWindowDataFilled(journeyPlan.getStoreId(), windowlist.get(j).getWindowId())) {
-                            isAllFilled = false;
-                            break;
-                        }
-                    }
-                    if (windowMasterArrayList.size() > 0 && isAllFilled) {
-                        data.get(0).setIconImage(R.drawable.window_execution_done);
-                    } else {
-                        data.get(0).setIconImage(R.drawable.window_execution);
-                    }
-                } else {
-                    data.get(0).setIconImage(R.drawable.window_execution_gray);
-                }
-                //endregion
-
-                //region For Category Dressing_SS
-                ArrayList<CategoryMaster> categorylist = database.getCategoryDressingData(journeyPlan);
-                if (categorylist.size() > 0) {
-                    ArrayList<CategoryMaster> categoryMasters = database.getCategoryDressingData(String.valueOf(journeyPlan.getStoreId()), journeyPlan.getVisitDate());
-                    if (categoryMasters.size() > 0) {
-                        data.get(1).setIconImage(R.drawable.category_execution_done);
-                    } else {
-                        data.get(1).setIconImage(R.drawable.category_execution);
-                    }
-
-                } else {
-                    data.get(1).setIconImage(R.drawable.category_execution_gray);
-                }
-                //endregion
-
-            } else {
-                //region For Window/Assets
-                ArrayList<WindowMaster> windowlist = database.getWindowListData(journeyPlan);
-                if (windowlist.size() > 0) {
-                    boolean isAllFilled = true;
-                    ArrayList<WindowMaster> windowMasterArrayList = database.getWindowData(String.valueOf(journeyPlan.getStoreId()), journeyPlan.getVisitDate());
-                    for (int j = 0; j < windowlist.size(); j++) {
-                        if (!database.isWindowDataFilled(journeyPlan.getStoreId(), windowlist.get(j).getWindowId())) {
-                            isAllFilled = false;
-                            break;
-                        }
-                    }
-                    if (windowMasterArrayList.size() > 0 && isAllFilled) {
-                        data.get(0).setIconImage(R.drawable.window_execution_done);
-                    } else {
-                        data.get(0).setIconImage(R.drawable.window_execution);
-                    }
-                } else {
-                    data.get(0).setIconImage(R.drawable.window_execution_gray);
-                }
-                //endregion
-
-                //region for Category Dressing
-                ArrayList<CategoryMaster> categorylist = database.getCategoryDressingData(journeyPlan);
-                if (categorylist.size() > 0) {
-                    ArrayList<CategoryMaster> categoryMasters = database.getCategoryDressingData(String.valueOf(journeyPlan.getStoreId()), journeyPlan.getVisitDate());
-                    if (categoryMasters.size() > 0) {
-                        data.get(1).setIconImage(R.drawable.category_execution_done);
-                    } else {
-                        data.get(1).setIconImage(R.drawable.category_execution);
-                    }
-
-                } else {
-                    data.get(1).setIconImage(R.drawable.category_execution_gray);
-                }
-                //endregion
-            }
-
-            adapter = new ValueAdapter(context, data);
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new GridLayoutManager(context, 2));
-        }
-    }*/
 
     public class ValueAdapter extends RecyclerView.Adapter<ValueAdapter.MyViewHolder> {
         private LayoutInflater inflator;
@@ -212,6 +125,33 @@ public class EntryMenuActivity extends AppCompatActivity {
             String icon_path = current.getNormalIcon();
             switch (current.getMenuId()) {
 
+                case 1:
+                    if(database.getWindowDefaultData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId(), journeyPlan.getStateId()).size()>0){
+                        if (database.isWindowFilledData(journeyPlan.getStoreId())) {
+                            icon_path = current.getTickIcon();
+                        } else {
+                            icon_path = current.getNormalIcon();
+                        }
+                    }
+                    else {
+                        icon_path = current.getGreyIcon();
+                    }
+
+                    break;
+
+                case 2:
+
+                    if(database.getCTUBrandData(journeyPlan.getStoreId()).size()>0){
+                        if (database.isCTUFilledData(journeyPlan.getStoreId())) {
+                            icon_path = current.getTickIcon();
+                        } else {
+                            icon_path = current.getNormalIcon();
+                        }
+                    }
+                    else {
+                        icon_path = current.getGreyIcon();
+                    }
+                    break;
 
                 case 3:
                     listDataHeaderBackofStore = database.getHeaderBackofStoreData(journeyPlan);
@@ -260,6 +200,16 @@ public class EntryMenuActivity extends AppCompatActivity {
                         icon_path = current.getGreyIcon();
                     }
                     break;
+
+                case 7:
+
+                    if (database.isFeedBackFilledData(journeyPlan.getStoreId())) {
+                        icon_path = current.getTickIcon();
+                    } else {
+                        icon_path = current.getNormalIcon();
+                    }
+                    break;
+
                 case 8:
                     if (database.isJarFilledData(journeyPlan.getStoreId())) {
                         icon_path = current.getTickIcon();
@@ -267,6 +217,20 @@ public class EntryMenuActivity extends AppCompatActivity {
                         icon_path = current.getNormalIcon();
                     }
                     break;
+
+                case 9:
+                    List<CategoryMaster> listDataHeader = database.getSOSCategoryMasterData(journeyPlan);
+                    if(listDataHeader.size() > 0) {
+                        if (database.isSOSFilledData(journeyPlan.getStoreId())) {
+                            icon_path = current.getTickIcon();
+                        } else {
+                            icon_path = current.getNormalIcon();
+                        }
+                    }else{
+                        icon_path = current.getGreyIcon();
+                    }
+                    break;
+
                 case 10:
                     if (database.isMonkeySunGrayIcone(journeyPlan.getStoreId())) {
                         if (database.isMonkeySunFilledData(journeyPlan.getStoreId())) {
@@ -279,44 +243,18 @@ public class EntryMenuActivity extends AppCompatActivity {
                     }
                     break;
 
-                case 1:
-                    if (database.isWindowFilledData(journeyPlan.getStoreId())) {
-                        icon_path = current.getTickIcon();
-                    } else {
-                        icon_path = current.getNormalIcon();
-                    }
-                    break;
-
                 case 11:
-                    if (database.isSecondaryFilledData(journeyPlan.getStoreId())) {
-                        icon_path = current.getTickIcon();
-                    } else {
-                        icon_path = current.getNormalIcon();
+                    if(database.getSecondaryVisibilityDisplayData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId(), journeyPlan.getStateId()).size()>0){
+                        if (database.isSecondaryFilledData(journeyPlan.getStoreId())) {
+                            icon_path = current.getTickIcon();
+                        } else {
+                            icon_path = current.getNormalIcon();
+                        }
                     }
-                    break;
+                    else {
+                        icon_path = current.getGreyIcon();
+                    }
 
-                case 2:
-                    if (database.isCTUFilledData(journeyPlan.getStoreId())) {
-                        icon_path = current.getTickIcon();
-                    } else {
-                        icon_path = current.getNormalIcon();
-                    }
-                    break;
-
-                case 7:
-                    if (database.isFeedBackFilledData(journeyPlan.getStoreId())) {
-                        icon_path = current.getTickIcon();
-                    } else {
-                        icon_path = current.getNormalIcon();
-                    }
-                    break;
-
-                case 9:
-                    if (database.isSOSFilledData(journeyPlan.getStoreId())) {
-                        icon_path = current.getTickIcon();
-                    } else {
-                        icon_path = current.getNormalIcon();
-                    }
                     break;
 
             }
@@ -326,112 +264,98 @@ public class EntryMenuActivity extends AppCompatActivity {
                     .apply(new RequestOptions())
                     .into(viewHolder.icon);
 
+
             viewHolder.lay_menu.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int menu_id = current.getMenuId();
+                    switch (menu_id){
 
-                    if (current.getMenuId() == 1) {
-                       /* if (database.isWindowFilledData(journeyPlan.getStoreId())) {
-                            Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
-                        }else {
-                            startActivity(new Intent(context, WindowWithBrandActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        case 1:
+                            if(database.getWindowDefaultData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId(), journeyPlan.getStateId()).size()>0){
+                                startActivity(new Intent(context, WindowWithBrandActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+
+                            break;
+
+                        case 2:
+                            if(database.getCTUBrandData(journeyPlan.getStoreId()).size()>0){
+                                startActivity(new Intent(context, CTUActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+
+                            break;
+
+                        case 3:
+                            listDataHeaderBackofStore = database.getHeaderBackofStoreData(journeyPlan);
+                            if (listDataHeaderBackofStore.size() > 0) {
+                                startActivity(new Intent(context, BackOfStoreActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+                            break;
+
+                        case 4:
+                            if (database.isVisicoolerSunGrayIcone(journeyPlan.getStoreId())){
+                                startActivity(new Intent(context, NewVisiCoolerActivty.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+                            break;
+
+                        case 5:
+                            posmDeploymentData = database.getPOSMDeploymentData(journeyPlan);
+                            if (posmDeploymentData.size()>0) {
+                                startActivity(new Intent(context, POSMDeploymentActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+                            break;
+
+                        case 6:
+                            listDataHeader = database.getHeaderSalesData(journeyPlan);
+                            if (listDataHeader.size() > 0) {
+                                startActivity(new Intent(context, FocusProductActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+
+                            break;
+
+                        case 7:
+                            startActivity(new Intent(context, FeedBackActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }*/
-                        startActivity(new Intent(context, WindowWithBrandActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
+                            break;
 
-                    if (current.getMenuId() == 3) {
-                        startActivity(new Intent(context, BackOfStoreActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-                    if (current.getMenuId() == 4) {
-                        if (database.isVisicoolerSunGrayIcone(journeyPlan.getStoreId())){
-                            startActivity(new Intent(context, NewVisiCoolerActivty.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                        case 8:
+                            startActivity(new Intent(context, JarActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
                             overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }else {
+                            break;
 
-                        }
+                        case 9:
+                            if(database.getSOSCategoryMasterData(journeyPlan).size()>0){
+                                startActivity(new Intent(context, SOSActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+                            break;
 
+                        case 10:
+                            if (database.isMonkeySunGrayIcone(journeyPlan.getStoreId())) {
+                                startActivity(new Intent(context, MonkeysunActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+
+                            break;
+
+                        case 11:
+                            if(database.getSecondaryVisibilityDisplayData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId(), journeyPlan.getStateId()).size()>0){
+                                startActivity(new Intent(context, SecondaryVisibilityActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
+                                overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
+                            }
+
+                            break;
+
+                        case 12:
+
+                            break;
                     }
-                    if (current.getMenuId() == 5) {
-
-                        startActivity(new Intent(context, POSMDeploymentActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-
-                    }
-
-
-                    if (current.getMenuId() == 11) {
-
-                        /*if (database.isSecondaryFilledData(journeyPlan.getStoreId())) {
-                            Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
-                        }else {
-                            startActivity(new Intent(context, SecondaryVisibilityActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }*/
-                        startActivity(new Intent(context, SecondaryVisibilityActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-
-                    if (current.getMenuId() == 2) {
-
-                        /*if (database.isCTUFilledData(journeyPlan.getStoreId())) {
-                            Snackbar.make(recyclerView,"Data already filled",Snackbar.LENGTH_SHORT).show();
-                        }else {
-                            startActivity(new Intent(context, CTUActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }*/
-                        startActivity(new Intent(context, CTUActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-
-                    if (current.getMenuId() == 6) {
-                        startActivity(new Intent(context, FocusProductActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-                    if (current.getMenuId() == 8) {
-                        startActivity(new Intent(context, JarActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-                    if (current.getMenuId() == 10) {
-                        startActivity(new Intent(context, MonkeysunActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-
-                    if (current.getMenuId() == 7) {
-                        startActivity(new Intent(context, FeedBackActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-                    if (current.getMenuId() == 9) {
-                        startActivity(new Intent(context, SOSActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan).putExtra(CommonString.KEY_MENU_ID, current));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                    }
-
-                   /* if (current.getMenuName().equalsIgnoreCase("Posm")) {
-
-                        startActivity(new Intent(context, POSMDeploymentActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan));
-                        overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-
-                    }*/
-
-                  /*  if (current.getIconName().equalsIgnoreCase("Window/Asset")) {
-                        if (current.getIconImage() == R.drawable.window_execution_gray) {
-                            AlertandMessages.showToastMsg(context, "No data");
-                        } else {
-                            startActivity(new Intent(context, WindowMenuActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan));
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }
-
-                    } else if (current.getIconName().equalsIgnoreCase("Category Dressing")) {
-                        if (current.getIconImage() == R.drawable.category_execution_gray) {
-                            AlertandMessages.showToastMsg(context, "No data");
-                        } else {
-                            startActivity(new Intent(context, CategoryDressingActivity.class).putExtra(CommonString.TAG_OBJECT, journeyPlan));
-                            overridePendingTransition(R.anim.activity_in, R.anim.activity_out);
-                        }
-
-                    }*/
                 }
             });
         }
@@ -454,6 +378,7 @@ public class EntryMenuActivity extends AppCompatActivity {
             }
         }
     }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -483,5 +408,73 @@ public class EntryMenuActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.rec_menu);
         database = new MondelezDatabase(context);
         database.open();
+    }
+
+    private boolean chekDataforCheckout(JourneyPlan journeyPlan) {
+        boolean status = true;
+        database.open();
+        ArrayList<MenuMaster> menu_list = database.getMenuData(journeyPlan.getStoreTypeId(), journeyPlan.getStoreCategoryId());
+        for (int i = 0; i < menu_list.size(); i++) {
+            switch (menu_list.get(i).getMenuId()) {
+
+                case 3:
+                        if (!database.isBackofStoreFilled(journeyPlan.getStoreId())) {
+                            status = false;
+                        }
+                    break;
+                case 4:
+
+                        if (!database.isVisiCoolerFilledData(journeyPlan.getStoreId())) {
+                            status = false;
+                        }
+                    break;
+                case 5:
+                        if (!database.isPosmFilledData(journeyPlan.getStoreId())) {
+                            status = false;
+                        }
+                    break;
+                case 6:
+                        if (!database.isFocusproductFilled(journeyPlan.getStoreId())) {
+                            status = false;
+                        }
+                    break;
+                case 8:
+                    if (!database.isJarFilledData(journeyPlan.getStoreId())) {
+                        status = false;
+                    }
+                    break;
+                case 10:
+                        if (!database.isMonkeySunFilledData(journeyPlan.getStoreId())) {
+                            status = false;
+                        }
+                    break;
+
+                case 1:
+                    if (!database.isWindowFilledData(journeyPlan.getStoreId())) {
+                        status = false;
+                    }
+                    break;
+
+                case 11:
+                    if (!database.isSecondaryFilledData(journeyPlan.getStoreId())) {
+                        status = false;
+                    }
+                    break;
+
+                case 2:
+                    if (!database.isCTUFilledData(journeyPlan.getStoreId())) {
+                        status = false;
+                    }
+                    break;
+
+                case 7:
+                    if (!database.isFeedBackFilledData(journeyPlan.getStoreId())) {
+                        status = false;
+                    }
+                    break;
+            }
+        }
+
+        return status;
     }
 }

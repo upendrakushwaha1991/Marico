@@ -32,19 +32,28 @@
         <activity
             android:name=".oneQad.OneQADActivity"
             android:label="@string/title_activity_one_qad"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".AutoLoginActivity"
             android:label="@string/title_activity_auto_login"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".password.MPinActivity"
             android:label="@string/title_activity_mpin"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".password.ChangePasswordActivity"
             android:label="@string/title_activity_change_password"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="adjustPan"
+            android:configChanges="screenSize|orientation|keyboardHidden"/>
         <activity
             android:name=".dailyEntry.SOSActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
@@ -166,6 +175,7 @@
             android:name=".dailyEntry.NonWorkingActivity"
             android:label="@string/title_activity_non_working"
             android:screenOrientation="portrait"
+            android:configChanges="screenSize|orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".dailyEntry.CategoryDressingActivity"
@@ -233,24 +243,28 @@
             android:name=".dailyEntry.NewVisiCoolerActivty"
             android:label="@string/title_activity_new_visi_cooler_activty"
             android:screenOrientation="portrait"
+            android:configChanges="screenSize|orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".dailyEntry.MonkeysunActivity"
             android:label="@string/title_activity_monkeysun"
             android:screenOrientation="portrait"
+            android:configChanges="screenSize|orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".dailyEntry.BackOfStoreActivity"
             android:label="@string/title_activity_back_of_store"
             android:screenOrientation="portrait"
+            android:configChanges="screenSize|orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".dailyEntry.JarActivity"
             android:label="@string/title_activity_jar"
             android:screenOrientation="portrait"
+            android:configChanges="screenSize|orientation|keyboardHidden"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan" />
     </application>

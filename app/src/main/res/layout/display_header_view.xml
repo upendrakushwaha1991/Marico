@@ -51,17 +51,17 @@
 
                         <ImageButton
                             android:id="@+id/cam_one"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:background="@mipmap/camera_pink" />
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
+                            android:background="@mipmap/cs_black" />
 
                         <ImageButton
                             android:id="@+id/cam_two"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
+                            android:layout_width="45dp"
+                            android:layout_height="45dp"
                             android:layout_marginLeft="5dp"
                             android:layout_marginRight="5dp"
-                            android:background="@mipmap/camera_pink" />
+                            android:background="@mipmap/ls_black" />
                     </LinearLayout>
 
 

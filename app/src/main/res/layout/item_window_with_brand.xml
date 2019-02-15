@@ -19,7 +19,7 @@
             android:layout_margin="5dp"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/ColorPrimaryLight"
@@ -45,7 +45,7 @@
                     android:layout_margin="10dp"
                    />
 
-            </RelativeLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/lay_window"
@@ -107,16 +107,26 @@
                     android:layout_margin="10dp"
                     android:textSize="@dimen/text_size_normal" />
 
-                <Spinner
-                    android:id="@+id/spin_reason"
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:layout_gravity="center"
                     android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="5dp"
-                    android:textSize="12sp" />
+                    android:background="@drawable/rouded_corner">
+
+                    <Spinner
+                        android:id="@+id/spin_reason"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerHorizontal="true"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:padding="5dp"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+
 
             </LinearLayout>
 

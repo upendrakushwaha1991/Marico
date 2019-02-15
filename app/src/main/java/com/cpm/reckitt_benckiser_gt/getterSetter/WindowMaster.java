@@ -259,7 +259,7 @@ public class WindowMaster implements Serializable {
     String answered;
     int answered_id = -1;
 
-    int nonExecutionReasonId = -1;
+    int nonExecutionReasonId = 0;
 
     public int getNonExecutionReasonId() {
         return nonExecutionReasonId;

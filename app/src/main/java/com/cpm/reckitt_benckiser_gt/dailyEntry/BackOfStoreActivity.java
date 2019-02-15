@@ -297,8 +297,8 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
                     backofstoregs.setPresent_name("");
                     backofstoregs.setImage_close_up("");
                     backofstoregs.setImage_long_shot("");
-                    image_closeup.setImageResource(R.drawable.camera_orange);
-                    image_long_shot.setImageResource(R.drawable.camera_orange);
+                    image_closeup.setImageResource(R.mipmap.cs_black);
+                    image_long_shot.setImageResource(R.mipmap.ls_black);
                     lvExp_audit.setVisibility(View.GONE);
                     lay_image.setVisibility(View.GONE);
                     lay_image_name.setVisibility(View.GONE);
@@ -317,18 +317,18 @@ public class BackOfStoreActivity extends AppCompatActivity implements View.OnCli
         db.open();
         backofstoregs = db.getBackofStoreData(jcpGetset);
         if (backofstoregs.getImage_close_up().equalsIgnoreCase("")) {
-            image_closeup.setImageResource(R.mipmap.camera_grey);
+            image_closeup.setImageResource(R.mipmap.cs_black);
 
         } else {
-            image_closeup.setImageResource(R.mipmap.camera_green);
+            image_closeup.setImageResource(R.mipmap.cs_green);
             backofstoregs.setImage_close_up(backofstoregs.getImage_close_up());
         }
 
         if (backofstoregs.getImage_long_shot().equalsIgnoreCase("")) {
-            image_long_shot.setImageResource(R.mipmap.camera_grey);
+            image_long_shot.setImageResource(R.mipmap.ls_black);
 
         } else {
-            image_long_shot.setImageResource(R.mipmap.camera_green);
+            image_long_shot.setImageResource(R.mipmap.ls_green);
             backofstoregs.setImage_long_shot(backofstoregs.getImage_long_shot());
         }
         if (!backofstoregs.getPresent_name().equalsIgnoreCase("")) {

@@ -1,5 +1,6 @@
 package com.cpm.reckitt_benckiser_gt.dailyEntry;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -20,6 +22,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -39,6 +42,7 @@ import com.cpm.reckitt_benckiser_gt.delegates.CoverageBean;
 import com.cpm.reckitt_benckiser_gt.getterSetter.JourneyPlan;
 import com.cpm.reckitt_benckiser_gt.getterSetter.NonWorkingReason;
 import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.UploadImageWithRetrofit;
+import com.cpm.reckitt_benckiser_gt.upload.Retrofit_method.upload.UploadWithoutWaitActivity;
 import com.cpm.reckitt_benckiser_gt.utilities.AlertandMessages;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonFunctions;
 import com.cpm.reckitt_benckiser_gt.utilities.CommonString;
@@ -136,7 +140,7 @@ public class NonWorkingActivity extends AppCompatActivity implements AdapterView
             public void onClick(View v) {
                 _pathforcheck = store_id + "_NONWORKING-" + visit_date.replace("/", "") + "_" + getCurrentTime().replace(":", "") + ".jpg";
                 _path = CommonString.FILE_PATH + _pathforcheck;
-                CommonFunctions.startAnncaCameraActivity(context, _path, null,false);
+                CommonFunctions.startAnncaCameraActivity(context, _path, null, false);
             }
         });
 
@@ -493,7 +497,7 @@ public class NonWorkingActivity extends AppCompatActivity implements AdapterView
                 jcp = database.getStoreData(visit_date);
                 for (int i = 0; i < jcp.size(); i++) {
                     String storeid = String.valueOf(jcp.get(i).getStoreId());
-                    if (database.updateStoreStatusOnLeave(storeid, visit_date, CommonString.STORE_STATUS_LEAVE) > 0) {
+                    if (database.updateStoreStatusOnLeave(storeid, visit_date, CommonString.KEY_U) > 0) {
                         SharedPreferences.Editor editor = preferences.edit();
 
                         editor.putString(CommonString.KEY_STOREVISITED_STATUS + storeid, "No");
@@ -503,7 +507,7 @@ public class NonWorkingActivity extends AppCompatActivity implements AdapterView
                         editor.putString(CommonString.KEY_LONGITUDE, "");
                         editor.commit();
 
-                        AlertandMessages.showAlert((Activity) context, getString(R.string.data_uploaded), true);
+                        //AlertandMessages.showAlert((Activity) context, getString(R.string.data_uploaded), true);
 
                     } else {
                         AlertandMessages.showSnackbarMsg(context, "Store status not updated!!");
@@ -649,6 +653,8 @@ public class NonWorkingActivity extends AppCompatActivity implements AdapterView
                 }*/
                 coverageBeanList.clear();
                 dialog.dismiss();
+                Intent in = new Intent(context, UploadWithoutWaitActivity.class);
+                startActivity(in);
                 finish();
             } else {
                 coverageBeanList.clear();
@@ -665,6 +671,16 @@ public class NonWorkingActivity extends AppCompatActivity implements AdapterView
 
     @Override
     public void onConnected(Bundle bundle) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
         Location mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
             lat = mLastLocation.getLatitude();

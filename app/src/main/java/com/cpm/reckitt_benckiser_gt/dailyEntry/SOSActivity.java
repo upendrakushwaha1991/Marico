@@ -16,6 +16,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
@@ -202,6 +203,9 @@ public class SOSActivity extends AppCompatActivity {
         if(listDataHeader.size() == 0) {
             listDataHeader = database.getSOSCategoryMasterData(journeyPlan);
         }
+        else {
+            fab.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.edit_txt));
+        }
         if (listDataHeader.size() > 0) {
             // Adding child data
             for (int i = 0; i < listDataHeader.size(); i++) {
@@ -246,24 +250,29 @@ public class SOSActivity extends AppCompatActivity {
             public void onClick(View view) {
                 expListView.clearFocus();
                 if (validateData(listDataChild, listDataHeader)) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SOSActivity.this);
-                    builder.setMessage("Are you sure you want to save ?")
-                            .setCancelable(false)
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    saveData();
-                                    Snackbar.make(expListView, "Data has been saved", Snackbar.LENGTH_LONG).show();
-                                    finish();
-                                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
-                                }
-                            })
-                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-                    AlertDialog alert = builder.create();
-                    alert.show();
+                    saveData();
+                    Snackbar.make(expListView, "Data has been saved", Snackbar.LENGTH_LONG).show();
+                    finish();
+                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(SOSActivity.this);
+//                    builder.setMessage("Are you sure you want to save ?")
+//                            .setCancelable(false)
+//                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    saveData();
+//                                    Snackbar.make(expListView, "Data has been saved", Snackbar.LENGTH_LONG).show();
+//                                    finish();
+//                                    overridePendingTransition(R.anim.activity_back_in, R.anim.activity_back_out);
+//                                }
+//                            })
+//                            .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                                public void onClick(DialogInterface dialog, int id) {
+//                                    dialog.cancel();
+//                                }
+//                            });
+//                    AlertDialog alert = builder.create();
+//                    alert.show();
                 } else {
                     Snackbar.make(expListView, Error_Message, Snackbar.LENGTH_LONG).show();
                 }
@@ -406,11 +415,13 @@ public class SOSActivity extends AppCompatActivity {
             holder.brand_txt.setText(childText.getBrand());
 
             final ViewHolder finalHolder = holder;
+
             holder.brand_facing.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View view, boolean hasFocus) {
                     final EditText Caption = (EditText) view;
                     String value1 = Caption.getText().toString().replaceAll("[&^<>{}'$]", "").replaceFirst("^0+(?!$)", "");
+                    finalHolder.brand_facing.setEnabled(true);
                     if(!hasFocus){
                         if (value1.equals("")) {
                             childText.setBrand_Facing("");
@@ -420,14 +431,17 @@ public class SOSActivity extends AppCompatActivity {
                                 int brand_facing_sum1 = headerTitle.getBrand_facing_sum() + Integer.parseInt(value1);
                                 if (brand_facing_sum1 < cat_facing) {
                                     float percentage = (brand_facing_sum1 / cat_facing) * 100;
+                                    // get float value up to two decimal points
                                     DecimalFormat df = new DecimalFormat("0.00");
                                     percentage = Float.parseFloat(df.format(percentage));
+
                                     headerTitle.setPercentage(String.valueOf(percentage));
                                     childText.setBrand_Facing(value1);
                                     headerTitle.setBrand_facing_sum(brand_facing_sum1);
                                     //  expListView.invalidateViews();
                                 }else{
                                     finalHolder.brand_facing.setText("");
+                                    childText.setBrand_Facing("");
                                     AlertandMessages.showSnackbarMsg(view, getResources().getString(R.string.brand_facing_category_error));
                                 }
                             }else{
@@ -436,7 +450,16 @@ public class SOSActivity extends AppCompatActivity {
                         }
                     }
                     else{
-                        headerTitle.setBrand_facing_sum(0);
+                        if(headerTitle.getCategory_Facing().equalsIgnoreCase("")){
+                            AlertandMessages.showSnackbarMsg(view, getResources().getString(R.string.cat_facing_error));
+                            finalHolder.brand_facing.setEnabled(false);
+                        }else if(!childText.getBrand_Facing().equalsIgnoreCase("")){
+                            int brandFacingSum = Integer.valueOf(headerTitle.getBrand_facing_sum()) -Integer.valueOf(childText.getBrand_Facing());
+                            headerTitle.setBrand_facing_sum(brandFacingSum);
+                        }else{
+                            finalHolder.brand_facing.setEnabled(true);
+                        }
+                        //headerTitle.setBrand_facing_sum(0);
                     }
                 }
             });
